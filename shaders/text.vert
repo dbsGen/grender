@@ -1,0 +1,18 @@
+R"(
+attribute vec3 A_POSITION;
+attribute vec4 A_COLOR;
+attribute vec2 A_TEX_COORD;
+varying vec2 TEX_COORD;
+varying vec4 COLOR;
+
+uniform mat4 PROJECTION;
+uniform mat4 VIEW;
+uniform mat4 MODEL;
+
+void main(void) {
+    COLOR = A_COLOR;
+    mat4 model_view = VIEW * MODEL;
+    gl_Position = PROJECTION * model_view * vec4(A_POSITION, 1.0);
+    TEX_COORD = A_TEX_COORD;
+}
+)"
