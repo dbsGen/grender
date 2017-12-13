@@ -6,7 +6,7 @@
 
 #define STEP_N 80
 
-using namespace hirender;
+using namespace gr;
 
 Circle::Circle() : Mesh(),r(1), size(HSize(1,1)),anchor(CENTER) {
     createVertexes();

@@ -8,7 +8,7 @@
 
 #include "HTTPClient.h"
 
-using namespace hirender;
+using namespace gr;
 
 const StringName HTTPClient::METHOD_GET("GET");
 const StringName HTTPClient::METHOD_POST("POST");

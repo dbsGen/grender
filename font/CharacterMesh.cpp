@@ -8,7 +8,7 @@
 
 #include "CharacterMesh.h"
 
-using namespace hirender;
+using namespace gr;
 
 void CharacterMesh::render() {
 

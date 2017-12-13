@@ -9,7 +9,7 @@
 #include "core/Object.h"
 #include <core/core_define.h>
 
-namespace hicore {
+namespace gcore {
 #define VECTOR_DEF(T, S, current_type) \
 BASE_FINAL_CLASS_DEFINE \
 public: \

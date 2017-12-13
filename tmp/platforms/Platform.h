@@ -13,7 +13,7 @@
 
 using namespace std;
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_0_N(Platform)
     
     static Platform *shared_platform;

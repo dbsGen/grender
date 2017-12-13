@@ -10,7 +10,7 @@
 #include "Hash.h"
 #include "core_define.h"
 
-namespace hicore {
+namespace gcore {
     class HClass;
     
     class StringName {

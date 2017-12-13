@@ -4,7 +4,7 @@
 
 #include "TableView.h"
 
-using namespace hirender;
+using namespace gr;
 
 TableView::TableView() : item_creator(NULL),
                          data(NULL),

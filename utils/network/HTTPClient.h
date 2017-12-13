@@ -14,9 +14,9 @@
 #include <core/Callback.h>
 #include "../../render_define.h"
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(HTTPClient, RefObject)
 
         string url;

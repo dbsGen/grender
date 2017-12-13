@@ -15,9 +15,9 @@
 #include "DBMaker.h"
 #include "../../render_define.h"
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     struct Table {
         const HClass *cls;
         pointer_map fields;

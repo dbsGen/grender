@@ -9,7 +9,7 @@
 #include "../runtime.h"
 #include "../Ref.h"
 
-using namespace hicore;
+using namespace gcore;
 
 pointer_map Script::scripts;
 
@@ -89,7 +89,7 @@ ScriptInstance *ScriptClass::newInstance() const {
     return sin;
 }
 
-ScriptInstance *ScriptClass::get(hicore::HObject *target) const {
+ScriptInstance *ScriptClass::get(HObject *target) const {
     return script->getScriptInstance(target);
 }
 
@@ -125,7 +125,7 @@ Variant ScriptInstance::call(const StringName &name, const Variant **params, int
     return Variant::null();
 }
 
-Variant ScriptInstance::get(const hicore::StringName &name) const {
+Variant ScriptInstance::get(const StringName &name) const {
     if (target) {
         const Property *pro = cls->getNativeClass()->getProperty(name);
         if (pro) {
@@ -135,7 +135,7 @@ Variant ScriptInstance::get(const hicore::StringName &name) const {
     return Variant::null();
 }
 
-void ScriptInstance::set(const hicore::StringName &name, const hicore::Variant &val) const {
+void ScriptInstance::set(const StringName &name, const Variant &val) const {
     if (target) {
         const Property *pro = cls->getNativeClass()->getProperty(name);
         if (pro) {

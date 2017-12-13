@@ -10,7 +10,7 @@
 #include <Renderer.h>
 #include <core/math/Math.hpp>
 
-using namespace hirender;
+using namespace gr;
 
 ImageTexture::~ImageTexture() {
     cancelLoad();
@@ -77,7 +77,7 @@ void ImageTexture::asynThread(Ref<Callback> on_complete) {
     load_thread = NULL;
 }
 
-void ImageTexture::asynLoad(const Ref<hicore::Callback> &complete) {
+void ImageTexture::asynLoad(const Ref<Callback> &complete) {
     if (!loaded) {
         if (!load_thread) {
             is_cancel = false;
@@ -95,7 +95,7 @@ void ImageTexture::cancelLoad() {
     }
 }
 
-namespace hirender {
+namespace gr {
     map<string, Ref<ImageTexture> > image_cache;
     list<string> cache_index;
 }

@@ -19,7 +19,7 @@
 
 using namespace std;
 
-namespace hicore {
+namespace gcore {
     class Array;
     
     CLASS_BEGIN_N(_Array, RefObject)

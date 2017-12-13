@@ -7,7 +7,7 @@
 #include <utils/tween/all.h>
 #include "Button.h"
 
-using namespace hirender;
+using namespace gr;
 
 bool Button::onMessage(const StringName &key, const Array *vars) {
     if (key == Object::MESSAGE_TOUCH_EVENT) {

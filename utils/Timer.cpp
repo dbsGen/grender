@@ -4,7 +4,7 @@
 
 #include "Timer.h"
 
-using namespace hirender;
+using namespace gr;
 
 TimerManager *TimerManager::instance(NULL);
 mutex TimerManager::mtx;

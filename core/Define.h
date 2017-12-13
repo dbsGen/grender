@@ -76,7 +76,7 @@ class NAME : public SUPER T { \
 #define CLASS_BEGIN_NV(NAME, SUPER) __CLASS_BEGIN_NS_EX(NAME, SUPER, vr, _TC0())
 #define CLASS_BEGIN_V(NAME, SUPER)  __CLASS_BEGIN_EX(NAME, SUPER, vr, _TC0())
 
-#define __CLASS_NS(CLASS) hicore::CLASS
+#define __CLASS_NS(CLASS) gcore::CLASS
 
 /**
  * CLASS_BEGIN_T 用来定义一个类,
@@ -119,8 +119,8 @@ private:
 
 #define BASE_CLASS_IMPLEMENT(CLZ) const HClass *CLZ::getClass() {\
     if (!_class_contrainer<CLZ>::_class) {\
-        const HClass *clazz = ClassDB::getInstance()->find_loaded(ClassDB::connect("hicore", #CLZ));\
-        _class_contrainer<CLZ>::_class = clazz ? clazz : ClassDB::getInstance()->cl<CLZ>("hicore", #CLZ, NULL);\
+        const HClass *clazz = ClassDB::getInstance()->find_loaded(ClassDB::connect("gcore", #CLZ));\
+        _class_contrainer<CLZ>::_class = clazz ? clazz : ClassDB::getInstance()->cl<CLZ>("gcore", #CLZ, NULL);\
     }\
     return _class_contrainer<CLZ>::_class;\
 }\
@@ -130,8 +130,8 @@ const HClass *CLZ::getInstanceClass() const {\
 
 #define BASE_CLASS_IMPLEMENT_V(CLZ) const HClass *CLZ::getClass() {\
     if (!_class_contrainer<CLZ>::_class) {\
-        const HClass *clazz = ClassDB::getInstance()->find_loaded(ClassDB::connect("hicore", #CLZ));\
-        _class_contrainer<CLZ>::_class = clazz ? clazz : ClassDB::getInstance()->vr<CLZ>("hicore", #CLZ, NULL);\
+        const HClass *clazz = ClassDB::getInstance()->find_loaded(ClassDB::connect("gcore", #CLZ));\
+        _class_contrainer<CLZ>::_class = clazz ? clazz : ClassDB::getInstance()->vr<CLZ>("gcore", #CLZ, NULL);\
     }\
     return _class_contrainer<CLZ>::_class;\
 }\
@@ -168,7 +168,6 @@ const HClass *CLZ::getInstanceClass() const {\
 
 #define ADD_METHOD(CLASS, TYPE, M)
 #define ADD_METHOD_E(CLASS, TYPE, M_TYPE, M)
-#define INITIALIZER(CLASS, TYPE, M)
 #define ADD_PROPERTY(CLASS, ...)
 #define ADD_PROPERTY_EX(CLASS, NAME, TYPE, GETTER, SETTER) 
 
@@ -216,7 +215,6 @@ _FORCE_INLINE_ TYPE(const Variant &var) : TYPE() { \
 #define INITIALIZE(CLASS, PARAMS, PROGRAMS) \
 _FORCE_INLINE_ CLASS(PARAMS):CLASS(){PROGRAMS}
 
-
 // ------ LOG
 
 
@@ -232,11 +230,11 @@ _FORCE_INLINE_ CLASS(PARAMS):CLASS(){PROGRAMS}
 #include <android/log.h>
 
 #       define LOGe(...) \
-    __android_log_print(ANDROID_LOG_ERROR, "HiRender", __VA_ARGS__)
+    __android_log_print(ANDROID_LOG_ERROR, "GR", __VA_ARGS__)
 #       define LOGi(...) \
-    __android_log_print(ANDROID_LOG_INFO, "HiRender", __VA_ARGS__)
+    __android_log_print(ANDROID_LOG_INFO, "GR", __VA_ARGS__)
 #       define LOGw(...) \
-    __android_log_print(ANDROID_LOG_WARN, "HiRender", __VA_ARGS__)
+    __android_log_print(ANDROID_LOG_WARN, "GR", __VA_ARGS__)
 
 #   else
 
@@ -260,8 +258,8 @@ _FORCE_INLINE_ CLASS(PARAMS):CLASS(){PROGRAMS}
 // ----------- Types
 
 #define pointer_map     std::map<void*, void*>
-#define variant_map     std::map<void*, hicore::Variant>
-#define ref_map         std::map<void*, hicore::Reference>
+#define variant_map     std::map<void*, gcore::Variant>
+#define ref_map         std::map<void*, gcore::Reference>
 #define pointer_vector  std::vector<void*>
 #define variant_vector  std::vector<Variant>
 #define float_vector    std::vector<float>

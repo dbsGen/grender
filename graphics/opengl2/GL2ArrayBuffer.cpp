@@ -12,7 +12,7 @@
 #include "GL2MeshIMP.h"
 #include <thread>
 
-using namespace hirender;
+using namespace gr;
 
 
 #define SIZE(SIZE, COUNT, TYPE) size_t SIZE = 0; int COUNT = 0; GLenum t_type; \
@@ -145,7 +145,7 @@ void GL2ArrayBuffer::updatePose(higraphics::GL2AttrVector *vec, void *pose_targe
 }
 
 void GL2ArrayBuffer::bind(const StringName &prop_name,
-                          hirender::Shader::Type prop_type,
+                          Shader::Type prop_type,
                           const pointer_list &objects,
                           size_t count, GLuint index) {
     SIZE(unit_size, unit_count, prop_type)

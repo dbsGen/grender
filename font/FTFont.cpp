@@ -16,7 +16,7 @@
 
 #define Check(ERR) if (ERR) {LOG(e, "Error in font.");return;}
 
-using namespace hirender;
+using namespace gr;
 
 static FT_Library Font_library = NULL;
 

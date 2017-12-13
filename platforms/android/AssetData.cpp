@@ -6,8 +6,8 @@
 #include <script/java/JScript.h>
 #include "AssetData.h"
 
-using namespace hirender;
-using namespace hiscript;
+using namespace gr;
+using namespace gscript;
 
 AAssetManager *AssetData::asset_manager = NULL;
 

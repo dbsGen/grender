@@ -136,7 +136,7 @@ void GL2RendererIMP::removeCamera(Camera *camera) {
     }
 }
 
-GL2RendererIMP::GL2VirtualMachine *GL2RendererIMP::GL2VirtualMachine::findSubMachine(hirender::Canvas *canvas) {
+GL2RendererIMP::GL2VirtualMachine *GL2RendererIMP::GL2VirtualMachine::findSubMachine(Canvas *canvas) {
     if (this->canvas == canvas) {
         return this;
     }
@@ -208,7 +208,7 @@ void GL2RendererIMP::prepare() {
     }
 }
 
-void GL2RendererIMP::GL2VirtualMachine::reset(const list<Ref<hirender::Object>> &objects) {
+void GL2RendererIMP::GL2VirtualMachine::reset(const list<Ref<Object>> &objects) {
     _clear();
     //    auto depthIndex = items.begin();
     for (auto ite = objects.begin(), _e = objects.end(); ite != _e; ++ite) {
@@ -241,7 +241,7 @@ void GL2RendererIMP::GL2VirtualMachine::addObjects(const list<Ref<Object> > &obj
     }
 }
 
-void GL2RendererIMP::GL2VirtualMachine::addToSubMachine(const Ref<hirender::Object> &object, hirender::Canvas *canvas) {
+void GL2RendererIMP::GL2VirtualMachine::addToSubMachine(const Ref<Object> &object, Canvas *canvas) {
     for (auto it = sub_machines.begin(), _e = sub_machines.end(); it != _e; ++it) {
         GL2RendererIMP::GL2VirtualMachine *machine = (GL2RendererIMP::GL2VirtualMachine *)*it;
         if (machine->canvas == canvas) {
@@ -324,7 +324,7 @@ void GL2RendererIMP::add(const Ref<Object> &object) {
     addWithList(object, NULL, true);
 }
 
-void GL2RendererIMP::addWithList(const Ref<hirender::Object> &object, Canvas *canvas, bool top) {
+void GL2RendererIMP::addWithList(const Ref<Object> &object, Canvas *canvas, bool top) {
     if (top) {
         Object *parent = object->getParent();
         while (parent) {

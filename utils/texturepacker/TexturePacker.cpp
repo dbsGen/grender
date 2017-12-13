@@ -7,9 +7,9 @@
 #include <object/ui/View.h>
 #include "TexturePacker.h"
 
-using namespace hirender;
+using namespace gr;
 
-namespace hirender {
+namespace gr {
     struct SpriteInfo {
         StringName  filename;
         HRect   frame;

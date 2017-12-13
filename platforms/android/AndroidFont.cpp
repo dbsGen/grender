@@ -6,8 +6,8 @@
 #include <script/java/JScript.h>
 #include <android/bitmap.h>
 
-using namespace hirender;
-using namespace hiscript;
+using namespace gr;
+using namespace gscript;
 
 #define ANDROID_FONT_CLASS "com/hiar/render/AndroidFont"
 #define ANDROID_RECT_CLASS "android/graphics/Rect"

@@ -7,7 +7,7 @@
 
 #include "render_define.h"
 
-namespace hirender {
+namespace gr {
     template <class T>
     CLASS_BEGIN_0_NV(Imp)
 

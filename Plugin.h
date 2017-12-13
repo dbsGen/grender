@@ -13,9 +13,9 @@
 #include "render_define.h"
 
 using namespace std;
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     class Renderer;
 
     CLASS_BEGIN_NV(Plugin, RefObject)

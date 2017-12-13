@@ -22,9 +22,9 @@
 #define JOBJECT_CLASS   "java/lang/Object"
 
 using namespace std;
-using namespace hicore;
+using namespace gcore;
 
-namespace hiscript {
+namespace gscript {
     class JScript;
 
     CLASS_BEGIN_N(JNIEnvWrap, RefObject)

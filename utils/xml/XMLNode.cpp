@@ -12,7 +12,7 @@
 #include <libxml/HTMLtree.h>
 #include <libxml/xpath.h>
 
-using namespace hirender;
+using namespace gr;
 
 long XMLNode::getChildrenCount() const {
     if (c_node)

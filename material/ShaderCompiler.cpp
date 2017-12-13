@@ -7,13 +7,13 @@
 #include "ShaderContext.h"
 #include "../graphics/Factory.h"
 
-using namespace hirender;
+using namespace gr;
 
-void ShaderCompiler::setMainName(const hicore::StringName &name) {
+void ShaderCompiler::setMainName(const gcore::StringName &name) {
     imp->main_name = name;
 }
 
-const hicore::StringName &ShaderCompiler::getMainName() {
+const gcore::StringName &ShaderCompiler::getMainName() {
     return imp->main_name;
 }
 

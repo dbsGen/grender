@@ -9,7 +9,7 @@
 #include <utils/tween/all.h>
 #include <render_define.h>
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(ScrollView, View)
 
         Ref<View> container;

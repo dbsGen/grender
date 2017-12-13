@@ -8,7 +8,7 @@
 #include "Mesh.h"
 #include <render_define.h>
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(Cylinder, Mesh)
 
     public:

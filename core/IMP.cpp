@@ -26,7 +26,7 @@
 #include <core/math/Math.hpp>
 #include <sys/time.h>
 
-using namespace hicore;
+using namespace gcore;
 
 struct HObject::Scripts  {
     list<ScriptInstance*> scripts;
@@ -208,12 +208,15 @@ T trans_target2(void *target, const HClass *type) {
     }
     CHECK_TYPE(Char)
     else CHECK_TYPE(Short)
-        else CHECK_TYPE(Integer)
-            else CHECK_TYPE(Long)
-                else CHECK_TYPE(LongLong)
-                    else CHECK_TYPE(Float)
-                        else CHECK_TYPE(Double)
-        
+    else CHECK_TYPE(Integer)
+    else CHECK_TYPE(Long)
+    else CHECK_TYPE(LongLong)
+    else CHECK_TYPE(Float)
+    else CHECK_TYPE(Double)
+    else CHECK_TYPE(Boolean)
+
+#undef CHECK_TYPE
+
     return (T)(long)target;
 }
 
@@ -360,6 +363,11 @@ Variant::Variant(double n) : Variant() {
     const HClass *cls = Double::getClass();
     retain(&v, cls);
 }
+Variant::Variant(bool n) : Variant()  {
+    Boolean v(n);
+    const HClass *cls = Boolean::getClass();
+    retain(&v, cls);
+}
 
 Variant::Variant(const HObject *obj) : Variant() {
     if (obj) {
@@ -385,6 +393,9 @@ Variant::operator bool() const {
         if (isRef()) {
             return *(Reference*)mem;
         }else {
+            if (type->isTypeOf(Boolean::getClass())) {
+                return *get<Boolean>();
+            }
             if (type->isTypeOf(Integer::getClass())) {
                 return (bool) (int)*get<Integer>();
             }else if (type->isTypeOf(Long::getClass())){
@@ -551,7 +562,7 @@ Reference& Reference::operator=(HObject *p) {
 //    }
 //}
 
-namespace hicore {
+namespace gcore {
     const StringName HMethodInitialer("initialize");
 }
 
@@ -682,7 +693,7 @@ HClass::HClass(const char *ns, const char *name) : HClass() {
     fullname = new StringName(ns ? (string(ns) + "::" + name).c_str() : name);
 }
 
-void Reference::call(const StringName &name, hicore::Variant *result, const hicore::Variant **params, int count) {
+void Reference::call(const StringName &name, Variant *result, const Variant **params, int count) {
     if (ptr) {
         ptr->call(name, result, params, count);
     }
@@ -791,7 +802,7 @@ int getName(const char *str, uint32_t h, const char **res = NULL) {
 //    return make_key(h, getIndex(chs, h));
 //}
 
-void *hicore::h(const char *chs) {
+void *gcore::h(const char *chs) {
     uint32_t h = bkdrHash(chs);
     const char *ret;
     getName(chs, h, &ret);
@@ -882,6 +893,7 @@ BASE_CLASS_IMPLEMENT(Long)
 BASE_CLASS_IMPLEMENT(LongLong)
 BASE_CLASS_IMPLEMENT(Float)
 BASE_CLASS_IMPLEMENT(Double)
+BASE_CLASS_IMPLEMENT(Boolean)
 
 
 BASE_CLASS_IMPLEMENT(Pointer)

@@ -8,9 +8,9 @@
 #include <core/Variant.h>
 #include <core/Reference.h>
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hiscript {
+namespace gscript {
 
     template <typename T, typename>
     struct _variant_helper {

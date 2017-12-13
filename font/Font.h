@@ -16,9 +16,9 @@
 #include "../render_define.h"
 
 using namespace std;
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_0_NV(Font)
 
     protected:

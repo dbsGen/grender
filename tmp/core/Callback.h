@@ -16,7 +16,7 @@
 #include "MethodImp.h"
 #include "core_define.h"
 
-namespace hicore {
+namespace gcore {
     
     CLASS_BEGIN_N(Callback, RefObject)
     

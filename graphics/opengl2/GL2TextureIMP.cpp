@@ -41,37 +41,37 @@ GLuint GL2TextureIMP::getID() {
 
 void GL2TextureIMP::resetChannel() {
     switch (getTarget()->getChannel()) {
-        case hirender::Texture::DEFAULT:
-        case hirender::Texture::RGBA: {
+        case Texture::DEFAULT:
+        case Texture::RGBA: {
             gl_format = gl_internal_formal = GL_RGBA;
             pixel_size = 4;
         }
             break;
 #ifndef __ANDROID_API__
-        case hirender::Texture::BGRA: {
+        case Texture::BGRA: {
             gl_format = GL_BGRA;
             gl_internal_formal = GL_RGBA;
             pixel_size = 4;
         }
             break;
 #endif
-        case hirender::Texture::RGB: {
+        case Texture::RGB: {
             gl_format = GL_RGB;
             gl_internal_formal = GL_RGB;
             pixel_size = 3;
         }
             break;
-        case hirender::Texture::ALPHA: {
+        case Texture::ALPHA: {
             gl_format = gl_internal_formal = GL_ALPHA;
             pixel_size = 1;
         }
             break;
-        case hirender::Texture::LUMINANCE_ALPHA: {
+        case Texture::LUMINANCE_ALPHA: {
             gl_format = gl_internal_formal = GL_LUMINANCE_ALPHA;
             pixel_size = 2;
         }
             break;
-        case hirender::Texture::LUMINANCE: {
+        case Texture::LUMINANCE: {
             gl_format = gl_internal_formal = GL_LUMINANCE;
             pixel_size = 1;
         }
@@ -84,7 +84,7 @@ void GL2TextureIMP::resetChannel() {
     }
 }
 
-void GL2TextureIMP::_setTarget(hirender::Texture *tar) {
+void GL2TextureIMP::_setTarget(Texture *tar) {
     TextureIMP::_setTarget(tar);
     resetChannel();
 }
@@ -158,7 +158,7 @@ void GL2TextureIMP::render(unsigned int offx,
                            unsigned int width,
                            unsigned int height,
                            const void *buffer) {
-    if (hirender::Renderer::currentThread() == Renderer::MainThread) {
+    if (Renderer::currentThread() == Renderer::MainThread) {
         render_struct rs;
         rs.offx = offx;
         rs.offy = offy;

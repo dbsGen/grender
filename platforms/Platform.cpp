@@ -8,7 +8,7 @@
 
 #include "Platform.h"
 
-using namespace hirender;
+using namespace gr;
 
 Platform *Platform::shared_platform(NULL);
 
@@ -22,7 +22,7 @@ Platform::~Platform() {
     }
 }
 
-void Platform::reg(hirender::Platform *platform) {
+void Platform::reg(Platform *platform) {
     shared_platform = platform;
 }
 

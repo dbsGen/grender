@@ -4,8 +4,8 @@
 
 #include "ModelLoader.h"
 
-using namespace hirender;
-using namespace hicore;
+using namespace gr;
+using namespace gcore;
 
 typedef uint8_t ModelType;
 

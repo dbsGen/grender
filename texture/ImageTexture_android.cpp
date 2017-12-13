@@ -9,7 +9,7 @@
 #include <thirdparties/png/png.h>
 #include <thirdparties/jpeg/jpeglib.h>
 
-using namespace hirender;
+using namespace gr;
 
 #define PNG_BYTES_TO_CHECK 4
 

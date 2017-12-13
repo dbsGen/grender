@@ -9,7 +9,7 @@
 #include "ShadowView.h"
 #include <texture/ColorTexture.h>
 
-using namespace hirender;
+using namespace gr;
 
 const StringName ShadowView::ATTR_BLUR("A_BORDER_WIDTH");
 const StringName ShadowView::ATTR_CORNER("A_CORNER");

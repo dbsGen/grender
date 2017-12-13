@@ -12,7 +12,7 @@
 #include "../../render_define.h"
 
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(TexturePacker, RefObject)
 
         Ref<Material>   material;

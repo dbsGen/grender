@@ -12,7 +12,7 @@
 #include "Object.h"
 
 using namespace std;
-namespace hicore {
+namespace gcore {
     template <class T>
     CLASS_BEGIN_NV(Singleton, HObject)
     private:

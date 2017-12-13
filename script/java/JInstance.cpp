@@ -8,7 +8,7 @@
 #include "JInstance.h"
 #include "JScript.h"
 
-using namespace hiscript;
+using namespace gscript;
 
 jmethodID JInstance::apply_method = NULL;
 jclass JInstance::object_class = NULL;

@@ -10,7 +10,7 @@
 #include "Label.h"
 #include "../../render_define.h"
 
-namespace hirender {
+namespace gr {
     
     CLASS_BEGIN_0_N(ButtonEvent)
     int         status;

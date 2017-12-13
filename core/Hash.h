@@ -12,7 +12,7 @@
 #include <string>
 #include "Define.h"
 
-namespace hicore {
+namespace gcore {
 //    _FORCE_INLINE_ uint64_t make_key(uint32_t hash, int32_t index) {
 //        return (((uint64_t)hash & b32_mask) << 32)|((uint64_t)(index&b32_mask));
 //    }

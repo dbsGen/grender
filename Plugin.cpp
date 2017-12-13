@@ -4,7 +4,7 @@
 
 #include "Plugin.h"
 
-using namespace hirender;
+using namespace gr;
 
 const StringName &Plugin::getName() {
     if (name.empty()) {

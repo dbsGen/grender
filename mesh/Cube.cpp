@@ -8,7 +8,7 @@
 
 #include "Cube.h"
 
-using namespace hirender;
+using namespace gr;
 
 Cube::Cube() {
     size.x(1);

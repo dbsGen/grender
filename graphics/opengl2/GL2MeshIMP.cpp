@@ -45,7 +45,7 @@ break;\
 }
 
 using namespace higraphics;
-using namespace hirender;
+using namespace gr;
 
 AttrVector *GL2MeshIMP::newAttribute() {
     return new GL2AttrVector;

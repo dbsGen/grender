@@ -14,10 +14,10 @@
 #include <core/math/Math.hpp>
 #include "../../render_define.h"
 
-using namespace hirender;
-using namespace hicore;
+using namespace gr;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(CharacterObject, View)
 
     private:
@@ -68,7 +68,7 @@ Ref<CharacterMesh> CharacterObject::getCharacterMesh(const CharacterObject *obje
     return object->getMesh();
 }
 
-void CharacterObject::setCharacter(const Ref<hirender::Character> &ch) {
+void CharacterObject::setCharacter(const Ref<Character> &ch) {
     const Ref<CharacterMesh> &mesh = getCharacterMesh(this);
     if (mesh) {
         mesh->setCharacter(ch);
@@ -146,7 +146,7 @@ void Label::prevFrame() {
     }
 }
 
-void Label::awake(hirender::Renderer *renderer) {
+void Label::awake(Renderer *renderer) {
     if (changed) {
         refresh();
     }
@@ -193,7 +193,7 @@ const HColor &Label::getColor() {
     return color;
 }
 
-void Label::setFont(const Ref<hirender::Font> &font) {
+void Label::setFont(const Ref<Font> &font) {
     this->font = font;
     if (point_size == 0) {
         point_size = font->getSize();
@@ -300,7 +300,7 @@ void Label::refresh() {
         text_size.y(height);
 
         for (auto it = lines.begin(), _e = lines.end(); it != _e; ++it) {
-            LineInfo* chars = (hirender::LineInfo*)*it;
+            LineInfo* chars = (LineInfo*)*it;
             makeLine(chars->chars, chars->width, height);
             delete chars->chars;
             delete chars;

@@ -13,7 +13,7 @@
 
 #include "Tween.h"
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_NV(TweenPProperty, TweenProperty)
 
         Variant from, to;
@@ -59,7 +59,7 @@ namespace hirender {
             this->to = to;
             this->setter = setter;
             this->getter = getter;
-            V (*lm)(const V &from, const V &to, float p) = hicore::lerp;
+            V (*lm)(const V &from, const V &to, float p) = gcore::lerp;
             lerp = lm;
         }
         TweenSProperty(SETTER setter, GETTER getter, V from, V to) {
@@ -68,7 +68,7 @@ namespace hirender {
             this->to = to;
             this->setter = setter;
             this->getter = getter;
-            V (*lm)(const V &from, const V &to, float p) = hicore::lerp;
+            V (*lm)(const V &from, const V &to, float p) = gcore::lerp;
             lerp = lm;
         }
         TweenSProperty(SETTER setter, GETTER getter, V from, V to, lerp_method lerp) {
@@ -111,7 +111,7 @@ namespace hirender {
             this->to = to;
             this->setter = setter;
             this->getter = getter;
-            V (*lm)(const V &from, const V &to, float p) = hicore::lerp;
+            V (*lm)(const V &from, const V &to, float p) = gcore::lerp;
             lerp = lm;
         }
         TweenDynamicProperty(SETTER setter, GETTER getter, V from, TO_M to) {
@@ -120,7 +120,7 @@ namespace hirender {
             this->to = to;
             this->setter = setter;
             this->getter = getter;
-            V (*lm)(const V &from, const V &to, float p) = hicore::lerp;
+            V (*lm)(const V &from, const V &to, float p) = gcore::lerp;
             lerp = lm;
         }
         TweenDynamicProperty(SETTER setter, GETTER getter, V from, TO_M to, lerp_method lerp) {

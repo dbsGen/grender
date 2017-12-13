@@ -14,7 +14,7 @@
 struct FT_FaceRec_;
 typedef struct FT_FaceRec_*  FT_Face;
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(FTFont, Font)
 
         string path;

@@ -8,7 +8,7 @@
 
 #include "Model.h"
 
-using namespace hirender;
+using namespace gr;
 
 const ref_vector &Query::res() {
     if (changed) {

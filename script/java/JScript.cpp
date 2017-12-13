@@ -18,9 +18,9 @@
 #include <core/Map.h>
 #include <thread>
 
-#define HELPER_CLASS "com/hiar/render/HiRender"
+#define HELPER_CLASS "com/gr/Helper"
 
-using namespace hiscript;
+using namespace gscript;
 
 JScript *JScript::_instance = NULL;
 jclass JScript::helper_class = NULL;

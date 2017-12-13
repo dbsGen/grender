@@ -8,11 +8,11 @@
 
 #include "ShaderParser.h"
 
-using namespace hirender;
+using namespace gr;
 
 
-const hicore::StringName main_key("main");
-const hicore::StringName key_words[]{
+const gcore::StringName main_key("main");
+const gcore::StringName key_words[]{
         "include",
         "extend"
 };
@@ -1120,7 +1120,7 @@ void ShaderParser::ActionItem::clear() {
     argvs.clear();
 }
 
-int ShaderParser::OperatorItem::priorityLevel(hirender::ShaderParser::OperatorItem::OperatorType op_t) {
+int ShaderParser::OperatorItem::priorityLevel(ShaderParser::OperatorItem::OperatorType op_t) {
     switch (op_t) {
         case ShaderParser::OperatorItem::Equal:
         case ShaderParser::OperatorItem::PlusEqual:

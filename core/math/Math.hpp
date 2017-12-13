@@ -15,7 +15,7 @@
 
 using namespace std;
 
-namespace hicore {
+namespace gcore {
     inline unsigned int nextPowerOf2(unsigned int in) {
         in -= 1;
         

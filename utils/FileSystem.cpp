@@ -9,7 +9,7 @@
 #include <platforms/android/AssetData.h>
 #include "FileSystem.h"
 
-using namespace hirender;
+using namespace gr;
 
 void FileSystem::processDefaultConfig(const Ref<Data> &data) {
     if (configs.empty()) {

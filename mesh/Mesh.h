@@ -14,7 +14,7 @@
 
 using namespace std;
 
-namespace hirender {
+namespace gr {
     class Renderer;
     class MeshIMP;
     class Mesh;

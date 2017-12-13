@@ -15,7 +15,7 @@
 #include <utils/tween/Tween.h>
 #include "../../render_define.h"
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(NavControlItem, RefObject)
     
     Ref<View> main_icon;

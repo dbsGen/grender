@@ -11,9 +11,9 @@
 #include <sqlite3.h>
 #include <core/String.h>
 
-using namespace hirender;
+using namespace gr;
 
-void SQLQuery::insertAction(const string &name, const hicore::Variant &val, const char *action) {
+void SQLQuery::insertAction(const string &name, const Variant &val, const char *action) {
     sql_sentence.push_back(' ');
     sql_sentence += name;
     sql_sentence.push_back(' ');
@@ -210,7 +210,7 @@ void SQLite::processTable(Table *table) {
     queueExce(ss, NULL, NULL);
 }
 
-void SQLite::update(hicore::HObject *model, hirender::Table *table) {
+void SQLite::update(HObject *model, Table *table) {
     StringName id("identifier");
     int _id = 0;
     Field *id_field = (Field*)table->fields[id];

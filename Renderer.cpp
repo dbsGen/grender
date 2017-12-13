@@ -12,7 +12,7 @@
 #include "texture/ColorTexture.h"
 #include <script/java/JScript.h>
 
-using namespace hirender;
+using namespace gr;
 using namespace hiphysics;
 
 const StringName Renderer::NOTIFICATION_PREV_FRAME("NOTIFICATION_RENDER_PREV_FRAME");
@@ -24,7 +24,7 @@ const StringName Renderer::NOTIFICATION_HANDLE_EVENT("NOTIFICATION_RENDER_HANDLE
 float Renderer::screen_scale = 1.0;
 
 
-namespace hirender {
+namespace gr {
     struct WillDoItem {
         void *target;
         ActionItem action;
@@ -228,13 +228,13 @@ void Renderer::callRender() {
 
 void Renderer::fixedThreadStart(void *loop_thread, void *_, void *that) {
 #ifdef __ANDROID__
-    hiscript::JScript::registerThread();
+    gscript::JScript::registerThread();
 #endif
 }
 
 void Renderer::fixedThreadOver(void *loop_thread, void *_, void *that) {
 #ifdef __ANDROID__
-    hiscript::JScript::unregisterThread();
+    gscript::JScript::unregisterThread();
 #endif
 }
 

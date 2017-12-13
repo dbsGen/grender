@@ -14,7 +14,7 @@
 #include "XMLNode.h"
 #include "../../render_define.h"
 
-using namespace hicore;
+using namespace gcore;
 
 struct _xmlDoc;
 typedef struct _xmlDoc xmlDoc;
@@ -24,7 +24,7 @@ struct _xmlXPathContext;
 typedef struct _xmlXPathContext xmlXPathContext;
 typedef xmlXPathContext *xmlXPathContextPtr;
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(XMLDocument, RefObject)
     
 public:

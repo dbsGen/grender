@@ -11,9 +11,9 @@
 #include <core/String.h>
 
 using namespace higraphics;
-using namespace hicore;
+using namespace gcore;
 
-const hicore::StringName main_word("main");
+const StringName main_word("main");
 
 const char *GL2ShaderCompilerIMP::processVariantType(ShaderParser::AttributeItem *item) {
     if (item->var_type == ShaderParser::Sampler) {
@@ -65,7 +65,7 @@ void GL2ShaderCompilerIMP::processAttributeItem(ShaderParser::AttributeItem *ite
         if (compile_argvs != nullptr) {
             auto it = compile_argvs->find(item->name);
             if (it != compile_argvs->end()) {
-                const hicore::Variant &var = it->second;
+                const gcore::Variant &var = it->second;
                 
                 switch (item->var_type) {
                     case ShaderParser::Vector2: {
@@ -329,7 +329,7 @@ void GL2ShaderCompilerIMP::processValue(ShaderParser::Item *item, string &shader
         case ShaderParser::Index:
         {
             ShaderParser::IndexItem *index_item = (ShaderParser::IndexItem*)item;
-            processValue(index_item->item, shader, ShaderParser::OperatorItem::priorityLevel(hirender::ShaderParser::OperatorItem::Dot));
+            processValue(index_item->item, shader, ShaderParser::OperatorItem::priorityLevel(ShaderParser::OperatorItem::Dot));
             shader += '[';
             processValue(index_item->index_item, shader);
             shader += ']';
@@ -345,22 +345,22 @@ void GL2ShaderCompilerIMP::processValue(ShaderParser::Item *item, string &shader
         {
             ShaderParser::OperatorValueItem *value_item = (ShaderParser::OperatorValueItem*)item;
             switch (value_item->operator_type) {
-                case hirender::ShaderParser::OperatorValueItem::Minus:
+                case ShaderParser::OperatorValueItem::Minus:
                 {
                     shader += '-';
                     break;
                 }
-                case hirender::ShaderParser::OperatorValueItem::MinusMinus:
+                case ShaderParser::OperatorValueItem::MinusMinus:
                 {
                     shader += "--";
                     break;
                 }
-                case hirender::ShaderParser::OperatorValueItem::PlusPlus:
+                case ShaderParser::OperatorValueItem::PlusPlus:
                 {
                     shader += "++";
                     break;
                 }
-                case hirender::ShaderParser::OperatorValueItem::Not:
+                case ShaderParser::OperatorValueItem::Not:
                 {
                     shader += '!';
                     break;

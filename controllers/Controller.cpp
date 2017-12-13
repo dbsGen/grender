@@ -6,7 +6,7 @@
 #include "NavigationController.h"
 #include "../Renderer.h"
 
-using namespace hirender;
+using namespace gr;
 
 Controller::~Controller() {
 }

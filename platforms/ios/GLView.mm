@@ -165,7 +165,7 @@ assert(__gl_error_code == GL_NO_ERROR); \
     
     // Associate render buffer storage with CAEAGLLauyer so that the rendered content is display on our UI layer.
     [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
-    higraphics::GL2RendererIMP *rimp = ((hirender::Renderer*)_renderer)->getIMP()->cast_to<higraphics::GL2RendererIMP>();
+    higraphics::GL2RendererIMP *rimp = ((Renderer*)_renderer)->getIMP()->cast_to<higraphics::GL2RendererIMP>();
     if (rimp)
         rimp->setDefaultFrameBuffer(defaultFramebuffer);
     
@@ -379,7 +379,7 @@ assert(__gl_error_code == GL_NO_ERROR); \
     [super setFrame:frame];
     CGFloat scale = [UIScreen mainScreen].scale;
     if (_renderer)
-        ((hirender::Renderer*)_renderer)->setSize(HSize(frame.size.width*scale, frame.size.height*scale));
+        ((Renderer*)_renderer)->setSize(HSize(frame.size.width*scale, frame.size.height*scale));
     updateFramebuffer = YES;
     [self display];
 }

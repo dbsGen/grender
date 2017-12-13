@@ -11,7 +11,7 @@
 #include "../Pointer.h"
 #include "../core_define.h"
 
-namespace hicore {
+namespace gcore {
     class Script;
     class ScriptClass;
     

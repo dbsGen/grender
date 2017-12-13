@@ -11,7 +11,7 @@
 
 #define VIEW_LAYER_GAP 0.15f
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(ViewMaterial, Material)
 
     public:

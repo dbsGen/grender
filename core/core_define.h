@@ -5,4 +5,4 @@
 #undef __NAMESPACE__
 #endif
 
-#define __NAMESPACE__ "hicore"
+#define __NAMESPACE__ "gcore"

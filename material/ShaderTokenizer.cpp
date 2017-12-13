@@ -9,7 +9,7 @@
 #include "ShaderTokenizer.h"
 #include <core/StringName.h>
 
-using namespace hicore;
+using namespace gcore;
 
 #define isLatin(ch) ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') || ch == '_')
 
@@ -262,7 +262,7 @@ GLSCheckType get_shader_token(const char *sch, size_t *skip, int *index, const c
     return WRONG;
 }
 
-using namespace hirender;
+using namespace gr;
 
 void ShaderTokenizer::process(const char *shader) {
     const char *chs = shader;

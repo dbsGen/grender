@@ -11,9 +11,9 @@
 #include "Model.h"
 #include <utils/FileSystem.h>
 
-using namespace hirender;
+using namespace gr;
 
-namespace hirender {
+namespace gr {
     namespace db {
         Ref<Database> _shaderd_database;
     }

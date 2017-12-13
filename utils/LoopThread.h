@@ -13,9 +13,9 @@
 
 #include "../render_define.h"
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
 
     CLASS_BEGIN_0_N(LoopThread)
 

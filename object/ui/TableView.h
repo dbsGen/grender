@@ -8,7 +8,7 @@
 #include "ScrollView.h"
 #include <render_define.h>
 
-namespace hirender {
+namespace gr {
 
     class TableView;
 

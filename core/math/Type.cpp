@@ -4,7 +4,7 @@
 
 #include "Type.h"
 
-using namespace hicore;
+using namespace gcore;
 
 Vector2f Vector2f::_zero;
 

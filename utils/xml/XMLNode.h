@@ -13,13 +13,13 @@
 #include <core/Array.h>
 #include "../../render_define.h"
 
-using namespace hicore;
+using namespace gcore;
 
 struct _xmlNode;
 typedef struct _xmlNode xmlNode;
 typedef xmlNode *xmlNodePtr;
 
-namespace hirender {
+namespace gr {
     class XMLDocument;
     
     typedef int XMLType;

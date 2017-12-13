@@ -12,7 +12,7 @@
 #include "Texture.h"
 #include <render_define.h>
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(ProxyTexture, Texture)
 public:
     typedef const void * (*ProxyTextureReader)(uint &width, uint &height, void *data);

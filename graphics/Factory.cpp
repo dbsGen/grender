@@ -14,7 +14,7 @@
 #include "opengl2/GL2ShaderCompilerIMP.h"
 
 using namespace higraphics;
-using namespace hirender;
+using namespace gr;
 
 Factory::Factory() {
     api = GLES2;

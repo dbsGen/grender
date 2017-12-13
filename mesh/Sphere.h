@@ -10,7 +10,7 @@
 #include <render_define.h>
 
 
-namespace hirender{
+namespace gr{
     CLASS_BEGIN_N(Sphere, Mesh)
 public:
     enum UVType{

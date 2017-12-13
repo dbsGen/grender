@@ -14,9 +14,9 @@
 
 #include <render_define.h>
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     class Linker;
     class Renderer;
     class Camera;

@@ -15,7 +15,7 @@
 
 using namespace std;
 
-namespace hicore {
+namespace gcore {
     class HClass;
     class StringName;
 

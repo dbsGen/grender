@@ -12,7 +12,7 @@
 #include "Mesh.h"
 #include <render_define.h>
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(Cube, Mesh)
 private:
     Vector3f size;

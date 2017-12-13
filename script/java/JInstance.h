@@ -11,9 +11,9 @@
 #include "JScript.h"
 #include "../script_define.h"
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hiscript {
+namespace gscript {
     class JInstance : public ScriptInstance {
         static jmethodID apply_method;
         static jclass object_class;

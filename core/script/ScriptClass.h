@@ -11,7 +11,7 @@
 
 #include "../core_define.h"
 
-namespace hicore {
+namespace gcore {
     class HObject;
     class Script;
 

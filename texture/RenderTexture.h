@@ -15,7 +15,7 @@
 
 #include <render_define.h>
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(RenderTexture, Texture)
     
     bool resized;
@@ -34,8 +34,8 @@ public:
                texture_info.height = height;
                );
     ~RenderTexture();
-    
-    void setSize(const hicore::HSize &size);
+
+    void setSize(const HSize &size);
     
     CLASS_END
 }

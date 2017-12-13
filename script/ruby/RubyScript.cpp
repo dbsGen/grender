@@ -27,7 +27,7 @@
 
 #define SCRIPT ((RubyScript*)getScript())
 
-using namespace hiscript;
+using namespace gscript;
 
 mrb_sym sym_native_class;
 mrb_sym sym_native_instance;
@@ -401,7 +401,7 @@ RubyScript::~RubyScript() {
     mrb_close(mrb);
 }
 
-RubyClass *RubyScript::reg_class(struct RClass *rcls, const hicore::StringName &name) {
+RubyClass *RubyScript::reg_class(struct RClass *rcls, const StringName &name) {
     bool create;
     RubyClass *scls = (RubyClass*)find(name, create);
     if (create) {
@@ -414,7 +414,7 @@ RubyClass *RubyScript::reg_class(struct RClass *rcls, const hicore::StringName &
             StringName name(it->first);
             const HMethod *method = (const HMethod *)it->second;
             switch (method->getType()) {
-                case hicore::HMethod::Static:
+                case HMethod::Static:
                 {
                     mrb_define_class_method(mrb, rcls, name.str(), &ruby_call_class, MRB_ARGS_REQ(method->getParamsCount()));
                 }
@@ -506,12 +506,12 @@ ScriptClass *RubyScript::makeClass() const {
     return new RubyClass;
 }
 
-ScriptInstance *RubyScript::newBuff(const string &cls_name, hicore::HObject *target, const hicore::Variant **params, int count)const {
+ScriptInstance *RubyScript::newBuff(const string &cls_name, HObject *target, const Variant **params, int count)const {
     return newBuff(mrb_class_get(mrb, cls_name.c_str()), target, params, count);
 }
 
 
-RubyInstance *RubyScript::newBuff(struct RClass *scls, hicore::HObject *target, const hicore::Variant **params, int count) const {
+RubyInstance *RubyScript::newBuff(struct RClass *scls, HObject *target, const Variant **params, int count) const {
     mrb_value obj;
     if (count) {
         mrb_value *argv = (mrb_value*)malloc(sizeof(mrb_value) * count);
@@ -571,7 +571,7 @@ Variant RubyClass::apply(const StringName &name, const Variant **params, int cou
     return Variant::null();
 }
 
-Variant RubyInstance::apply(const StringName &name, const hicore::Variant **params, int count) {
+Variant RubyInstance::apply(const StringName &name, const Variant **params, int count) {
     mrb_state *mrb = ((RubyScript*)getScript())->getMRB();
     if (mrb->exc) mrb->exc = NULL;
     if (mrb_respond_to(mrb, mrb_obj_value(getScriptInstance()), mrb_intern_cstr(mrb, name.str()))) {

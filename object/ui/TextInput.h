@@ -8,7 +8,7 @@
 #include "Button.h"
 #include "../../render_define.h"
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(TextInput, View)
 
     private:

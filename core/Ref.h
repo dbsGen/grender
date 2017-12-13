@@ -11,7 +11,7 @@
 #include "Variant.h"
 #include "core_define.h"
 
-namespace hicore {
+namespace gcore {
 
     template<class T>
     class Ref;
@@ -55,7 +55,7 @@ namespace hicore {
         }
 
         _FORCE_INLINE_ T *operator*() {return static_cast<T*>(Reference::operator*());}
-        _FORCE_INLINE_ T *operator*() const {return (T*)Reference::operator*();}
+        _FORCE_INLINE_ T *operator*() const {return static_cast<T*>(const_cast<Ref*>(this)->Reference::operator*());}
         _FORCE_INLINE_ T *operator->() {
             return operator*();
         }

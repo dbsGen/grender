@@ -10,7 +10,7 @@
 #include "Ref.h"
 #include "core_define.h"
 
-namespace hicore {
+namespace gcore {
     CLASS_BEGIN_N(_String, RefObject)
     private:
         string content;

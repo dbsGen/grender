@@ -7,7 +7,7 @@
 #include <core/math/Math.hpp>
 #include <utils/tween/all.h>
 
-using namespace hirender;
+using namespace gr;
 
 ScrollView::ScrollView() : enable_horizontal(true),
                            enable_vertical(true) {
@@ -96,7 +96,7 @@ void ScrollView::setOffset(const Vector2f &offset)  {
     }
 }
 
-void ScrollView::setPadding(const hicore::Vector4f &padding) {
+void ScrollView::setPadding(const Vector4f &padding) {
     this->padding = padding;
     checkBorder();
 }

@@ -13,9 +13,9 @@
 #include <core/Data.h>
 #include <vector>
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     class ShaderCompiler;
     class ShaderContextItem;
     CLASS_BEGIN_N(ShaderContext, RefObject)

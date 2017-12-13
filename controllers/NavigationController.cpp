@@ -9,7 +9,7 @@
 #include <utils/input/TouchInput.h>
 
 
-using namespace hirender;
+using namespace gr;
 
 
 const Ref<Controller> &NavigationControllerItem::getCurrentController() {
@@ -25,7 +25,7 @@ NavigationControllerItem::~NavigationControllerItem() {
     }
 }
 
-void NavigationController::changeController(const Ref<hirender::Controller> &current_controller, const Ref<hirender::Controller> &controller, bool animate) {
+void NavigationController::changeController(const Ref<Controller> &current_controller, const Ref<Controller> &controller, bool animate) {
     controller->setParent(this);
     getMainObject()->add(controller->getMainObject());
     controller->willAppear();
@@ -149,7 +149,7 @@ void NavigationController::onUnload(const Ref<Object> &object) {
     nav_control = nullptr;
 }
 
-void NavigationController::onAttach(hirender::Renderer *renderer) {
+void NavigationController::onAttach(Renderer *renderer) {
     enableUICamera();
     getUICamera()->setCleanColor(HColor(1,1,1,1));
     const Ref<Plugin> &tp = renderer->plugin(TouchInput::getClass()->getFullname());
@@ -157,7 +157,7 @@ void NavigationController::onAttach(hirender::Renderer *renderer) {
     touch->addCamera(getUICamera());
 }
 
-void NavigationController::onDisattach(hirender::Renderer *renderer) {
+void NavigationController::onDisattach(Renderer *renderer) {
     const Ref<Plugin> &tp = renderer->plugin(TouchInput::getClass()->getFullname());
     TouchInput *touch = (*tp)->cast_to<TouchInput>();
     touch->clear();

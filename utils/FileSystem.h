@@ -12,9 +12,9 @@
 #include "../core/Singleton.h"
 #include "../core/Data.h"
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_TNV(FileSystem, Singleton, 1, FileSystem)
     
     string resource_path;

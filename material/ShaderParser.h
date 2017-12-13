@@ -15,7 +15,7 @@
 #include "ShaderTokenizer.h"
 #include "../render_define.h"
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_0_N(ShaderParser)
 
     public:
@@ -88,9 +88,9 @@ namespace hirender {
             AttributeType   attr_type;
             VariantType     var_type;
             Prefix          prefix;
-            hicore::StringName name;
+            gcore::StringName name;
             Item            *def_value;
-            hicore::StringName  var_string;
+            gcore::StringName  var_string;
 
             _FORCE_INLINE_ AttributeItem() : prefix(None), def_value(NULL) {
                 type = ItemType::Attribute;attr_type=Normal;
@@ -144,10 +144,10 @@ namespace hirender {
         };
     
         struct WordItem : public Item {
-            hicore::StringName value;
+            gcore::StringName value;
         
             _FORCE_INLINE_ WordItem() {type = Word;}
-            _FORCE_INLINE_ WordItem(const hicore::StringName &value) : WordItem() {this->value = value;}
+            _FORCE_INLINE_ WordItem(const gcore::StringName &value) : WordItem() {this->value = value;}
             _FORCE_INLINE_ ~WordItem() {}
         };
     
@@ -218,7 +218,7 @@ namespace hirender {
             //AttributeItem*
             pointer_vector argvs;
             BlockItem *block;
-            hicore::StringName name;
+            gcore::StringName name;
             
             void clear();
             _FORCE_INLINE_ FunctionItem() : block(NULL), ret_type(Void) {
@@ -241,7 +241,7 @@ namespace hirender {
         };
 
         struct CallItem : public Item {
-            hicore::StringName name;
+            gcore::StringName name;
             pointer_vector  argvs;
         
             void clear();

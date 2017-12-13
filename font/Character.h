@@ -15,9 +15,9 @@
 #include <core/math/Type.h>
 #include "../render_define.h"
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
 
     class Font;
 

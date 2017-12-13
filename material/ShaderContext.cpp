@@ -9,9 +9,9 @@
 #include "ShaderContext.h"
 #include "ShaderCompiler.h"
 
-using namespace hirender;
+using namespace gr;
 
-namespace hirender {
+namespace gr {
     class ShaderContextItem {
         StringName name;
         Ref<Data> data;
@@ -54,7 +54,7 @@ ShaderContext::~ShaderContext() {
     }
 }
 
-ShaderContextItem *ShaderContext::findItem(const hicore::StringName &name) {
+ShaderContextItem *ShaderContext::findItem(const StringName &name) {
     auto it = items.find(name);
     ShaderContextItem *item = nullptr;
     if (it != items.end()) {
@@ -75,7 +75,7 @@ ShaderContextItem *ShaderContext::findItem(const hicore::StringName &name) {
     return item;
 }
 
-void ShaderContext::_parse(hirender::ShaderContextItem *item, hirender::ShaderContext::Result &result) {
+void ShaderContext::_parse(ShaderContextItem *item, ShaderContext::Result &result) {
     
     item->prepare();
     ShaderParser *parser = item->getParser();
@@ -124,8 +124,8 @@ void ShaderContext::_parse(hirender::ShaderContextItem *item, hirender::ShaderCo
     }
 }
 
-void ShaderContext::_compile(hirender::ShaderCompiler &compiler,
-                             hirender::ShaderContextItem *item,
+void ShaderContext::_compile(ShaderCompiler &compiler,
+                             ShaderContextItem *item,
                              const variant_map &compile_argvs,
                              string &shader,
                              bool is_function) {
@@ -170,7 +170,7 @@ void ShaderContext::_compile(hirender::ShaderCompiler &compiler,
     compiler.compile(is_function ? parser->getFunctions() : parser->getAttributes(), compile_argvs, shader);
 }
 
-void ShaderContext::addData(const hicore::StringName &name, const Ref<hicore::Data> &data, bool replase) {
+void ShaderContext::addData(const StringName &name, const Ref<Data> &data, bool replase) {
     auto it = items.find(name);
     if (it != items.end()) {
         if (replase) {

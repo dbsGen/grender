@@ -8,7 +8,7 @@
 
 #include "Panel.h"
 
-using namespace hirender;
+using namespace gr;
 
 Panel::Panel() : Mesh(), anchor(0.5,0.5) {
     size.x(1);

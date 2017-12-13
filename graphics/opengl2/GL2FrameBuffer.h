@@ -12,7 +12,7 @@
 #include <core/Object.h>
 #include "include_opengl2.h"
 
-using namespace hicore;
+using namespace gcore;
 
 namespace higraphics {
     CLASS_BEGIN_0_N(GL2FrameBuffer)

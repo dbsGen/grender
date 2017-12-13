@@ -7,7 +7,7 @@
 #include "utils/NotificationCenter.h"
 #include <core/math/Math.hpp>
 
-using namespace hirender;
+using namespace gr;
 
 const StringName TweenManager::NOTIFICATION_KEY("TweenManager_FrameStep");
 

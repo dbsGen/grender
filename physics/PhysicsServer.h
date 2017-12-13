@@ -13,8 +13,8 @@
 #include "Ray.h"
 #include "physics_define.h"
 
-using namespace hicore;
-using namespace hirender;
+using namespace gcore;
+using namespace gr;
 
 namespace hiphysics {
     class PhysicsServer;

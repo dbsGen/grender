@@ -10,7 +10,7 @@
 #include <IMP.h>
 #include "../render_define.h"
 
-namespace hirender {
+namespace gr {
     class ShaderCompilerIMP;
     class ShaderContext;
     CLASS_BEGIN_0_N(ShaderCompiler)
@@ -21,8 +21,8 @@ namespace hirender {
     ShaderContext *context;
     
 public:
-    void setMainName(const hicore::StringName &name);
-    const hicore::StringName &getMainName();
+    void setMainName(const gcore::StringName &name);
+    const gcore::StringName &getMainName();
     
     void compile(const pointer_vector &items, const variant_map &compile_argvs, string &shader);
     
@@ -34,7 +34,7 @@ public:
     CLASS_BEGIN_TNV(ShaderCompilerIMP, Imp, 1, ShaderCompiler)
     
 protected:
-    hicore::StringName main_name;
+        gcore::StringName main_name;
     
     virtual void compile(const pointer_vector &items, const variant_map &compile_argvs, string &shader) = 0;
     

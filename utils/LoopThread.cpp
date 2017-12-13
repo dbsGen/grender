@@ -4,7 +4,7 @@
 
 #include "LoopThread.h"
 
-using namespace hirender;
+using namespace gr;
 
 LoopThread::LoopThread(ActionCallback callback, void *data) : w(true),
                                                               i(callback, data),

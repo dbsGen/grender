@@ -14,7 +14,7 @@
 #include "Object.h"
 #include "core_define.h"
 
-namespace hicore {
+namespace gcore {
     
 #define NUMBER_BASE(T, CT) BASE_FINAL_CLASS_DEFINE \
     CT(){} \
@@ -28,6 +28,7 @@ namespace hicore {
     _FORCE_INLINE_ virtual operator long long() const {return (long long)v;} \
     _FORCE_INLINE_ virtual operator float() const {return (float)v;} \
     _FORCE_INLINE_ virtual operator double() const {return (double)v;} \
+    _FORCE_INLINE_ virtual operator bool() const {return (bool)v;} \
     _FORCE_INLINE_ CT &operator+=(int _v) { \
         v += _v; \
         return *this; \
@@ -67,6 +68,7 @@ namespace hicore {
         _FORCE_INLINE_ operator long long() const {return (long long)v;}
         _FORCE_INLINE_ operator float() const {return (float)v;}
         _FORCE_INLINE_ operator double() const {return (double)v;}
+        _FORCE_INLINE_ operator bool () const {return (bool)v;}
         _FORCE_INLINE_ CT &operator+=(int _v) {
             v += _v;
             return *this;
@@ -200,6 +202,17 @@ namespace hicore {
         }
     };
 
+    class Boolean : public FixType<bool, Boolean> {
+    BASE_FINAL_CLASS_DEFINE
+
+    public:
+        _FORCE_INLINE_ Boolean():FixType(0){}
+        _FORCE_INLINE_ Boolean(double d) : FixType(d){}
+
+        _FORCE_INLINE_ string str() const {
+            return (bool)(*this) ? "true" : "false";
+        }
+    };
 }
 
 #endif //HICORE_INTEGER_H

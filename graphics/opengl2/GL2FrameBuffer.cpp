@@ -43,7 +43,7 @@ void GL2FrameBuffer::prepare() {
             if (!binded) {
                 GL2TextureIMP *gl_tex = target->cast_to<GL2TextureIMP>();
                 if (gl_tex) {
-                    hirender::Texture *tex = gl_tex->getTarget();
+                    Texture *tex = gl_tex->getTarget();
                     uint16_t width = tex->getWidth();
                     uint16_t height = tex->getHeight();
                     

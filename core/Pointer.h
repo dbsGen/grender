@@ -12,7 +12,7 @@
 #include "Object.h"
 #include "core_define.h"
 
-namespace hicore {
+namespace gcore {
     
     class Pointer {
         BASE_FINAL_CLASS_DEFINE

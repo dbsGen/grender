@@ -11,7 +11,7 @@
 
 #define EVENT_INCREASE 5
 
-using namespace hirender;
+using namespace gr;
 
 TouchInput::TouchInput() {
 }
@@ -26,7 +26,7 @@ TouchInput::Event *TouchInput::begin(int count) {
     return ei->events;
 }
 
-void TouchInput::commit(hirender::TouchInput::Phase phase) {
+void TouchInput::commit(TouchInput::Phase phase) {
     if (current_item) {
         EventsItem *ei = (EventsItem*)current_item;
         ei->phase = phase;

@@ -9,7 +9,7 @@
 #include <physics/Ray.h>
 #include "../render_define.h"
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(Camera, Object)
 
     public:

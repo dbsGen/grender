@@ -12,7 +12,7 @@
 #include <core/Object.h>
 #include "../../render_define.h"
 
-namespace hirender {
+namespace gr {
     class Query;
     class Table;
     class Database;

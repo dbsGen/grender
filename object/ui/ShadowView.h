@@ -11,7 +11,7 @@
 
 #include "View.h"
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN(ShadowView, View)
     
     static Ref<Material> shadow_material;

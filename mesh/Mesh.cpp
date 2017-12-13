@@ -37,7 +37,7 @@ default:\
 break;\
 }
 
-using namespace hirender;
+using namespace gr;
 using namespace higraphics;
 
 
@@ -191,7 +191,7 @@ void Mesh::setColor(const HColor &color, const StringName &name) {
     }
 }
 
-HColor Mesh::getColor(const hicore::StringName &name) {
+HColor Mesh::getColor(const StringName &name) {
     AttrVector *ca = getAttribute(name);
     if (ca) {
         return ca->getVector4f(0);
@@ -262,7 +262,7 @@ void Mesh::commit(const vector<int> &indexes) {
     attr->copyBuffer(indexes.data(), indexes.size() * sizeof(int));
 }
 
-void Mesh::_copy(const hicore::HObject *other) {
+void Mesh::_copy(const HObject *other) {
     const Mesh *om = (const Mesh*)other;
     vertex_name = om->vertex_name;
     vertex_length = om->vertex_length;
@@ -277,7 +277,7 @@ void Mesh::_copy(const hicore::HObject *other) {
     }
 }
 
-void Mesh::setVertexName(const hicore::StringName &name) {
+void Mesh::setVertexName(const StringName &name) {
     if (setuped) {
         LOG(e, "Can not set vertex name after commit.");
         return;

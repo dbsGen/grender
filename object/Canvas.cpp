@@ -9,7 +9,7 @@
 #include "Canvas.h"
 #include "Camera.h"
 
-using namespace hirender;
+using namespace gr;
 
 Canvas::Canvas() {
     texture = new RenderTexture;
@@ -18,7 +18,7 @@ Canvas::Canvas() {
     setSingle(true);
 }
 
-void Canvas::willRender(hirender::Camera *camera) {
+void Canvas::willRender(gr::Camera *camera) {
     auto it = change_flags.find(camera);
     bool changed = it == change_flags.end() || it->second;
     if (changed) {
@@ -41,13 +41,13 @@ void Canvas::onPoseChanged() {
     vertexChanged();
 }
 
-void Canvas::setMesh(const Ref<hirender::Mesh> &mesh) {
+void Canvas::setMesh(const Ref<gr::Mesh> &mesh) {
     processMesh(mesh);
     Object::setMesh(mesh);
     vertexChanged();
 }
 
-void Canvas::processMesh(const Ref<hirender::Mesh> &mesh) {
+void Canvas::processMesh(const Ref<gr::Mesh> &mesh) {
     const Ref<Mesh> &old_mesh = getMesh();
     if (old_mesh) {
         AttrVector *varr = old_mesh->getAttribute(old_mesh->getVertexName());

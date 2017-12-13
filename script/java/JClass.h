@@ -10,9 +10,9 @@
 #include <jni.h>
 #include "../script_define.h"
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hiscript {
+namespace gscript {
     class JScript;
 
     class JClass : public ScriptClass {

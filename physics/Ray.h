@@ -13,7 +13,7 @@
 #include <object/Object.h>
 #include "physics_define.h"
 
-using namespace hirender;
+using namespace gr;
 
 namespace hiphysics {
 

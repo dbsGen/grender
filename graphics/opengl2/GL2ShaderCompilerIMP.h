@@ -11,7 +11,7 @@
 
 #include <material/ShaderCompiler.h>
 #include "../graphics_define.h"
-using namespace hirender;
+using namespace gr;
 
 
 namespace higraphics {

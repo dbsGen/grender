@@ -10,9 +10,9 @@
 #include <render_define.h>
 #include <queue>
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     class Tween;
 
     CLASS_BEGIN_N(NavigationController, Controller)

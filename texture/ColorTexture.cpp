@@ -8,4 +8,4 @@
 
 #include "ColorTexture.h"
 
-using namespace hirender;
+using namespace gr;

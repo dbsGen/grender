@@ -9,9 +9,9 @@
 
 #include <jni.h>
 #include <core/FixType.h>
-#include <src/main/cpp/hirender/core/Ref.h>
+#include <core/Ref.h>
 
-using namespace hiscript;
+using namespace gscript;
 
 ScriptInstance *JClass::makeInstance() const {
     return new JInstance;

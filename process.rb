@@ -499,10 +499,10 @@ end
 LOAD_CLASSES_TEMPLATE = %q[
 {{header}}
 
-using namespace hicore;
+using namespace gcore;
 
 void ClassDB::loadClasses() {
-    class_loaders[h("hicore::HObject")] = (void*)&HObject::getClass;
+    class_loaders[h("gcore::HObject")] = (void*)&HObject::getClass;
 {{loaders}}
 }
 ]

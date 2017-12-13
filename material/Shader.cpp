@@ -6,10 +6,10 @@
 #include <graphics/Factory.h>
 #include "ShaderParser.h"
 
-using namespace hirender;
+using namespace gr;
 using namespace higraphics;
 
-namespace hirender {
+namespace gr {
     typedef int VariantType;
     static const VariantType VARIANT_IDX = 16;
     _FORCE_INLINE_ void setVariantCount(VariantType &type, int count) {
@@ -181,7 +181,7 @@ const Shader::Property *Shader::uniform(Type type, int index) const {
     return NULL;
 }
 
-const Shader::Property *Shader::compileProperty(const hicore::StringName &name) const {
+const Shader::Property *Shader::compileProperty(const gcore::StringName &name) const {
     auto ite = compiles_index.find(name);
     if (ite != compiles_index.end()) return (const Property *)compiles[(long)(*ite).second];
     return NULL;
@@ -252,7 +252,7 @@ void Shader::clear() {
     uniforms_index.clear();
 }
 
-void Shader::addAttribute(const hirender::Shader::Property &property) {
+void Shader::addAttribute(const Shader::Property &property) {
     auto it = attributes_index.find(property.name);
     if (it == attributes_index.end()) {
         attributes_index[property.name] = (void*)attributes.size();
@@ -260,7 +260,7 @@ void Shader::addAttribute(const hirender::Shader::Property &property) {
     }
 }
 
-void Shader::addUniform(const hirender::Shader::Property &property) {
+void Shader::addUniform(const Shader::Property &property) {
     auto it = uniforms_index.find(property.name);
     if (it == uniforms_index.end()) {
         uniforms_index[property.name] = (void*)uniforms.size();
@@ -268,7 +268,7 @@ void Shader::addUniform(const hirender::Shader::Property &property) {
     }
 }
 
-void Shader::addCompile(const hirender::Shader::Property &property) {
+void Shader::addCompile(const Shader::Property &property) {
     auto it = compiles_index.find(property.name);
     if (it == compiles_index.end()) {
         compiles_index[property.name] = (void*)compiles.size();

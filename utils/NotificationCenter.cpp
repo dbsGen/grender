@@ -6,7 +6,7 @@
 #include <Renderer.h>
 #include "NotificationCenter.h"
 
-using namespace hirender;
+using namespace gr;
 
 void NotificationCenter::listen(const StringName &name,
                                 ActionCallback function,
@@ -23,7 +23,7 @@ void NotificationCenter::listen(const StringName &name,
     mtx.unlock();
 }
 
-void NotificationCenter::listen(const hicore::StringName &name, const RefCallback &callback) {
+void NotificationCenter::listen(const StringName &name, const RefCallback &callback) {
     mtx.lock();
     NotificationItem *item = new NotificationItem(callback);
     auto items = listeners.find(name);
@@ -72,7 +72,7 @@ void NotificationCenter::remove(const StringName &name,
     mtx.unlock();
 }
 
-void NotificationCenter::remove(const hicore::StringName &name, const RefCallback &callback) {
+void NotificationCenter::remove(const StringName &name, const RefCallback &callback) {
     mtx.lock();
     auto items = listeners.find(name);
     if (items != listeners.end()) {

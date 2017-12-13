@@ -24,7 +24,7 @@
 
 using namespace std;
 
-namespace hirender {
+namespace gr {
     class RendererIMP;
 
     CLASS_BEGIN_N(Renderer, RefObject)

@@ -6,7 +6,7 @@
 
 #define STEP_N 80
 
-using namespace hirender;
+using namespace gr;
 
 Cylinder::Cylinder() : Mesh(),r(1),h(0.1) {
     createVertexes();

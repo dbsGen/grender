@@ -9,15 +9,15 @@
 #include <core/Callback.h>
 #include "ScriptTransport.h"
 
-using namespace hiscript;
+using namespace gscript;
 
 ref_map ScriptTransport::callbacks;
 
-void ScriptTransport::reg(const hicore::StringName &name, const hicore::Reference &callback) {
+void ScriptTransport::reg(const StringName &name, const Reference &callback) {
     callbacks[name] = callback;
 }
 
-void ScriptTransport::send(const hicore::StringName &name, const hicore::Reference &object) {
+void ScriptTransport::send(const StringName &name, const Reference &object) {
     auto it = callbacks.find(name);
     if (it != callbacks.end()) {
         Callback *callback = (*it->second)->cast_to<Callback>();

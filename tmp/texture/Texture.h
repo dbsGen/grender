@@ -9,9 +9,9 @@
 #include <core/Action.h>
 #include <render_define.h>
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     class TextureIMP;
     class Linker;
 

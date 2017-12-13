@@ -9,21 +9,21 @@
 #include <script/java/JClass.h>
 #include <script/java/JInstance.h>
 
-using namespace hicore;
+using namespace gcore;
 
 void ClassDB::loadClasses() {
 #ifdef USING_SCRIPT
-    class_loaders[h("hirender::HTTPClient")] = (void*)&hirender::HTTPClient::getClass;
-    class_loaders[h("hicore::Callback")] = (void*)&hicore::Callback::getClass;
-    class_loaders[h("hirender::XMLDocument")] = (void*)&hirender::XMLDocument::getClass;
-    class_loaders[h("hirender::XMLNode")] = (void*)&hirender::XMLNode::getClass;
-    class_loaders[h("hicore::FileData")] = (void*)&hicore::FileData::getClass;
-    class_loaders[h("hirender::NotificationCenter")] = (void*)&hirender::NotificationCenter::getClass;
+    class_loaders[h("gr::HTTPClient")] = (void*)&gr::HTTPClient::getClass;
+    class_loaders[h("gcore::Callback")] = (void*)&gcore::Callback::getClass;
+    class_loaders[h("gr::XMLDocument")] = (void*)&gr::XMLDocument::getClass;
+    class_loaders[h("gr::XMLNode")] = (void*)&gr::XMLNode::getClass;
+    class_loaders[h("gcore::FileData")] = (void*)&gcore::FileData::getClass;
+    class_loaders[h("gr::NotificationCenter")] = (void*)&gr::NotificationCenter::getClass;
 
 #ifdef __ANDROID__
-    void *load_jscript = (void*)&hiscript::JScript::instance;
-    class_loaders[h("hiscript::JClass")] = (void*)&hiscript::JClass::getClass;
-    class_loaders[h("hiscript::JInstance")] = (void*)&hiscript::JInstance::getClass;
+    void *load_jscript = (void*)&gscript::JScript::instance;
+    class_loaders[h("gscript::JClass")] = (void*)&gscript::JClass::getClass;
+    class_loaders[h("gscript::JInstance")] = (void*)&gscript::JInstance::getClass;
 #endif
     
 #endif

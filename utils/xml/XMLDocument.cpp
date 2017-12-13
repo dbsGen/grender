@@ -10,7 +10,7 @@
 #include <libxml/xpath.h>
 #include <libxml/HTMLtree.h>
 
-using namespace hirender;
+using namespace gr;
 
 void XMLDocument::initialize(const Ref<Data> &data, DocumentType type) {
     switch (type) {

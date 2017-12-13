@@ -124,7 +124,7 @@ bool PhysicsServer::castObject(const Ray &ray, const Ref<Object> &object, Result
     }
 }
 
-void PhysicsServer::add(hirender::Object *object) {
+void PhysicsServer::add(Object *object) {
     auto it = objects.begin();
     for (auto _e = objects.end(); it != _e; ++it) {
         if (**it == object) {
@@ -134,7 +134,7 @@ void PhysicsServer::add(hirender::Object *object) {
     objects.push_back(Ref<Object>(object));
 }
 
-void PhysicsServer::remove(hirender::Object *object) {
+void PhysicsServer::remove(Object *object) {
     for (auto it = objects.begin(), _e = objects.end(); it != _e; ++it) {
         if (**it == object) objects.erase(it);
     }

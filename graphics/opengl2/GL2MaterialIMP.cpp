@@ -13,7 +13,7 @@
 #include "GL2TextureIMP.h"
 
 using namespace higraphics;
-using namespace hirender;
+using namespace gr;
 
 GLuint GL2MaterialIMP::getTranslateID() {
     if (!translate_id && getTarget()->getTranslateUniform()) {

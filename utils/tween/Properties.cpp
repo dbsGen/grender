@@ -4,7 +4,7 @@
 
 #include "Properties.h"
 
-using namespace hirender;
+using namespace gr;
 
 TweenPProperty::TweenPProperty(const StringName &name) : property(NULL)  {
     property_name = name;

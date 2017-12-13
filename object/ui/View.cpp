@@ -5,7 +5,7 @@
 #include "View.h"
 #include <Renderer.h>
 
-using namespace hirender;
+using namespace gr;
 
 const StringName View::MESSAGE_ALPHA_CHANGED("MESSAGE_VIEW_ALPHA_CHANGED");
 const StringName View::MESSAGE_DEPTH_CHANGED("MESSAGE_VIEW_DEPTH_CHANGED");
@@ -77,7 +77,7 @@ void View::setBorderColor(const HColor &color) {
     }
 }
 
-void View::setMaterial(const Ref<hirender::Material> &material) {
+void View::setMaterial(const Ref<gr::Material> &material) {
     if (material && material->instanceOf(ViewMaterial::getClass())) {
         material->setUniform(kSIZE_WIDTH,   size.width());
         material->setUniform(kSIZE_HEIGHT,  size.height());

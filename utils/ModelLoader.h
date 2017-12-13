@@ -11,9 +11,9 @@
 #include <mesh/Mesh.h>
 #include "../render_define.h"
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_0_N(ModelLoader)
 
         pointer_map meshes;

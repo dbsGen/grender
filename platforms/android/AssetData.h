@@ -10,8 +10,8 @@
 #include <android/asset_manager.h>
 #include "../../render_define.h"
 
-namespace hirender {
-    CLASS_BEGIN_N(AssetData, hicore::Data)
+namespace gr {
+    CLASS_BEGIN_N(AssetData, gcore::Data)
 
         static AAssetManager *asset_manager;
         AAsset *asset;

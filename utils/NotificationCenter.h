@@ -15,9 +15,9 @@
 
 #define IMPLEMENT_NOTIFICATION(CLASS, KEY) const StringName CLASS::KEY(#CLASS #KEY)
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_TN(NotificationCenter, Singleton, 1, NotificationCenter)
 
     private:

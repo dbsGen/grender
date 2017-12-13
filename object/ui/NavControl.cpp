@@ -14,7 +14,7 @@
 #include "ShadowView.h"
 #include <Renderer.h>
 
-using namespace hirender;
+using namespace gr;
 
 const StringName kNAV_POSITION_X("NAV_POSITION_X");
 const StringName kNAV_POSITION_Y("NAV_POSITION_Y");
@@ -54,7 +54,7 @@ NavControlButton::NavControlButton() {
     add(shadow);
 }
 
-void NavControlButton::changeSubView(const Ref<hirender::View> &sub_view, bool animate, Direction direction) {
+void NavControlButton::changeSubView(const Ref<View> &sub_view, bool animate, Direction direction) {
     if (sub_view == this->sub_view) return;
     HSize s = HSize(kWIDTH - 14, kWIDTH - 14) * Renderer::getScreenScale();
     if (sub_view) {
@@ -208,7 +208,7 @@ NavControl::NavControl() : extend(true) {
     arrow_view->add(view);
 }
 
-void NavControl::copyObject(Ref<hirender::View> &target, const Ref<hirender::View> &object) {
+void NavControl::copyObject(Ref<View> &target, const Ref<View> &object) {
     if (!target) {
         target = new View;
         ViewMaterial *mat = new ViewMaterial;
@@ -298,20 +298,20 @@ void NavControl::touchBorder() {
     tween->start();
 }
 
-void NavControl::awake(hirender::Renderer *renderer) {
+void NavControl::awake(Renderer *renderer) {
     checkStatus();
     touchBorder();
 }
 
-void NavControl::onDragBegin(const hicore::Vector2f &off) {
+void NavControl::onDragBegin(const Vector2f &off) {
     old_position = off;
 }
 
-void NavControl::onDragEnd(const hicore::Vector2f &off) {
+void NavControl::onDragEnd(const Vector2f &off) {
     touchBorder();
 }
 
-void NavControl::onDrag(const hicore::Vector2f &off) {
+void NavControl::onDrag(const Vector2f &off) {
 //    if (!extend) {
         Vector2f v2 = off - old_position;
         setPosition(getPosition() + Vector3f(v2.x(), v2.y(), 0));
@@ -460,7 +460,7 @@ Matrix4 NavControl::positionAt(int idx, int total, int type) {
     return m4;
 }
 
-void NavControl::processButton(const Ref<hirender::NavControlButton> &button, int idx) {
+void NavControl::processButton(const Ref<NavControlButton> &button, int idx) {
     button->setPose(positionAt(idx, (int)display_buttons.size(), 0));
 }
 
@@ -603,7 +603,7 @@ void NavControl::mainButtonSwapOver(void *sender, void *send_data, void *data) {
     nav->main_swap = false;
 }
 
-bool NavControl::onMessage(const hicore::StringName &key, const hicore::Array *vars) {
+bool NavControl::onMessage(const StringName &key, const Array *vars) {
     if (extend) {
         if (key == Object::MESSAGE_TOUCH_EVENT) {
             variant_vector *vec = vars->vec();

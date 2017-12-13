@@ -3,7 +3,7 @@
 //  hirender_iOS
 //
 //  Created by gen on 01/01/2017.
-//  Copyright © 2017 gen. All rights reserved.
+//  Copyright © 2017 gen. A0-'******************;/3ll rights reserved.
 //
 
 #ifndef GL2ArrayBuffer_hpp
@@ -14,7 +14,7 @@
 #include <material/Shader.h>
 #include <graphics/graphics_define.h>
 
-namespace hirender {
+namespace gr {
     class Material;
 }
 
@@ -41,7 +41,7 @@ public:
     ~GL2ArrayBuffer();
     
     void bind(const StringName &prop_name,
-              hirender::Shader::Type prop_type,
+              gr::Shader::Type prop_type,
               const pointer_list &objects,
               size_t count, GLuint index);
     void clear();

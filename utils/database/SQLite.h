@@ -15,7 +15,7 @@
 
 struct sqlite3;
 typedef struct sqlite3 sqlite3;
-namespace hirender {
+namespace gr {
     
     CLASS_BEGIN_NV(SQLQuery, Query)
     

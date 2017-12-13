@@ -14,7 +14,7 @@
 
 using namespace std;
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_0_NV(ShaderTokenizer)
 
     public:
@@ -93,7 +93,7 @@ namespace hirender {
     
         struct Token {
             TokenType type;
-            hicore::StringName value;
+            gcore::StringName value;
             std::string str;
             int line;
             union {

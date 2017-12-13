@@ -9,7 +9,7 @@
 #include <platforms/Platform.h>
 #include "TextInput.h"
 
-using namespace hirender;
+using namespace gr;
 
 const StringName TextInput::NOTIFICATION_FOCUS_CHANGE("NOTIFICATION_TEXT_INPUT_FOCUS_CHANGE");
 TextInput *TextInput::focusdTextInput = NULL;

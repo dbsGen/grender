@@ -14,7 +14,7 @@
 
 #define ui_image ((CGImageRef)img)
 
-using namespace hirender;
+using namespace gr;
 
 
 void *ImageTexture::loadBuffer() {

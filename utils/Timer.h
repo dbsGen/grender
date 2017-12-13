@@ -10,7 +10,7 @@
 
 #include "../render_define.h"
 
-namespace hirender {
+namespace gr {
     class TimerManager;
 
     CLASS_BEGIN_NV(Timer, RefObject)

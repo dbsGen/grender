@@ -8,7 +8,7 @@
 #include <core/Singleton.h>
 #include "graphics_define.h"
 
-using namespace hicore;
+using namespace gcore;
 
 namespace higraphics {
     CLASS_BEGIN_TN(Factory, Singleton, 1, Factory)
@@ -24,7 +24,7 @@ namespace higraphics {
 
     public:
     
-        static const hicore::HClass *mesh_class,
+        static const gcore::HClass *mesh_class,
                                     *texture_class,
                                     *material_class,
                                     *shader_class,
@@ -47,7 +47,7 @@ namespace higraphics {
          *      RendererIMP::getClass()
          * @result A instance of cls.
          */
-        HObject *create(const hicore::HClass *cls);
+        HObject *create(const gcore::HClass *cls);
 
         Factory();
 

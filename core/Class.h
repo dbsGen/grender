@@ -18,7 +18,7 @@
 
 using namespace std;
 
-namespace hicore  {
+namespace gcore  {
     class HObject;
     class ClassDB;
     class HMethod;

@@ -27,7 +27,7 @@ using namespace std;
 #define OBJECT_CLASS    HObject
 #define OBJECT_NAME     "HObject"
 
-namespace hicore {
+namespace gcore {
     class Script;
     class ScriptClass;
     class ScriptInstance;
@@ -51,8 +51,8 @@ namespace hicore {
         virtual void initialize() {}
         static const HClass *getClass() {
             if (!_class_contrainer<HObject>::_class) {
-                const HClass *clazz = ClassDB::getInstance()->find_loaded(ClassDB::connect("hicore", OBJECT_NAME));
-                _class_contrainer<HObject>::_class = clazz ? clazz : ClassDB::getInstance()->cl<OBJECT_CLASS>("hicore", OBJECT_NAME, NULL);
+                const HClass *clazz = ClassDB::getInstance()->find_loaded(ClassDB::connect("gcore", OBJECT_NAME));
+                _class_contrainer<HObject>::_class = clazz ? clazz : ClassDB::getInstance()->cl<OBJECT_CLASS>("gcore", OBJECT_NAME, NULL);
             }
             return _class_contrainer<HObject>::_class;
         }

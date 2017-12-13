@@ -5,7 +5,7 @@
 #include "Texture.h"
 #include <graphics/Factory.h>
 
-using namespace hirender;
+using namespace gr;
 using namespace higraphics;
 
 Texture::Texture() : imp(NULL) {
@@ -19,7 +19,7 @@ Texture::~Texture() {
     if (imp) delete imp;
 }
 
-void Texture::setChannel(hirender::Texture::Channel channel) {
+void Texture::setChannel(Texture::Channel channel) {
     if (this->channel != channel) {
         this->channel = channel;
         if (imp) imp->resetChannel();

@@ -7,10 +7,10 @@
 #include "HTTPClient.h"
 #include <script/java/JScript.h>
 
-using namespace hirender;
-using namespace hiscript;
+using namespace gr;
+using namespace gscript;
 
-namespace hirender {
+namespace gr {
     jclass HTTPClient_class(NULL);
     jmethodID HTTPClient_creator(NULL);
     jmethodID HTTPClient_start(NULL);
@@ -59,7 +59,7 @@ void HTTPClient::_finalize() {
     }
 }
 
-void HTTPClient::event(const hicore::StringName &name, void *data) {
+void HTTPClient::event(const StringName &name, void *data) {
     if (name == event_complete) {
         path = (const char *)data;
         error.clear();

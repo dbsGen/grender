@@ -10,7 +10,7 @@
 #include <core/Ref.h>
 #include "core_define.h"
 
-namespace hicore {
+namespace gcore {
     CLASS_BEGIN_NV(Data, RefObject)
 
         void *buffer;

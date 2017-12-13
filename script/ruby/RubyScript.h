@@ -18,14 +18,14 @@
 
 #include "../script_define.h"
 
-using namespace hicore;
+using namespace gcore;
 
 struct mrb_state;
 struct RClass;
 struct RObject;
 struct mrb_value;
 
-namespace hiscript {
+namespace gscript {
     class RubyClass;
     class RubyInstance;
     

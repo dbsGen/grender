@@ -7,5 +7,5 @@
 #undef __NAMESPACE__
 #endif
 
-#define __NAMESPACE__ "hiscript"
+#define __NAMESPACE__ "gscript"
 

@@ -7,7 +7,7 @@
 #include <graphics/Factory.h>
 #include <texture/ColorTexture.h>
 
-using namespace hirender;
+using namespace gr;
 using namespace higraphics;
 
 const StringName Material::DEFAULT_PROJECTION("PROJECTION");
@@ -71,7 +71,7 @@ void Material::process() {
 void Material::setUniform(const StringName &name, const Variant &obj) {
     uniform_values[(void*)name] = obj;
 }
-void Material::setUniform(const Shader::Property *property, const hicore::Variant &obj) {
+void Material::setUniform(const Shader::Property *property, const Variant &obj) {
     if (property) {
         setUniform(property->name, obj);
     }
@@ -84,7 +84,7 @@ void Material::setPositionAttribute(const Shader::Property *pa) {
     }
 }
 
-void Material::setCompileValue(const hicore::StringName &name, const hicore::Variant &var) {
+void Material::setCompileValue(const StringName &name, const Variant &var) {
     compile_values[name] = var;
     compile_changed = true;
 }

@@ -16,9 +16,9 @@
 
 #include <render_define.h>
 
-using namespace hicore;
+using namespace gcore;
 
-namespace hirender {
+namespace gr {
     class Model;
     class FieldInfo;
 

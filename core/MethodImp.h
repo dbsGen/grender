@@ -9,7 +9,7 @@
 #include "Class.h"
 #include "core_define.h"
 
-namespace hicore {
+namespace gcore {
 
     class HObject;
     
@@ -52,7 +52,7 @@ namespace hicore {
     };
     template <class C> struct base_type<int, C> {
         _FORCE_INLINE_ static const HClass *getClass() {
-            static const StringName name("hicore::Integer");
+            static const StringName name("gcore::Integer");
             return ClassDB::getInstance()->find(name);
         }
     };
@@ -63,43 +63,43 @@ namespace hicore {
     };
     template <class C> struct base_type<const string &, C> {
         static const HClass *getClass() {
-            static const StringName name("hicore::String");
+            static const StringName name("gcore::String");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<string, C> {
         _FORCE_INLINE_ static const HClass *getClass() {
-            static const StringName name("hicore::String");
+            static const StringName name("gcore::String");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<const char *, C> {
         _FORCE_INLINE_ static const HClass *getClass() {
-            static const StringName name("hicore::String");
+            static const StringName name("gcore::String");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<float, C> {
         _FORCE_INLINE_ static const HClass *getClass() {
-            static const StringName name("hicore::Float");
+            static const StringName name("gcore::Float");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<double, C> {
         _FORCE_INLINE_ static const HClass *getClass() {
-            static const StringName name("hicore::Double");
+            static const StringName name("gcore::Double");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<long, C> {
         _FORCE_INLINE_ static const HClass *getClass() {
-            static const StringName name("hicore::Long");
+            static const StringName name("gcore::Long");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<bool, C> {
         _FORCE_INLINE_ static const HClass *getClass() {
-            static const StringName name("hicore::Integer");
+            static const StringName name("gcore::Boolean");
             return ClassDB::getInstance()->find(name);
         }
     };

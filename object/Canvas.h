@@ -13,7 +13,7 @@
 #include "../texture/RenderTexture.h"
 #include "../render_define.h"
 
-namespace hirender {
+namespace gr {
     class RenderTexture;
     CLASS_BEGIN_N(Canvas, Object)
     

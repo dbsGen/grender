@@ -14,7 +14,7 @@
 #include <core/StringName.h>
 #include "script_define.h"
 
-using namespace hicore;
+using namespace gcore;
 
 namespace hiscript {
     CLASS_BEGIN_0_N(ScriptTransport)

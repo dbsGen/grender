@@ -14,7 +14,7 @@
 #include <object/Camera.h>
 #include "../../render_define.h"
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(TouchInput, Plugin)
 
     public:

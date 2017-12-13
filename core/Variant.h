@@ -15,7 +15,7 @@
 
 using namespace std;
 
-namespace hicore {
+namespace gcore {
 
     template<class T>
     class Ref;
@@ -122,7 +122,6 @@ namespace hicore {
         _FORCE_INLINE_ bool isRef() const { return isRef(type); }
         _FORCE_INLINE_ bool empty() const { return isRef(type) ? !((Reference*)mem)->getType() : !type; }
 
-        operator bool() const;
         operator char() const;
         operator short() const;
         operator int() const;
@@ -130,6 +129,7 @@ namespace hicore {
         operator long long() const;
         operator float() const;
         operator double() const;
+        operator bool() const;
 
         operator string() const;
         
@@ -152,6 +152,7 @@ namespace hicore {
         Variant(const HObject*);
         Variant(void*);
         Variant(const StringName &name);
+        Variant(bool);
 
         template <class T>
         static Variant make(T v) {

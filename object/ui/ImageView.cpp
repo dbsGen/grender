@@ -4,7 +4,7 @@
 
 #include "ImageView.h"
 
-using namespace hirender;
+using namespace gr;
 
 ImageView::ImageView() : View() {
     setSize(Vector2f(10, 10));

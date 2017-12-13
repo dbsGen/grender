@@ -10,7 +10,7 @@
 #include <jni.h>
 #include "../../render_define.h"
 
-namespace hirender {
+namespace gr {
     CLASS_BEGIN_N(AndroidFont, Font)
 
         string font_name;

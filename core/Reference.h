@@ -7,7 +7,7 @@
 
 #include "Define.h"
 
-namespace hicore {
+namespace gcore {
     class HObject;
     class HClass;
     class Variant;

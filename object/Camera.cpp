@@ -7,7 +7,7 @@
 #include <physics/PhysicsServer.h>
 #include "Camera.h"
 
-using namespace hirender;
+using namespace gr;
 using namespace hiphysics;
 
 const Matrix4 &Camera::getProjection() {

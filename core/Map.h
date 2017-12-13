@@ -9,7 +9,7 @@
 #include "Ref.h"
 #include "core_define.h"
 
-namespace hicore {
+namespace gcore {
     CLASS_BEGIN_N(Map, RefObject)
 
     std::map<string, Variant> _map;

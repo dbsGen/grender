@@ -9,7 +9,7 @@
 #include "Method.h"
 #include "core_define.h"
 
-namespace hicore {
+namespace gcore {
     class Property {
         BASE_CLASS_DEFINE
 

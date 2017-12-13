@@ -7,7 +7,7 @@
 #include "../utils/NotificationCenter.h"
 #include <physics/PhysicsServer.h>
 
-using namespace hirender;
+using namespace gr;
 using namespace hiphysics;
 
 class ObjectNotifications {
@@ -261,7 +261,7 @@ void Object::_touchMoveOut(Camera *renderer, const Vector2f &screenPoint) {
                 &arr);
 }
 
-bool Object::onMessage(const hicore::StringName &key, const Array *vars) {
+bool Object::onMessage(const StringName &key, const Array *vars) {
     if (key == MESSAGE_UPDATE_POSE) {
         dirty_global_pose = true;
         if (Renderer::currentThread() == Renderer::MainThread)
