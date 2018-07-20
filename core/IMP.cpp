@@ -25,8 +25,99 @@
 #include "Map.h"
 #include <core/math/Math.hpp>
 #include <sys/time.h>
+#include <cstring>
 
 using namespace gcore;
+
+const void *Data::getBuffer() {
+    long size = getSize();
+    if (!buffer && size) {
+        buffer = malloc(size);
+        gets(buffer, 0, size);
+    }
+    return buffer;
+}
+
+const char *Data::text() {
+    return (const char *)getBuffer();
+}
+
+
+Ref<Data> Data::fromString(const string &str) {
+    return new_t(BufferData, (void*)str.data(), str.size(), BufferData::Copy);
+}
+
+bool BufferData::gets(void *chs, long start, long len) {
+    if (start + len < getSize()) {
+        const char *buffer = (const char *)getBuffer();
+        memcpy(chs, buffer + start, len);
+        return true;
+    }else {
+        LOG(e, "Range out of bound.");
+        return false;
+    }
+}
+
+void BufferData::initialize(void* buffer, long size, RetainType retain) {
+    this->size = size;
+    switch (retain) {
+        case Retain: {
+            this->b_buffer = buffer;
+            this->retain = true;
+        }
+            break;
+        case Copy: {
+            this->b_buffer = malloc(size);
+            memcpy(this->b_buffer, buffer, size);
+            this->retain = true;
+        }
+        case Ref: {
+            this->b_buffer = buffer;
+            this->retain = false;
+        }
+
+        default:
+            break;
+    }
+}
+
+long FileData::getSize() const {
+    FileData *that = const_cast<FileData*>(this);
+    if (!file) that->loadFile();
+    if (file) {
+        size_t s = ftell(file);
+        fseek(that->file,0,SEEK_END);
+        that->size = ftell(file);
+        fseek(file, s, SEEK_SET);
+    }
+    return size;
+}
+
+bool FileData::gets(void *chs, long start, long len) {
+    if (!file) loadFile();
+    if (file) {
+        fseek(file,start,SEEK_SET);
+        size_t ret = fread(chs, len, 1, file);
+        if (ret == 1) {
+            return true;
+        }
+    }
+    return false;
+}
+
+const void *FileData::getBuffer() {
+    if (!file) loadFile();
+    if (file) {
+        if (!buffer) {
+            long size = getSize();
+            buffer = malloc(size + 1);
+            gets(buffer, 0, size);
+            ((char*)buffer)[size] = 0;
+        }
+        return buffer;
+    }
+    return NULL;
+}
 
 struct HObject::Scripts  {
     list<ScriptInstance*> scripts;
@@ -220,6 +311,36 @@ T trans_target2(void *target, const HClass *type) {
     return (T)(long)target;
 }
 
+bool Variant::operator==(const Variant &other) const {
+    const HClass *type = getType();
+    if (type == other.getType()) {
+        if (type == Char::getClass()) {
+            return operator char () == (char)other;
+        }else if (type == Short::getClass()) {
+            return operator short () == (short)other;
+        }else if (type == Integer::getClass()) {
+            return operator int() == (int)other;
+        }else if (type == Long::getClass()) {
+            return operator long() == (long)other;
+        }else if (type == LongLong::getClass()) {
+            return operator long long() == (long long)other;
+        }else if (type == Float::getClass()) {
+            return operator float() == (float)other;
+        }else if (type == Double::getClass()) {
+            return operator float() == (float)other;
+        }else if (type == String::getClass()) {
+            return strcmp(operator const char *(), (const char *)other) == 0;
+        }else if (type == StringName::getClass()) {
+            StringName sn = operator StringName();
+            return sn == (&other)->operator StringName();
+        }else {
+            return get() == other.get();
+        }
+    }else {
+        return false;
+    }
+}
+
 Variant::operator char() const {
     return trans_target2<char>(mem, getType());
 }
@@ -243,15 +364,11 @@ Variant::operator double() const {
 }
 
 Variant::operator void *() const {
-    const HClass *t = getType();
+    const HClass *t = type;
     if (t) {
         if (t->isTypeOf(Pointer::getClass())) {
             return (void*)*_get<Pointer>();
-        }else if (t->isTypeOf(Long::getClass())) {
-            return (void*)(long)*_get<Long>();
-        }else if (t->isTypeOf(LongLong::getClass())) {
-            return (void*)(long long)*_get<LongLong>();
-        }else if (t->isTypeOf(_String::getClass())) {
+        }else if (t->isTypeOf(String::getClass())) {
             return (void*)_get<_String>()->c_str();
         }
     }
@@ -274,6 +391,18 @@ Variant::operator StringName() const {
         return ret;
     }
     return StringName::null();
+}
+
+const HClass* Variant::getType() const {
+    if (isRef()) {
+        return ((Reference*)mem)->getType();
+    }else {
+        if (type == Pointer::getClass()) {
+            const HClass *cls = ((const Pointer*)mem)->getType();
+            if (cls) return cls;
+        }
+        return type;
+    }
 }
 
 void Variant::release() {
@@ -429,10 +558,14 @@ string Variant::str() const {
                 return get<Integer>()->str();
             }else if (type->isTypeOf(Long::getClass())){
                 return get<Long>()->str();
+            }else if (type->isTypeOf(LongLong::getClass())){
+                return get<LongLong>()->str();
             }else if (type->isTypeOf(Float::getClass())) {
                 return get<Float>()->str();
             }else if (type->isTypeOf(Double::getClass())) {
                 return get<Double>()->str();
+            }else if (type->isTypeOf(Boolean::getClass())) {
+                return get<Boolean>()->str();
             }
             HObject *obj = get<HObject>();
             if (obj) return obj->str();
@@ -743,6 +876,97 @@ string _Array::str() const {
     return ss.str();
 }
 
+bool _Array::triger(ArrayEvent event, long idx, const Variant &v) {
+    RefCallback *lis = (RefCallback*)listener;
+    return (*lis)->invoke(Array{event, idx, v});
+}
+
+bool _Array::replace(long idx, const Variant &v1, const Variant &v2) {
+    RefCallback *lis = (RefCallback*)listener;
+    return (*lis)->invoke(Array{E(Replace), idx, v1, v2});
+}
+
+void _Array::push_back(const Variant &var) {
+    variants.push_back(var);
+    if (listener) triger(E(Insert), variants.size()-1, var);
+}
+
+
+void _Array::insert(long n, const Variant &var) {
+    if (n <= variants.size()) {
+        auto it = variants.begin() + n;
+        if (listener) triger(E(Insert), n, *it);
+        variants.insert(it, var);
+    }
+}
+
+void _Array::erase(long n) {
+    if (n < variants.size()) {
+        auto it = variants.begin() + n;
+        if (listener) triger(E(Remove), n, *it);
+        variants.erase(it);
+    }
+}
+
+void _Array::set(long idx, const Variant &var) {
+    if (idx < variants.size()) {
+        Variant old = variants[idx];
+        variants[idx] = var;
+        replace(idx, var, old);
+    }
+}
+
+void _Array::remove(const Variant &var) {
+    long count = 0;
+    for (auto it = variants.begin(), _e = variants.end(); it != _e; ++it) {
+        if (var == *it) {
+            if (listener) triger(E(Remove), count, var);
+            it = variants.erase(it);
+        }else {
+            ++it;
+        }
+        ++count;
+    }
+}
+
+long _Array::find(const Variant &var) {
+    long i = variants.size() - 1;
+    for (; i >= 0; --i) {
+        if (variants[i] == var) {
+            break;
+        }
+    }
+    return i;
+}
+
+Variant _Array::pop_back() {
+    if (variants.size()) {
+        Variant ret = variants.back();
+        if (listener) triger(E(Remove), variants.size() - 1, ret);
+        variants.pop_back();
+        return ret;
+    }else {
+        return Variant::null();
+    }
+}
+
+void _Array::setListener(const RefCallback &callback) {
+    RefCallback *lis;
+    if (!listener) {
+        lis = new RefCallback;
+        listener = lis;
+    }else {
+        lis = (RefCallback*)listener;
+    }
+    lis->operator=(callback);
+}
+
+_Array::~_Array() {
+    if (listener) {
+        delete (RefCallback*)listener;
+    }
+}
+
 static const unsigned int seed = 131;
 static pointer_map *stringDB;
 
@@ -823,64 +1047,6 @@ void *gcore::h(const char *chs) {
 //    }
 //    return NULL;
 //}
-
-const void *Data::getBuffer() {
-    long size = getSize();
-    if (!buffer && size) {
-        buffer = malloc(size);
-        gets(buffer, 0, size);
-    }
-    return buffer;
-}
-
-bool BufferData::gets(void *chs, long start, long len) {
-    if (start + len < getSize()) {
-        const char *buffer = (const char *)getBuffer();
-        memcpy(chs, buffer + start, len);
-        return true;
-    }else {
-        LOG(e, "Range out of bound.");
-        return false;
-    }
-}
-
-long FileData::getSize() const {
-    FileData *that = const_cast<FileData*>(this);
-    if (!file) that->loadFile();
-    if (file) {
-        size_t s = ftell(file);
-        fseek(that->file,0,SEEK_END);
-        that->size = ftell(file) + 1;
-        fseek(file, s, SEEK_SET);
-    }
-    return size;
-}
-
-bool FileData::gets(void *chs, long start, long len) {
-    if (!file) loadFile();
-    if (file) {
-        fseek(file,start,SEEK_SET);
-        size_t ret = fread(chs, len, 1, file);
-        if (ret == 1) {
-            return true;
-        }
-    }
-    return false;
-}
-
-const void *FileData::getBuffer() {
-    if (!file) loadFile();
-    if (file) {
-        if (!buffer) {
-            long size = getSize();
-            buffer = malloc(size);
-            gets(buffer, 0, size);
-            ((char*)buffer)[size-1] = 0;
-        }
-        return buffer;
-    }
-    return NULL;
-}
 
 StringName StringName::_null;
 

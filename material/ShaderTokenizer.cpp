@@ -8,6 +8,7 @@
 
 #include "ShaderTokenizer.h"
 #include <core/StringName.h>
+#include <cstring>
 
 using namespace gcore;
 

@@ -16,6 +16,7 @@
 #include <thirdparties/mruby/mruby/proc.h>
 #include <thirdparties/mruby/mruby/data.h>
 #include <thirdparties/mruby/mruby/array.h>
+#include <thirdparties/mruby/mruby/hash.h>
 #include <thirdparties/mruby/mruby/error.h>
 #include <core/Array.h>
 #include <core/runtime.h>
@@ -23,6 +24,7 @@
 #include <core/Pointer.h>
 #include <core/String.h>
 #include <core/FixType.h>
+#include <core/Map.h>
 #include "RubyScript.h"
 
 #define SCRIPT ((RubyScript*)getScript())
@@ -96,14 +98,24 @@ mrb_value ruby_h2r(mrb_state *mrb, const Variant &v) {
         }else if (type->isTypeOf(Float::getClass())     ||
                   type->isTypeOf(Double::getClass())) {
             return mrb_float_value(mrb, v);
-        }else if (type->isTypeOf(_Array::getClass())) {
-            Array arr = v;
-            int size = arr.size();
-            mrb_value rarr = mrb_ary_new_capa(mrb, size);
-            for (int i = 0; i < size; ++i) {
-                mrb_ary_set(mrb, rarr, i, ruby_h2r(mrb, arr.at(i)));
-            }
-            return rarr;
+        }else if (type->isTypeOf(Boolean::getClass())) {
+            return mrb_bool_value((bool) v);
+//        else if (type->isTypeOf(Array::getClass())) {
+//            RefArray arr = v;
+//            int size = arr.size();
+//            mrb_value rarr = mrb_ary_new_capa(mrb, size);
+//            for (int i = 0; i < size; ++i) {
+//                mrb_ary_set(mrb, rarr, i, ruby_h2r(mrb, arr.at(i)));
+//            }
+//            return rarr;
+//        }else if (type->isTypeOf(Map::getClass())) {
+//            RefMap map(v);
+//            mrb_value hash = mrb_hash_new(mrb);
+//            for (auto it = map->begin(), _e = map->end(); it != _e; ++it) {
+//                mrb_hash_set(mrb, hash, mrb_str_new_cstr(mrb, it->first.c_str()), ruby_h2r(mrb, it->second));
+//            }
+//            return hash;
+//        }
         }else if (type->isTypeOf(RubyClass::getClass())) {
             RubyClass *scls = v.get<RubyClass>();
             return mrb_obj_value(scls->getScriptClass());
@@ -117,7 +129,7 @@ mrb_value ruby_h2r(mrb_state *mrb, const Variant &v) {
                     return mrb_obj_value(mins->getScriptInstance());
                 }
             }else {
-                struct RClass *cls = mrb_define_class(mrb, (string("HiClass") + type->getName()).c_str(), mrb->object_class);
+                struct RClass *cls = mrb_define_class(mrb, (string("GClass") + type->getName()).c_str(), mrb->object_class);
                 mcls = (RubyClass*)script->reg_class(cls, type->getFullname());
             }
             struct RClass *rcls = mcls->getScriptClass();
@@ -190,6 +202,21 @@ Variant ruby_r2h(mrb_state *mrb, mrb_value v) {
         case MRB_TT_STRING:
         {
             return Variant(mrb_str_to_cstr(mrb, v));
+        }
+        case MRB_TT_HASH:
+        {
+            mrb_value keys = mrb_hash_keys(mrb, v);
+            mrb_int l = mrb_ary_len(mrb, keys);
+            Map map;
+            for (mrb_int i = 0; i < l; ++i) {
+                mrb_value key = mrb_ary_ref(mrb, keys, i);
+                mrb_value value = mrb_hash_get(mrb, v, key);
+                if (key.tt != MRB_TT_STRING) {
+                    key = mrb_str_to_str(mrb, key);
+                }
+                map->set(mrb_str_to_cstr(mrb, key), ruby_r2h(mrb, value));
+            }
+            return map;
         }
             
         default:

@@ -50,18 +50,18 @@ Variant JInstance::apply(const StringName &name, const Variant **params, int cou
 
 extern "C" {
 
-JNIEXPORT void JNICALL Java_com_hiar_render_HiRender_00024HiInstance_initializer(JNIEnv * env, jobject jobj,
+JNIEXPORT void JNICALL Java_com_gr_Helper_00024GInstance_initializer(JNIEnv * env, jobject jobj,
                                                                             jlong jptr) {
     JInstance *cls = (JInstance *)jptr;
     cls->setJObject(jobj, env);
 }
 
-JNIEXPORT void JNICALL Java_com_hiar_render_HiRender_00024HiInstance_delete(JNIEnv * env, jclass obj, jlong jptr) {
+JNIEXPORT void JNICALL Java_com_gr_Helper_00024GInstance_delete(JNIEnv * env, jclass obj, jlong jptr) {
     ScriptInstance *cls = (ScriptInstance *)jptr;
     delete cls;
 }
 
-JNIEXPORT jobject JNICALL Java_com_hiar_render_HiRender_00024HiInstance_call(JNIEnv * env, jclass jcls,
+JNIEXPORT jobject JNICALL Java_com_gr_Helper_00024GInstance_call(JNIEnv * env, jclass jcls,
                                                                         jlong jptr, jstring jname,
                                                                         jstring jsignature, jobjectArray jarr) {
     ScriptInstance *obj = (ScriptInstance *)jptr;
@@ -83,7 +83,7 @@ JNIEXPORT jobject JNICALL Java_com_hiar_render_HiRender_00024HiInstance_call(JNI
     }
     return jsc->process(_env, ret);
 }
-JNIEXPORT jobject JNICALL Java_com_hiar_render_HiRender_00024HiInstance_apply(JNIEnv * env, jclass jcls,
+JNIEXPORT jobject JNICALL Java_com_gr_Helper_00024GInstance_apply(JNIEnv * env, jclass jcls,
                                                                              jlong jptr, jstring jname,
                                                                              jstring jsignature, jobjectArray jarr) {
     ScriptInstance *obj = (ScriptInstance *)jptr;

@@ -70,16 +70,16 @@ Renderer::ThreadState Renderer::currentThread() {
 
 bool Renderer::RenderRoot::onMessage(const StringName &key, const Array *vars) {
     if (key == Object::MESSAGE_ADD_CHILD) {
-        variant_vector *vec = vars->vec();
-        Ref<Object> child = vec->front().ref();
+        variant_vector &vec = vars->vec();
+        Ref<Object> child = vec.front().ref();
 //        if (child->getInstanceClass()->isTypeOf(View::getClass()))
 //            renderer->getUICamera();
         child->traversal(Renderer::RenderRoot::travCheck, Renderer::RenderRoot::travAddDo, renderer);
         renderer->imp->add(child);
         child->change();
     }else if (key == Object::MESSAGE_REMOVE_CHILD) {
-        variant_vector *vec = vars->vec();
-        Ref<Object> child = vec->front().ref();
+        variant_vector &vec = vars->vec();
+        Ref<Object> child = vec.front().ref();
         child->traversal(Renderer::RenderRoot::travCheck, Renderer::RenderRoot::travRemoveDo, renderer);
         renderer->imp->remove(child);
         child->change();
@@ -95,22 +95,22 @@ bool Renderer::RenderRoot::onMessage(const StringName &key, const Array *vars) {
             renderer->imp->add(child);
         }
     } else if (key == Object::MESSAGE_CHANGE_MATERIAL) {
-        variant_vector *vec = vars->vec();
-        Object *object = vec->at(0).get<Object>();
-        Material *mat = vec->at(1).get<Material>();
+        variant_vector &vec = vars->vec();
+        Object *object = vec.at(0).get<Object>();
+        Material *mat = vec.at(1).get<Material>();
         renderer->imp->reload(object, mat);
     }else if (key == Object::MESSAGE_MASK_CHANGE) {
-        variant_vector *vec = vars->vec();
-        Ref<Object> self((Object*)(void*)vec->at(0));
-        Mask from = (Mask)(int)vec->at(1);
-        Mask to = (Mask)(int)vec->at(2);
+        variant_vector &vec = vars->vec();
+        Ref<Object> self((Object*)(void*)vec.at(0));
+        Mask from = (Mask)(int)vec.at(1);
+        Mask to = (Mask)(int)vec.at(2);
         renderer->imp->maskChanged(self, from, to);
     }else if (key == Object::MESSAGE_HIT_MASK_CHANGE) {
-        variant_vector *vec = vars->vec();
-        Object *obj = vec->at(0).get<Object>();
+        variant_vector &vec = vars->vec();
+        Object *obj = vec.at(0).get<Object>();
         Ref<Object> self(obj);
-        Mask from = (Mask)(int)vec->at(1);
-        Mask to = (Mask)(int)vec->at(2);
+        Mask from = (Mask)(int)vec.at(1);
+        Mask to = (Mask)(int)vec.at(2);
         renderer->imp->hitMaskChanged(self, from, to);
     }else if (key == Object::MESSAGE_DISPLAY_CHANGED) {
         changed();

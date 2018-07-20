@@ -8,7 +8,7 @@
 
 #import "DIManager.h"
 #import <CommonCrypto/CommonDigest.h>
-#import "PKMultipartInputStream.h"
+#import "PKMultipartInputStream/PKMultipartInputStream.h"
 #import "DIConfig.h"
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
@@ -533,7 +533,7 @@ static inline NSString *NSStringCCHashFunction(unsigned char *(function)(const v
     if (self.readCache) {
         if (self.totalSize >= 0) {
             NSError *err = nil;
-            if (exists && self.size >= self.totalSize && self.size) {
+            if (exists) {
                 [self performSelector:@selector(complete)
                            withObject:nil
                            afterDelay:0];
@@ -598,12 +598,7 @@ start_request:
                 [request setValue:[NSString stringWithFormat:@"multipart/form-data; boundary=%@", [body boundary]] forHTTPHeaderField:@"Content-Type"];
                 [request setValue:[NSString stringWithFormat:@"%d", [body length]] forHTTPHeaderField:@"Content-Length"];
 //                [request setHTTPBodyStream:body];
-                if (self.headers) {
-                    [self.headers enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-                        [request setValue:obj
-                       forHTTPHeaderField:key];
-                    }];
-                }
+               
                 size_t length = [body length];
                 void *buffer = malloc(length);
                 [body read:buffer
@@ -620,6 +615,12 @@ start_request:
             default:
                 break;
         }
+    }
+    if (self.headers) {
+        [self.headers enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+            [request setValue:obj
+           forHTTPHeaderField:key];
+        }];
     }
     NSURLSession *session;
     if (self.download) {

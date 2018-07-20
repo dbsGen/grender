@@ -11,6 +11,7 @@
 #include <libxml/tree.h>
 #include <libxml/HTMLtree.h>
 #include <libxml/xpath.h>
+#include <cstring>
 
 using namespace gr;
 

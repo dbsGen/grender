@@ -15,8 +15,11 @@ const StringName HTTPClient::METHOD_POST("POST");
 const StringName HTTPClient::METHOD_PUT("PUT");
 const StringName HTTPClient::METHOD_DELETE("DELETE");
 
-HTTPClient::HTTPClient() : method(METHOD_GET), read_cache(false), delay(0), retry_count(0), retry_num(0) {
-    
+HTTPClient::HTTPClient() : method(METHOD_GET),
+                           read_cache(false), delay(0),
+                           retry_count(0), retry_num(0),
+                           timeout(10)
+{
 }
 
 HTTPClient::~HTTPClient() {

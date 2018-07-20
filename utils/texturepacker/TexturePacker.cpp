@@ -74,7 +74,7 @@ TexturePacker::TexturePacker(const Ref<Data> &image, const Ref<Data> &json) : Te
     JSONNODE *root = json_parse(chs);
     if (root) {
         JSONNODE *meta = json_get(root, "meta");
-        if (json_type(meta) == JSON_NODE) {
+        if (json_ctype(meta) == JSON_NODE) {
             JSONNODE *sn = json_get(meta, "size");
             this->size.x((float) json_as_float(json_get(sn, "w")));
             this->size.y((float) json_as_float(json_get(sn, "h")));
@@ -84,7 +84,7 @@ TexturePacker::TexturePacker(const Ref<Data> &image, const Ref<Data> &json) : Te
         material->setUniform("SIZE_HEIGHT", this->size.height());
 
         JSONNODE *frames = json_get(root, "frames");
-        if (json_type(frames) == JSON_ARRAY) {
+        if (json_ctype(frames) == JSON_ARRAY) {
             for (int i = 0, t = json_size(frames); i < t; ++i) {
                 JSONNODE *frame = json_at(frames, i);
                 SpriteInfo *sprite_info = new SpriteInfo(frame);

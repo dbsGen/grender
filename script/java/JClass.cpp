@@ -36,12 +36,12 @@ JClass::~JClass() {
 
 extern "C" {
 
-JNIEXPORT void JNICALL Java_com_hiar_render_HiRender_00024HiClass_delete(JNIEnv * env, jclass obj, jlong jptr) {
+JNIEXPORT void JNICALL Java_com_gr_Helper_00024GClass_delete(JNIEnv * env, jclass obj, jlong jptr) {
     ScriptClass *cls = (ScriptClass *)jptr;
     delete cls;
 }
 
-JNIEXPORT jlong JNICALL Java_com_hiar_render_HiRender_00024HiClass_newi(JNIEnv * env, jclass jcls, jlong jptr,
+JNIEXPORT jlong JNICALL Java_com_gr_Helper_00024GClass_newi(JNIEnv * env, jclass jcls, jlong jptr,
                                                                   jstring jsignature, jobjectArray jarr) {
     ScriptClass *cls = (ScriptClass *)jptr;
     jint size = env->GetArrayLength(jarr);
@@ -62,7 +62,7 @@ JNIEXPORT jlong JNICALL Java_com_hiar_render_HiRender_00024HiClass_newi(JNIEnv *
     return ret;
 }
 
-JNIEXPORT jobject JNICALL Java_com_hiar_render_HiRender_00024HiClass_call(JNIEnv * env, jclass jcls, jlong jptr, jstring jname,
+JNIEXPORT jobject JNICALL Java_com_gr_Helper_00024GClass_call(JNIEnv * env, jclass jcls, jlong jptr, jstring jname,
                                                                   jstring jsignature, jobjectArray jarr) {
     ScriptClass *cls = (ScriptClass *)jptr;
     jint size = env->GetArrayLength(jarr);

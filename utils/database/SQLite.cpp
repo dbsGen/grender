@@ -10,6 +10,7 @@
 #include "Model.h"
 #include <sqlite3.h>
 #include <core/String.h>
+#include <cstring>
 
 using namespace gr;
 
@@ -19,10 +20,9 @@ void SQLQuery::insertAction(const string &name, const Variant &val, const char *
     sql_sentence.push_back(' ');
     sql_sentence += action;
     sql_sentence.push_back(' ');
-    if (val.getType()->isTypeOf(_String::getClass())) {
-        sql_sentence.push_back('\'');
-        sql_sentence += val.str();
-        sql_sentence.push_back('\'');
+    if (val.getType()->isTypeOf(String::getClass())) {
+        params.push_back(val);
+        sql_sentence += '?';
     }else {
         sql_sentence += val.str();
     }
@@ -30,14 +30,41 @@ void SQLQuery::insertAction(const string &name, const Variant &val, const char *
     change();
 }
 
-Query *SQLQuery::equal(const string &name, const Variant &val) {
+Ref<Query> SQLQuery::equal(const string &name, const Variant &val) {
     insertAction(name, val, "=");
+    return this;
+}
+
+Ref<Query> SQLQuery::andQ() {
+    sql_sentence += " and ";
+    return this;
+}
+
+Ref<Query> SQLQuery::greater(const string &name, const Variant &val) {
+    insertAction(name, val, ">");
+    return this;
+}
+
+Ref<Query> SQLQuery::less(const string &name, const Variant &val) {
+    insertAction(name, val, "<");
+    return this;
+}
+
+Ref<Query> SQLQuery::like(const string &name, const Variant &val) {
+    insertAction(name, val, "like");
+    return this;
+}
+
+Ref<Query> SQLQuery::sortBy(const string &name) {
+    if (!sort_bys.empty()) {
+        sort_bys += ',';
+    }
+    sort_bys += name;
     return this;
 }
 
 void SQLQuery::find() {
     string ss = "SELECT ";
-    pointer_vector list;
     for (auto it = table->fields.begin(), _e = table->fields.end(); it != _e; ++it) {
         if (it != table->fields.begin())
             ss.push_back(',');
@@ -46,22 +73,33 @@ void SQLQuery::find() {
     }
     ss += " FROM ";
     ss += table->cls->getName();
-    ss += " WHERE ";
-    ss += sql_sentence;
-    if (_limit) {
+    if (sql_sentence.size()) {
+        ss += " WHERE ";
+        ss += sql_sentence;
+    }
+    if (!sort_bys.empty()) {
+        ss += " ORDER BY ";
+        ss += sort_bys;
+        if (getSortAsc()) {
+            ss += " ASC ";
+        }else {
+            ss += " DESC ";
+        }
+    }
+    if (_limit > 0) {
         char str[26];
         sprintf(str, " LIMIT %d", _limit);
         ss += str;
     }
-    if (_offset) {
+    if (_offset >= 0) {
         char str[26];
-        sprintf(str, " OFFSET %d", _limit);
+        sprintf(str, " OFFSET %d", _offset);
         ss += str;
     }
     ss.push_back(';');
-    
+
     _results.clear();
-    db::database()->exce(ss, NULL, C([=](void *data){
+    db::database()->exce(ss, &params, C([=](void *data){
         sqlite3_stmt *stmt = (sqlite3_stmt*)data;
         while (sqlite3_step(stmt) == SQLITE_ROW) {
             BaseModel *obj = (BaseModel*)table->cls->instance();
@@ -74,15 +112,26 @@ void SQLQuery::find() {
                         field->set(obj, &val);
                     }
                         break;
+                    case Field::Long: {
+                        long long val = sqlite3_column_int64(stmt, count++);
+                        field->set(obj, &val);
+                    }
+                        break;
                     case Field::Real: {
                         float val = (float)sqlite3_column_double(stmt, count++);
                         field->set(obj, &val);
                     }
                         break;
-                        
+
                     case Field::Text: {
-                        string text = (const char *)sqlite3_column_text(stmt, count++);
-                        field->set(obj, &text);
+                        const char * chs = (const char *)sqlite3_column_text(stmt, count++);
+                        if (chs) {
+                            string text = chs;
+                            field->set(obj, &text);
+                        }else {
+                            string text;
+                            field->set(obj, &text);
+                        }
                     }
                         break;
                     default:
@@ -93,6 +142,18 @@ void SQLQuery::find() {
             this->_results.push_back(obj);
         }
     }));
+}
+
+void SQLQuery::remove() {
+    string ss = "DELETE ";
+    ss += " FROM ";
+    ss += table->cls->getName();
+    if (sql_sentence.size()) {
+        ss += " WHERE ";
+        ss += sql_sentence;
+    }
+    ss.push_back(';');
+    db::database()->queueExce(ss, &params, RefCallback());
 }
 
 void SQLite::begin() {
@@ -119,10 +180,13 @@ void SQLite::action(const string &statement, variant_vector *params, const Ref<C
                     const HClass *type = variant.getType();
                     if (type->isTypeOf(Integer::getClass())) {
                         sqlite3_bind_int(stmt, count++, (int)variant);
+                    }else if (type->isTypeOf(LongLong::getClass()) ||
+                            type->isTypeOf(Long::getClass())) {
+                        sqlite3_bind_int64(stmt, count++, (long long)variant);
                     }else if (type->isTypeOf(Float::getClass()) ||
                               type->isTypeOf(Double::getClass())) {
                         sqlite3_bind_double(stmt, count++, (double)variant);
-                    }else if (type->isTypeOf(_String::getClass())) {
+                    }else if (type->isTypeOf(String::getClass())) {
                         const char *chs = (const char *)variant;
                         sqlite3_bind_text(stmt, count++, chs, strlen(chs), NULL);
                     }
@@ -170,6 +234,7 @@ void SQLite::processTable(Table *table) {
         }else {
             switch (field->type) {
                 case Field::Integer:
+                case Field::Long:
                     ss += " INT";
                     break;
                 case Field::Real:
@@ -178,7 +243,7 @@ void SQLite::processTable(Table *table) {
                 case Field::Text:
                     ss += " TEXT";
                     break;
-                    
+
                 default:
                     return;
                     break;
@@ -192,9 +257,9 @@ void SQLite::processTable(Table *table) {
         }
     }
     ss += ");";
-    
+
     queueExce(ss, NULL, NULL);
-    
+
     ss.clear();
     ss += "CREATE INDEX IF NOT EXISTS ";
     ss += table->cls->getName();
@@ -206,7 +271,7 @@ void SQLite::processTable(Table *table) {
         ss += (const char *)*it;
     }
     ss += ");";
-    
+
     queueExce(ss, NULL, NULL);
 }
 
@@ -221,6 +286,7 @@ void SQLite::update(HObject *model, Table *table) {
         ss += " (";
         stringstream values;
         bool first = true;
+        variant_vector vs;
         for (auto it = table->fields.begin(), _e = table->fields.end(); it != _e; ++it) {
             Field *field = (Field*)it->second;
             if (field->primary) continue;
@@ -233,29 +299,35 @@ void SQLite::update(HObject *model, Table *table) {
                 case Field::Integer: {
                     int i = 0;
                     field->get(model, &i);
-                    values << i;
+                    char str[20];
+                    sprintf(str, "%d", i);
+                    values << str;
                 }
                     break;
+                case Field::Long: {
+                    long long i = 0;
+                    field->get(model, &i);
+                    char str[20];
+                    sprintf(str, "%lld", i);
+                    values << str;
+                    break;
+                }
                 case Field::Real: {
                     float f = 0;
                     field->get(model, &f);
-                    values << f;
+                    char str[20];
+                    sprintf(str, "%f", f);
+                    values << str;
                 }
                     break;
                 case Field::Text: {
                     string text;
                     field->get(model, &text);
-                    values << '"';
-                    size_t s = text.find('"');
-                    while (s != -1) {
-                        text.replace(s, 1, "\\n");
-                        s = text.find('"');
-                    }
-                    values << text;
-                    values << '"';
+                    values << '?';
+                    vs.push_back(text);
                 }
                     break;
-                    
+
                 default:
                     break;
             }
@@ -263,8 +335,8 @@ void SQLite::update(HObject *model, Table *table) {
         ss += ") VALUES (";
         ss += values.str();
         ss += ");";
-        queueExce(ss, NULL, NULL);
-        
+        queueExce(ss, &vs, NULL);
+
         ss.clear();
         ss += "SELECT identifier FROM ";
         ss += table->cls->getName();
@@ -279,10 +351,11 @@ void SQLite::update(HObject *model, Table *table) {
         ss += table->cls->getName();
         ss += " SET ";
         bool first = true;
+        variant_vector vs;
         for (auto it = table->fields.begin(), _e = table->fields.end(); it != _e; ++it) {
             Field *field = (Field*)it->second;
             if (field->primary) continue;
-            if (first) {
+            if (!first) {
                 ss.push_back(',');
             }else
                 first = false;
@@ -292,29 +365,35 @@ void SQLite::update(HObject *model, Table *table) {
                 case Field::Integer: {
                     int i = 0;
                     field->get(model, &i);
-                    ss += i;
+                    char str[20];
+                    sprintf(str, "%d", i);
+                    ss += str;
                 }
                     break;
+                case Field::Long: {
+                    long long i = 0;
+                    field->get(model, &i);
+                    char str[20];
+                    sprintf(str, "%lld", i);
+                    ss += str;
+                    break;
+                }
                 case Field::Real: {
                     float f = 0;
                     field->get(model, &f);
-                    ss += f;
+                    char str[20];
+                    sprintf(str, "%f", f);
+                    ss += str;
                 }
                     break;
                 case Field::Text: {
                     string text;
                     field->get(model, &text);
-                    ss += '"';
-                    size_t s = text.find('"');
-                    while (s != -1) {
-                        text.replace(s, 1, "\\n");
-                        s = text.find('"');
-                    }
-                    ss += text;
-                    ss += '"';
+                    ss += '?';
+                    vs.push_back(text);
                 }
                     break;
-                    
+
                 default:
                     break;
             }
@@ -324,7 +403,7 @@ void SQLite::update(HObject *model, Table *table) {
         sprintf(istr, "%d", _id);
         ss += istr;
         ss += ';';
-        queueExce(ss, NULL, NULL);
+        queueExce(ss, &vs, NULL);
     }
 }
 

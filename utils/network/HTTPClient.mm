@@ -16,7 +16,7 @@ const StringName event_process("PROCESS");
 
 @interface HTTPClientObject : NSObject <DIItemDelegate> {
 @public
-    HTTPClient *c_client;
+    hirender::HTTPClient *c_client;
 }
 
 @property (nonatomic, strong) NSURLSession *session;
@@ -75,11 +75,11 @@ const StringName event_process("PROCESS");
 
 @end
 
-using namespace gr;
+using namespace hirender;
 
 const StringName ObjcTarget("OBJECT_C_OBJECT");
 
-void HTTPClient::event(const StringName &name, void *data) {
+void HTTPClient::event(const hicore::StringName &name, void *data) {
     if (name == event_complete) {
         path = (const char *)data;
         error.clear();

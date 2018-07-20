@@ -212,7 +212,7 @@ bool Label::onMessage(const StringName &key, const Array *vars) {
         for (auto it = children.begin(), _e = children.end(); it != _e; ++it) {
             Object *obj = **it;
             if (obj->getClass() == CharacterObject::getClass()) {
-                obj->setMask((Mask) (int)vars->vec()->at(1));
+                obj->setMask((Mask) (int)vars->vec().at(1));
             }
         }
     }

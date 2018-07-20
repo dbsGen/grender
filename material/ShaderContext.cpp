@@ -6,6 +6,7 @@
 //  Copyright © 2017年 gen. All rights reserved.
 //
 
+#include <cstring>
 #include "ShaderContext.h"
 #include "ShaderCompiler.h"
 

@@ -16,45 +16,53 @@
 struct sqlite3;
 typedef struct sqlite3 sqlite3;
 namespace gr {
-    
+
     CLASS_BEGIN_NV(SQLQuery, Query)
-    
-    string sql_sentence;
-    
-    void insertAction(const string &name, const Variant &val, const char *action);
-    
-protected:
-    void find();
-    
-public:
-    Query *equal(const string &name, const Variant &val);
-    _FORCE_INLINE_ SQLQuery(Table *table) : Query(table) {
-    }
-    
+
+        string sql_sentence;
+        string sort_bys;
+        variant_vector params;
+
+        void insertAction(const string &name, const Variant &val, const char *action);
+
+    protected:
+        void find();
+
+    public:
+        Ref<Query> equal(const string &name, const Variant &val);
+        Ref<Query> andQ();
+        Ref<Query> greater(const string &name, const Variant &val);
+        Ref<Query> less(const string &name, const Variant &val);
+        Ref<Query> like(const string &name, const Variant &val);
+        Ref<Query> sortBy(const string &name);
+        void remove();
+        _FORCE_INLINE_ SQLQuery(Table *table) : Query(table) {
+        }
+
     CLASS_END
-    
+
     CLASS_BEGIN_N(SQLite, Database)
-    
-    sqlite3 *db;
-    string path;
-    
-protected:
-    void begin();
-    void action(const string &statement, variant_vector *params, const Ref<Callback> &callback);
-    void end();
-public:
-    SQLite() {}
-    _FORCE_INLINE_ virtual Ref<Query> query(Table *table) const {
-        return new SQLQuery(table);
-    }
-    void initialize(const string &path);
-    
-    void processTable(Table *table);
-    void update(HObject *model, Table *table);
-    void remove(HObject *model, Table *table);
-    
+
+        sqlite3 *db;
+        string path;
+
+    protected:
+        void begin();
+        void action(const string &statement, variant_vector *params, const Ref<Callback> &callback);
+        void end();
+    public:
+        SQLite() {}
+        _FORCE_INLINE_ virtual Ref<Query> query(Table *table) const {
+            return new SQLQuery(table);
+        }
+        void initialize(const string &path);
+
+        void processTable(Table *table);
+        void update(HObject *model, Table *table);
+        void remove(HObject *model, Table *table);
+
     CLASS_END
-    
+
 }
 
 #endif /* SQLite_hpp */

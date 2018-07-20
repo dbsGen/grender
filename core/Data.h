@@ -21,12 +21,12 @@ namespace gcore {
         METHOD virtual void close() = 0;
         virtual bool gets(void *chs, long start, long len) = 0;
         virtual const void *getBuffer();
-        METHOD _FORCE_INLINE_ const char *text() {
-            return (const char *)getBuffer();
-        }
+        METHOD const char *text();
 
         _FORCE_INLINE_ Data() : buffer(NULL) {}
         _FORCE_INLINE_ ~Data() {if (buffer) free(buffer);}
+    
+        METHOD static Ref<Data> fromString(const string &str);
 
     protected:
         ON_LOADED_BEGIN(cls, RefObject)
@@ -34,6 +34,7 @@ namespace gcore {
             ADD_METHOD(cls, Data, empty);
             ADD_METHOD(cls, Data, close);
             ADD_METHOD(cls, Data, text);
+            ADD_METHOD(cls, Data, fromString);
         ON_LOADED_END
     CLASS_END
 
@@ -44,26 +45,24 @@ namespace gcore {
         bool retain;
 
     public:
+        typedef int RetainType;
+        enum {
+            Ref,
+            Copy,
+            Retain
+        };
+    
         _FORCE_INLINE_ virtual long getSize() const {return size;}
         _FORCE_INLINE_ virtual const void *getBuffer() { return b_buffer;}
         _FORCE_INLINE_ virtual bool empty() const {
-            return b_buffer && size;
+            return !(b_buffer && size);
         }
         _FORCE_INLINE_ virtual void close() {
         }
         virtual bool gets(void *chs, long start, long len);
 
         _FORCE_INLINE_ BufferData() : size(0), b_buffer(NULL) {}
-        INITIALIZE(BufferData, PARAMS(void* buffer, long size, bool retain = false),
-                   this->size = size;
-                   this->retain = retain;
-                   if (retain) {
-                       this->b_buffer = malloc(size);
-                       memcpy(this->b_buffer, buffer, size);
-                   }else {
-                       this->b_buffer = buffer;
-                   }
-        )
+        void initialize(void* buffer, long size, RetainType retain = Copy);
         ~BufferData() {
             if (retain && b_buffer) {
                 free(b_buffer);

@@ -34,22 +34,24 @@ namespace gscript {
         jclass helper_class;
         bool new_thread;
 
-        jmethodID to_int;
-        jmethodID to_long;
-        jmethodID to_float;
-        jmethodID to_double;
-        jmethodID to_native;
+        jmethodID to_int = NULL;
+        jmethodID to_long = NULL;
+        jmethodID to_float = NULL;
+        jmethodID to_double = NULL;
+        jmethodID to_boolean = NULL;
+        jmethodID to_native = NULL;
 
-        jmethodID from_int;
-        jmethodID from_long;
-        jmethodID from_float;
-        jmethodID from_double;
-        jmethodID from_native;
-        jmethodID new_dic;
-        jmethodID set_dic_value;
-        jmethodID dic_keys;
-        jmethodID get_dic_value;
-        jmethodID check_type;
+        jmethodID from_int = NULL;
+        jmethodID from_long = NULL;
+        jmethodID from_float = NULL;
+        jmethodID from_double = NULL;
+        jmethodID from_boolean = NULL;
+        jmethodID from_native = NULL;
+        jmethodID new_dic = NULL;
+        jmethodID set_dic_value = NULL;
+        jmethodID dic_keys = NULL;
+        jmethodID get_dic_value = NULL;
+        jmethodID check_type = NULL;
 
         friend class JScript;
     public:
@@ -61,12 +63,14 @@ namespace gscript {
         jmethodID getToLong();
         jmethodID getToFloat();
         jmethodID getToDouble();
+        jmethodID getToBoolean();
         jmethodID getToNative();
 
         jmethodID getFromInt();
         jmethodID getFromLong();
         jmethodID getFromFloat();
         jmethodID getFromDouble();
+        jmethodID getFromBoolean();
         jmethodID getFromNative();
         jmethodID getNewDic();
         jmethodID getSetDicValue();
@@ -90,12 +94,14 @@ namespace gscript {
         long long   toLong(jobject jobj);
         float       toFloat(jobject jobj);
         double      toDouble(jobject jobj);
+        bool        toBoolean(jobject jobj);
 
         jobject fromNative(jstring class_name, jlong ptr);
         jobject fromInt(int i);
         jobject fromLong(long long l);
         jobject fromFloat(float f);
         jobject fromDouble(double d);
+        jobject fromBoolean(bool b);
         jobject newDic();
         void setDicValue(jobject, jstring, jobject);
         jobjectArray dicKeys(jobject);

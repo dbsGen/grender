@@ -8,4 +8,4 @@
 #undef __NAMESPACE__
 #endif
 
-#define __NAMESPACE__ "hirender"
+#define __NAMESPACE__ "gr"

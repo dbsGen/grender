@@ -9,10 +9,11 @@
 #ifndef Vector_h
 #define Vector_h
 
-
+#include "Class.h"
 #include "Object.h"
 #include <vector>
 #include <string>
+#include <unordered_map>
 #include "Ref.h"
 #include "Variant.h"
 #include "core_define.h"
@@ -21,74 +22,118 @@ using namespace std;
 
 namespace gcore {
     class Array;
-    
+    class RefCallback;
+
     CLASS_BEGIN_N(_Array, RefObject)
+    
+    public:
+        typedef variant_vector::const_iterator Iterator;
+    
+    
+        ENUM_BEGIN(ArrayEvent)
+            Insert = 1,
+            Remove,
+            Replace
+        ENUM_END
+    
     private:
         variant_vector variants;
-    friend class Array;
+        void *listener;
+    
+        bool triger(ArrayEvent event, long idx, const Variant &v);
+        bool replace(long idx, const Variant &v1, const Variant &v2);
+    
+        friend class Array;
 
     public:
-        _FORCE_INLINE_ _Array() {}
-        _FORCE_INLINE_ _Array(const variant_vector &variants) {
-            this->variants = variants;
+    
+        _FORCE_INLINE_ _Array() : listener(NULL) {}
+        template<class T>
+        _Array(const T &vs) : _Array() {
+            for (auto it = vs.begin(), _e = vs.end(); it != _e; ++it) {
+                variants.push_back(*it);
+            }
         }
+        ~_Array();
+    
         virtual string str() const;
-        _FORCE_INLINE_ _Array &operator=(const variant_vector &vs) {
-            variants = vs;
+        template<class T>
+        _FORCE_INLINE_ _Array &operator=(const T &vs) {
+            variants.clear();
+            for (auto it = vs.begin(), _e = vs.end(); it != _e; ++it) {
+                variants.push_back(*it);
+            }
             return *this;
         }
         _FORCE_INLINE_ _Array &operator=(const _Array &other) {
             variants = other.variants;
             return *this;
         }
-        _FORCE_INLINE_ operator variant_vector() {
-            return variants;
-        }
-        _FORCE_INLINE_ Variant &operator[](long n) {
-            if (n >= variants.size()) variants.resize(n);
-            return variants[n];
-        }
 
         _FORCE_INLINE_ const Variant &operator[](long n) const {
-            return n < variants.size() ? variants.at(n) : Variant::null();
+            return at(n);
         }
-        _FORCE_INLINE_ size_t size() const {
+        METHOD _FORCE_INLINE_ long size() const {
             return variants.size();
         }
-        void contact(const variant_vector &other) {
+        template<class T>
+        void contact(const T &other) {
             for (auto it = other.begin(), _e = other.end(); it != _e; ++it) {
                 variants.push_back(*it);
             }
         }
-        _FORCE_INLINE_ variant_vector::iterator begin() {
+        _FORCE_INLINE_ Iterator begin() const {
             return variants.begin();
         }
-        _FORCE_INLINE_ variant_vector::iterator end() {
+        _FORCE_INLINE_ Iterator end() const {
             return variants.end();
         }
-        _FORCE_INLINE_ void push_back(const Variant &var) {
-            variants.push_back(var);
-        }
+        METHOD void push_back(const Variant &var);
         _FORCE_INLINE_ const Variant &at(long n) const {
             return n < variants.size() ? variants.at(n) : Variant::null();
         }
+        METHOD _FORCE_INLINE_ const Variant &get(long n) const {
+            return at(n);
+        }
+        METHOD void erase(long n);
+        METHOD Variant pop_back();
+        METHOD void insert(long n, const Variant &var);
+        METHOD void set(long idx, const Variant &var);
+        METHOD void remove(const Variant &var);
+        METHOD long find(const Variant &var);
+        METHOD _FORCE_INLINE_ void clear() {
+            variants.clear();
+        }
 
+        _FORCE_INLINE_ variant_vector &vec() {
+            return variants;
+        }
+    
+        /**
+         * (ArrayEvent, long idx, Variant new_variant, Variant old_variant)
+         */
+        METHOD void setListener(const RefCallback &callback);
+
+    protected:
+        ON_LOADED_BEGIN(cls, RefObject)
+            ADD_METHOD(cls, _Array, size);
+            ADD_METHOD(cls, _Array, push_back);
+            ADD_METHOD(cls, _Array, get);
+            ADD_METHOD(cls, _Array, set);
+            ADD_METHOD(cls, _Array, erase);
+            ADD_METHOD(cls, _Array, pop_back);
+            ADD_METHOD(cls, _Array, find);
+            ADD_METHOD(cls, _Array, clear);
+        ON_LOADED_END
     CLASS_END
 
     CLASS_BEGIN_TN(Array, Ref, 1, _Array)
 
     public:
         _FORCE_INLINE_ Array() : Ref(new _Array(variant_vector())) {}
-        _FORCE_INLINE_ Array(const variant_vector &variants) : Ref(new _Array(variants)) {
-        }
-
-        _FORCE_INLINE_ Array(const Reference &ref) : Ref(ref) {
-        }
-
-        _FORCE_INLINE_ Variant &at(long n) {
-            return operator*()->operator[](n);
-        }
-
+        _FORCE_INLINE_ Array(const variant_vector &variants) : Ref(new _Array(variants)) {}
+        _FORCE_INLINE_ Array(initializer_list<variant_vector::value_type> list) : Ref(new _Array(list)) {}
+        _FORCE_INLINE_ Array(const Reference &ref) : Ref(ref) {}
 
         _FORCE_INLINE_ const Variant &at(long n) const {
             return operator*()->operator[](n);
@@ -97,23 +142,31 @@ namespace gcore {
         _FORCE_INLINE_ size_t size() const {
             return operator*() ? operator*()->size() : 0;
         }
-        variant_vector *vec() const {
-            return &this->operator*()->variants;
-        }
 
         _FORCE_INLINE_ operator Variant() const {
             return Variant(*this);
         }
-        _FORCE_INLINE_ Array(const Variant &var) : Array() {
+        Array(const Variant &var) : Array() {
             if (var && var.getType()->isTypeOf(_Array::getClass())) {
                 operator=(var.ref());
+            }else {
+                operator*()->push_back(var);
             }
         }
         _FORCE_INLINE_ void contact(const Array &other) {
             if (other) {
-                operator*()->contact((*other)->variants);
+                operator*()->contact(**other);
             }
         }
+
+        _FORCE_INLINE_ variant_vector &vec() const {
+            return operator*()->vec();
+        }
+
+        _FORCE_INLINE_ void push_back(const Variant &var) { operator*()->push_back(var); }
+        _FORCE_INLINE_ void operator<<(const Variant &var) {push_back(var);}
+
+        _FORCE_INLINE_ void remove(const Variant &var) { operator*()->remove(var); }
 
     CLASS_END
 }

@@ -8,6 +8,7 @@
 #include "ImageTexture.h"
 #include <thirdparties/png/png.h>
 #include <thirdparties/jpeg/jpeglib.h>
+#include <cstring>
 
 using namespace gr;
 

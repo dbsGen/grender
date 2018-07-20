@@ -2,8 +2,8 @@
 // Created by gen on 16/5/30.
 //
 
-#ifndef HICORE_DEFINE_H
-#define HICORE_DEFINE_H
+#ifndef GCORE_DEFINE_H
+#define GCORE_DEFINE_H
 
 #ifndef NULL
 #   define NULL 0
@@ -108,6 +108,17 @@ public:\
     const HClass *getInstanceClass() const;\
 private:
 
+#define BASE_FINAL_CLASS_DEFINE_T(TYPE) \
+protected:\
+    _FORCE_INLINE_ static void onClassLoaded(HClass *clz) { \
+        clz->setLabels(variant_map{{HObject::LABEL_CATEGORY, TYPE}}); \
+    } \
+    friend class ClassDB;\
+public:\
+    static const HClass *getClass();\
+    const HClass *getInstanceClass() const;\
+private:
+
 #define BASE_CLASS_DEFINE \
 protected:\
     _FORCE_INLINE_ static void onClassLoaded(HClass *clz) {}\
@@ -141,20 +152,26 @@ const HClass *CLZ::getInstanceClass() const {\
 
 // --------------- for meta program ---------------
 
+
+#define ENUM_BEGIN(NAME) typedef short NAME; \
+enum {
+#define ENUM_END };
+#define E(L) ((short)L)
 #define LABEL(KEY, VALUE)
-#define LABELS(LABELS)
+#define LABELS(...)
 #define METHOD
 #define PROPERTY(NAME, GETTER, SETTER)
 #define EVENT(RET_TYPE, NAME, ...)
 
 #ifdef USING_SCRIPT
 
-#define ON_LOADED_BEGIN(CLZ, SUPER) _FORCE_INLINE_ static void onClassLoaded(HClass *CLZ) { \
+#define SET_LABELS(...) cls->setLabels(variant_map{__VA_ARGS__});
+#define ON_LOADED_BEGIN(CLZ, SUPER) _FORCE_INLINE_ static void onClassLoaded(gcore::HClass *CLZ) { \
     SUPER::onClassLoaded(CLZ);
 #define ON_LOADED_END }
 
 #define INITIALIZER(CLASS, TYPE, M) ADD_METHOD(CLASS, TYPE, M)
-#define ADD_METHOD(CLASS, TYPE, M) CLASS->addMethod(MethodImp_makeMethod<TYPE>(#M, &TYPE::M))
+#define ADD_METHOD(CLASS, TYPE, M) CLASS->addMethod(gcore::MethodImp_makeMethod<TYPE>(#M, &TYPE::M))
 #define ADD_METHOD_E(CLASS, TYPE, M_TYPE, M) CLASS->addMethod(MethodImp_makeMethod<TYPE>(#M, (M_TYPE)&TYPE::M))
 
 #define ADD_PROPERTY(CLASS, ...) CLASS->addProperty(new Property(CLASS, __VA_ARGS__))
@@ -162,12 +179,14 @@ const HClass *CLZ::getInstanceClass() const {\
 
 #else
 
+#define SET_LABELS(...)
 #define INITIALIZER(CLASS, TYPE, M)
 #define ON_LOADED_BEGIN(CLZ, SUPER)
 #define ON_LOADED_END
 
 #define ADD_METHOD(CLASS, TYPE, M)
 #define ADD_METHOD_E(CLASS, TYPE, M_TYPE, M)
+#define INITIALIZER(CLASS, TYPE, M)
 #define ADD_PROPERTY(CLASS, ...)
 #define ADD_PROPERTY_EX(CLASS, NAME, TYPE, GETTER, SETTER) 
 
@@ -215,6 +234,7 @@ _FORCE_INLINE_ TYPE(const Variant &var) : TYPE() { \
 #define INITIALIZE(CLASS, PARAMS, PROGRAMS) \
 _FORCE_INLINE_ CLASS(PARAMS):CLASS(){PROGRAMS}
 
+
 // ------ LOG
 
 
@@ -230,11 +250,11 @@ _FORCE_INLINE_ CLASS(PARAMS):CLASS(){PROGRAMS}
 #include <android/log.h>
 
 #       define LOGe(...) \
-    __android_log_print(ANDROID_LOG_ERROR, "GR", __VA_ARGS__)
+    __android_log_print(ANDROID_LOG_ERROR, "GRender", __VA_ARGS__)
 #       define LOGi(...) \
-    __android_log_print(ANDROID_LOG_INFO, "GR", __VA_ARGS__)
+    __android_log_print(ANDROID_LOG_INFO, "GRender", __VA_ARGS__)
 #       define LOGw(...) \
-    __android_log_print(ANDROID_LOG_WARN, "GR", __VA_ARGS__)
+    __android_log_print(ANDROID_LOG_WARN, "GRender", __VA_ARGS__)
 
 #   else
 
@@ -267,9 +287,10 @@ _FORCE_INLINE_ CLASS(PARAMS):CLASS(){PROGRAMS}
 #define b8_vector       std::vector<u_int8_t>
 #define pointer_list    std::list<void*>
 #define ref_list        std::list<Reference>
+#define variant_list    std::list<Variant>
 
 #define b8_mask     0xff
 #define b16_mask    0xffff
 #define b32_mask    0xffffffff
 
-#endif //HICORE_DEFINE_H
+#endif //GCORE_DEFINE_H

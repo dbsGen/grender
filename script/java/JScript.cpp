@@ -81,6 +81,13 @@ jmethodID JNIEnvWrap::getToDouble() {
     return to_double;
 }
 
+jmethodID JNIEnvWrap::getToBoolean() {
+    if (!to_boolean) {
+        to_boolean = env->GetStaticMethodID(helper_class, "toBoolean", "(Ljava/lang/Object;)Z");
+    }
+    return to_boolean;
+}
+
 jmethodID JNIEnvWrap::getToNative() {
     if (!to_native) {
         to_native = env->GetStaticMethodID(helper_class, "toNative", "(Ljava/lang/Object;)J");
@@ -114,6 +121,13 @@ jmethodID JNIEnvWrap::getFromDouble() {
         from_double = env->GetStaticMethodID(helper_class, "fromDouble", "(D)Ljava/lang/Object;");
     }
     return from_double;
+}
+
+jmethodID JNIEnvWrap::getFromBoolean() {
+    if (!from_boolean) {
+        from_boolean = env->GetStaticMethodID(helper_class, "fromBoolean", "(Z)Ljava/lang/Object;");
+    }
+    return from_boolean;
 }
 
 jmethodID JNIEnvWrap::getFromNative() {
@@ -173,6 +187,9 @@ float JNIEnvWrap::toFloat(jobject jobj) {
 double JNIEnvWrap::toDouble(jobject jobj) {
     return env->CallStaticDoubleMethod(helper_class, getToDouble(), jobj);
 }
+bool JNIEnvWrap::toBoolean(jobject jobj) {
+    return env->CallStaticBooleanMethod(helper_class, getToBoolean(), jobj);
+}
 jobject JNIEnvWrap::fromNative(jstring class_name, jlong ptr) {
     return env->CallStaticObjectMethod(helper_class, getFromNative(), class_name, ptr);
 }
@@ -187,6 +204,9 @@ jobject JNIEnvWrap::fromFloat(float f) {
 }
 jobject JNIEnvWrap::fromDouble(double d) {
     return env->CallStaticObjectMethod(helper_class, getFromDouble(), (jdouble)d);
+}
+jobject JNIEnvWrap::fromBoolean(bool b) {
+    return env->CallStaticObjectMethod(helper_class, getFromBoolean(), (jboolean)b);
 }
 
 jobject JNIEnvWrap::newDic() {
@@ -276,7 +296,7 @@ Variant JScript::process(const Ref<JNIEnvWrap> &env, char type, jobject jobj) {
             JNIEnv *_env = ***env;
             jobjectArray jkeys = env->dicKeys(jobj);
             size_t count = _env->GetArrayLength(jkeys);
-            RefMap map;
+            Map map;
             for (size_t i = 0; i < count; ++i) {
                 jstring key = (jstring)_env->GetObjectArrayElement(jkeys, i);
                 jobject jval = (jobject)env->getDicValue(jobj, key);
@@ -287,6 +307,19 @@ Variant JScript::process(const Ref<JNIEnvWrap> &env, char type, jobject jobj) {
                 _env->DeleteLocalRef(jval);
             }
             ret = map;
+            break;
+        }
+        case 'a': {
+            JNIEnv *_env = ***env;
+            jobjectArray jobjs = (jobjectArray)jobj;
+            jsize count = _env->GetArrayLength(jobjs);
+            Array arr;
+            for (jsize i = 0; i < count; ++i) {
+                jobject jsubobj = _env->GetObjectArrayElement(jobjs, i);
+                arr << process(env, env->checkType(jsubobj), jsubobj);
+                _env->DeleteLocalRef(jsubobj);
+            }
+            ret = arr;
             break;
         }
         default:
@@ -322,32 +355,34 @@ jobject JScript::process(const Ref<JNIEnvWrap> &env, const Variant &variant) {
         }else if (cls->isTypeOf(NativeObject::getClass())) {
             return (jobject)(long)variant;
         }else if (cls->isTypeOf(_String::getClass()) ||
-                cls->isTypeOf(StringName::getClass())){
-            return (***env)->NewStringUTF((const char *)variant);
-        }else if (cls->isTypeOf(_Array::getClass())){
-            Array arr = variant;
-            int size = arr.size();
-            JNIEnv *_env = (***env);
-
-            jobjectArray arrObjects = _env->NewObjectArray(size, _env->FindClass("java/lang/Object"), NULL);
-            for (int i = 0; i < size; ++i) {
-                jobject obj = process(env, arr.at(i));
-                _env->SetObjectArrayElement(arrObjects, i, obj);
-                _env->DeleteLocalRef(obj);
-            }
-            return arrObjects;
-        }else if (cls->isTypeOf(Map::getClass())) {
-            Map *map = variant.get<Map>();
-            JNIEnv *_env = (***env);
-            jobject jdic = env->newDic();
-            for (auto it = map->begin(), _e = map->end(); it != _e; ++it) {
-                jstring jkey = _env->NewStringUTF(it->first.c_str());
-                jobject jvalue = process(env, it->second);
-                env->setDicValue(jdic, jkey, jvalue);
-                _env->DeleteLocalRef(jkey);
-                _env->DeleteLocalRef(jvalue);
-            }
-            return jdic;
+                cls->isTypeOf(StringName::getClass())) {
+            return (***env)->NewStringUTF((const char *) variant);
+        }else if (cls->isTypeOf(Boolean::getClass())) {
+            return env->fromBoolean((bool)variant);
+//        }else if (cls->isTypeOf(_Array::getClass())){
+//            Array arr = variant;
+//            int size = arr.size();
+//            JNIEnv *_env = (***env);
+//
+//            jobjectArray arrObjects = _env->NewObjectArray(size, _env->FindClass("java/lang/Object"), NULL);
+//            for (int i = 0; i < size; ++i) {
+//                jobject obj = process(env, arr.at(i));
+//                _env->SetObjectArrayElement(arrObjects, i, obj);
+//                _env->DeleteLocalRef(obj);
+//            }
+//            return arrObjects;
+//        }else if (cls->isTypeOf(Map::getClass())) {
+//            Map *map = variant.get<Map>();
+//            JNIEnv *_env = (***env);
+//            jobject jdic = env->newDic();
+//            for (auto it = (*map)->begin(), _e = (*map)->end(); it != _e; ++it) {
+//                jstring jkey = _env->NewStringUTF(it->first.c_str());
+//                jobject jvalue = process(env, it->second);
+//                env->setDicValue(jdic, jkey, jvalue);
+//                _env->DeleteLocalRef(jkey);
+//                _env->DeleteLocalRef(jvalue);
+//            }
+//            return jdic;
         } else if (variant) {
             JNIEnv *_env = (***env);
             HObject *obj = variant.get();
@@ -437,7 +472,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     return JNI_VERSION_1_6;
 }
 
-JNIEXPORT void JNICALL Java_com_hiar_render_HiRender_getParams(JNIEnv * env, jobject jobj,
+JNIEXPORT void JNICALL Java_com_gr_Helper_getParams(JNIEnv * env, jobject jobj,
                                                                   jobjectArray jarr, jlong jptr) {
     JScript *spt = JScript::instance();
     Ref<JNIEnvWrap> _env = JScript::getEnv(env);
@@ -450,7 +485,7 @@ JNIEXPORT void JNICALL Java_com_hiar_render_HiRender_getParams(JNIEnv * env, job
     }
 }
 
-JNIEXPORT jobject JNICALL Java_com_hiar_render_HiRender_findc(JNIEnv * env, jclass jcls, jstring jname) {
+JNIEXPORT jobject JNICALL Java_com_gr_Helper_findc(JNIEnv * env, jclass jcls, jstring jname) {
     const char *cname = env->GetStringUTFChars(jname, NULL);
     JScript *jsc = JScript::instance();
     bool create = false;

@@ -51,8 +51,8 @@ void Database::checkQueue() {
     if (queue.size()) {
         begin();
         for (auto it = queue.begin(), _e = queue.end(); it != _e; ++it) {
-            QueueItem *item = (QueueItem*)*it;
-            action(item->statement, item->params, item->callback);
+            QueueItem *item = (Database::QueueItem*)*it;
+            action(item->statement, &item->params, item->callback);
             delete item;
         }
         queue.clear();
@@ -63,7 +63,7 @@ void Database::checkQueue() {
 Database::~Database() {
     if (queue.size()) {
         for (auto it = queue.begin(), _e = queue.end(); it != _e; ++it) {
-            QueueItem *item = (QueueItem*)*it;
+            QueueItem *item = (Database::QueueItem*)*it;
             delete item;
         }
     }

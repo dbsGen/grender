@@ -79,6 +79,10 @@ namespace gcore {
         _FORCE_INLINE_ bool operator==(const Reference &other) const {
             return ptr == other.ptr;
         }
+        template<class T>
+        _FORCE_INLINE_ bool operator==(const T *other) const {
+            return ptr == other;
+        }
         _FORCE_INLINE_ bool operator!=(const Reference &other) const {
             return ptr != other.ptr;
         }

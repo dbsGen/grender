@@ -50,6 +50,18 @@ namespace gcore {
             return remove_pointer<typename remove_reference<T_>::type>::type::getClass();
         }
     };
+    template <class C> struct base_type<short, C> {
+        _FORCE_INLINE_ static const HClass *getClass() {
+            static const StringName name("gcore::Short");
+            return ClassDB::getInstance()->find(name);
+        }
+    };
+    template <class C> struct base_type<unsigned short, C> {
+        _FORCE_INLINE_ static const HClass *getClass() {
+            static const StringName name("gcore::Short");
+            return ClassDB::getInstance()->find(name);
+        }
+    };
     template <class C> struct base_type<int, C> {
         _FORCE_INLINE_ static const HClass *getClass() {
             static const StringName name("gcore::Integer");

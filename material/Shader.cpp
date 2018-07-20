@@ -85,61 +85,61 @@ const Ref<ShaderContext> &Shader::context() {
             static const char shader_string[] =
 #include <shaders/text.vert>
             ;
-            shader_context->addData(SHADER_TEXT_VERT, new BufferData((void*)shader_string, sizeof(shader_string)));
+            shader_context->addData(SHADER_TEXT_VERT, new_t(BufferData, (void*)shader_string, sizeof(shader_string)));
         }
         {
             static const char shader_string[] =
 #include <shaders/text.frag>
             ;
-            shader_context->addData(SHADER_TEXT_FRAG, new BufferData((void*)shader_string, sizeof(shader_string)));
+            shader_context->addData(SHADER_TEXT_FRAG, new_t(BufferData, (void*)shader_string, sizeof(shader_string)));
         }
         {
             static const char shader_string[] =
 #include <shaders/UI.frag>
             ;
-            shader_context->addData(SHADER_UI_FRAG, new BufferData((void*)shader_string, sizeof(shader_string)));
+            shader_context->addData(SHADER_UI_FRAG, new_t(BufferData, (void*)shader_string, sizeof(shader_string)));
         }
         {
             static const char shader_string[] =
 #include <shaders/simple.vert>
             ;
-            shader_context->addData(SHADER_SIMPLE_VERT, new BufferData((void*)shader_string, sizeof(shader_string)));
+            shader_context->addData(SHADER_SIMPLE_VERT, new_t(BufferData, (void*)shader_string, sizeof(shader_string)));
         }
         {
             static const char shader_string[] =
 #include <shaders/simple.frag>
             ;
-            shader_context->addData(SHADER_SIMPLE_FRAG, new BufferData((void*)shader_string, sizeof(shader_string)));
+            shader_context->addData(SHADER_SIMPLE_FRAG, new_t(BufferData, (void*)shader_string, sizeof(shader_string)));
         }
         {
             static const char shader_string[] =
 #include <shaders/image.frag>
             ;
-            shader_context->addData(SHADER_IMAGE_FRAG, new BufferData((void*)shader_string, sizeof(shader_string)));
+            shader_context->addData(SHADER_IMAGE_FRAG, new_t(BufferData, (void*)shader_string, sizeof(shader_string)));
         }
         {
             static const char shader_string[] =
 #include <shaders/model.vert>
             ;
-            shader_context->addData(SHADER_MODEL_VERT, new BufferData((void*)shader_string, sizeof(shader_string)));
+            shader_context->addData(SHADER_MODEL_VERT, new_t(BufferData, (void*)shader_string, sizeof(shader_string)));
         }
         {
             static const char shader_string[] =
 #include <shaders/model.frag>
             ;
-            shader_context->addData(SHADER_MODEL_FRAG, new BufferData((void*)shader_string, sizeof(shader_string)));
+            shader_context->addData(SHADER_MODEL_FRAG, new_t(BufferData, (void*)shader_string, sizeof(shader_string)));
         }
         {
             static const char shader_string[] =
 #include <shaders/shadow.frag>
             ;
-            shader_context->addData(SHADER_SHADOW_FRAG, new BufferData((void*)shader_string, sizeof(shader_string)));
+            shader_context->addData(SHADER_SHADOW_FRAG, new_t(BufferData, (void*)shader_string, sizeof(shader_string)));
         }
         {
             static const char shader_string[] =
 #include <shaders/shadow.vert>
             ;
-            shader_context->addData(SHADER_SHADOW_VERT, new BufferData((void*)shader_string, sizeof(shader_string)));
+            shader_context->addData(SHADER_SHADOW_VERT, new_t(BufferData, (void*)shader_string, sizeof(shader_string)));
         }
     }
     return shader_context;

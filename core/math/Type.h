@@ -8,6 +8,7 @@
 #include <math.h>
 #include "core/Object.h"
 #include <core/core_define.h>
+#include <cstring>
 
 namespace gcore {
 #define VECTOR_DEF(T, S, current_type) \

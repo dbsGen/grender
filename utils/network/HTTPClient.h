@@ -12,6 +12,9 @@
 #include <core/Object.h>
 #include <core/Action.h>
 #include <core/Callback.h>
+#include <core/Map.h>
+#include <core/Data.h>
+#include <types.h>
 #include "../../render_define.h"
 
 using namespace gcore;
@@ -29,11 +32,14 @@ namespace gr {
         float delay;
         int retry_count;
         int retry_num;
+        Time timeout;
         map<string, string> headers;
         map<string, Variant> parameters;
+        Map response_headers;
 
         RefCallback on_complete;
         RefCallback on_progress;
+        Ref<Data> body;
 
         void _initialize();
         void _finalize();
@@ -48,9 +54,13 @@ namespace gr {
 
         HTTPClient();
         ~HTTPClient();
+
         METHOD _FORCE_INLINE_ void initialize(const string &url) {
             this->url = url;
             _initialize();
+        }
+        METHOD _FORCE_INLINE_ const string &getUrl() {
+            return url;
         }
         METHOD _FORCE_INLINE_ const string &getError() {
             return error;
@@ -61,7 +71,8 @@ namespace gr {
         }
 
         /**
-         * @params sender_data: NULL
+         * @params (HTTPClient *c, const string &path)  
+         * @return NULL;
          */
         METHOD _FORCE_INLINE_ void setOnComplete(const RefCallback &callback) {
             on_complete = callback;
@@ -126,6 +137,30 @@ namespace gr {
             parameters.erase(name);
         }
 
+        METHOD _FORCE_INLINE_ const Map &getResponseHeaders() {
+            return response_headers;
+        }
+        METHOD _FORCE_INLINE_ void setResponseHeaders(const Map &headers) {
+            response_headers = headers;
+        }
+        PROPERTY(response_headers, getResponseHeaders, setResponseHeaders);
+
+        METHOD _FORCE_INLINE_ Time getTimeout() {
+            return timeout;
+        }
+        METHOD _FORCE_INLINE_ void setTimeout(Time timeout) {
+            this->timeout = timeout;
+        }
+        PROPERTY(timeout, setTimeout, getTimeout);
+
+        METHOD _FORCE_INLINE_ const Ref<Data> &getBody() const {
+            return body;
+        }
+        METHOD _FORCE_INLINE_ void setBody(const Ref<Data> &body) {
+            this->body = body;
+        }
+        PROPERTY(body, setBody, getBody);
+
         METHOD void start();
         METHOD void cancel();
 
@@ -138,6 +173,9 @@ namespace gr {
             ADD_PROPERTY(cls, "delay", ADD_METHOD(cls, HTTPClient, getDelay), ADD_METHOD(cls, HTTPClient, setDelay));
             ADD_PROPERTY(cls, "retry_count", ADD_METHOD(cls, HTTPClient, getRetryCount), ADD_METHOD(cls, HTTPClient, setRetryCount));
             ADD_PROPERTY(cls, "method", ADD_METHOD(cls, HTTPClient, getMethod), ADD_METHOD(cls, HTTPClient, setMethod));
+            ADD_PROPERTY(cls, "response_headers", ADD_METHOD(cls, HTTPClient, getResponseHeaders), ADD_METHOD(cls, HTTPClient, setResponseHeaders));
+            ADD_PROPERTY(cls, "timeout", ADD_METHOD(cls, HTTPClient, getTimeout), ADD_METHOD(cls, HTTPClient, setTimeout));
+            ADD_PROPERTY(cls, "body", ADD_METHOD(cls, HTTPClient, getBody), ADD_METHOD(cls, HTTPClient, setBody));
             ADD_METHOD(cls, HTTPClient, initialize);
             ADD_METHOD(cls, HTTPClient, getError);
             ADD_METHOD(cls, HTTPClient, getPercent);

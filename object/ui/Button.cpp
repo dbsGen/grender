@@ -11,9 +11,9 @@ using namespace gr;
 
 bool Button::onMessage(const StringName &key, const Array *vars) {
     if (key == Object::MESSAGE_TOUCH_EVENT) {
-        variant_vector *vec = vars->vec();
-        EventType type = (Object::EventType)((int)vec->at(0));
-        Vector2f *point = vec->at(1).get<Vector2f>();
+        variant_vector &vec = vars->vec();
+        EventType type = (Object::EventType)((int)vec.at(0));
+        Vector2f *point = vec.at(1).get<Vector2f>();
         switch (type){
             case TOUCH_BEGIN:
                 setStatus(Press);

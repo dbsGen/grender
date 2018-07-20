@@ -314,7 +314,7 @@
 
 
     //inspectors
-    char json_type(json_const JSONNODE * node){
+    char json_ctype(json_const JSONNODE * node){
 	   JSON_ASSERT_SAFE(node, JSON_TEXT("null node to json_type"), return JSON_NULL;);
 	   return ((JSONNode*)node) -> type();
     }

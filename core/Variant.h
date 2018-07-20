@@ -22,7 +22,7 @@ namespace gcore {
     class Pointer;
 
     class Variant {
-        BASE_CLASS_DEFINE
+        BASE_FINAL_CLASS_DEFINE
     private:
         static const HClass * const ref_class;
         static const HClass * const pointer_class;
@@ -98,21 +98,18 @@ namespace gcore {
             other.mem = tm;
             other.type = tt;
         }
-        _FORCE_INLINE_ virtual void copy(const Variant *other) {
+
+        bool operator==(const Variant &other) const;
+
+        _FORCE_INLINE_ void copy(const Variant *other) {
             operator=(*other);
         }
 
-        _FORCE_INLINE_ HObject *operator->() {
+        _FORCE_INLINE_ HObject *operator->() const {
             return get();
         }
 
-        _FORCE_INLINE_ const HObject *operator->() const {
-            return get();
-        }
-
-        _FORCE_INLINE_ const HClass *getType() const {
-            return isRef() ? ((Reference*)mem)->getType() : type;
-        }
+        const HClass *getType() const;
 
         _FORCE_INLINE_ Reference ref() const {
             return isRef() ? (*(Reference*)mem) : Reference();
@@ -122,6 +119,7 @@ namespace gcore {
         _FORCE_INLINE_ bool isRef() const { return isRef(type); }
         _FORCE_INLINE_ bool empty() const { return isRef(type) ? !((Reference*)mem)->getType() : !type; }
 
+        operator bool() const;
         operator char() const;
         operator short() const;
         operator int() const;
@@ -129,7 +127,6 @@ namespace gcore {
         operator long long() const;
         operator float() const;
         operator double() const;
-        operator bool() const;
 
         operator string() const;
         
@@ -138,7 +135,7 @@ namespace gcore {
         operator HObject *() const;
         operator StringName() const;
 
-        virtual string str() const;
+        string str() const;
         
         Variant(char);
         Variant(short);
@@ -147,12 +144,12 @@ namespace gcore {
         Variant(long long);
         Variant(float);
         Variant(double);
+        Variant(bool);
         Variant(const string &);
         Variant(const char *);
         Variant(const HObject*);
         Variant(void*);
         Variant(const StringName &name);
-        Variant(bool);
 
         template <class T>
         static Variant make(T v) {

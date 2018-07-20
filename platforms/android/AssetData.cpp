@@ -4,6 +4,7 @@
 
 #ifdef __ANDROID__
 #include <script/java/JScript.h>
+#include <cstring>
 #include "AssetData.h"
 
 using namespace gr;
