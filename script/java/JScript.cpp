@@ -252,6 +252,10 @@ Variant JScript::process(const Ref<JNIEnvWrap> &env, char type, jobject jobj) {
             ret = env->toInt(jobj);
             break;
         }
+        case 'b': {
+            ret = env->toBoolean(jobj);
+            break;
+        }
         case 'l': {
             ret = env->toLong(jobj);
             break;
