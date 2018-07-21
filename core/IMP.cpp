@@ -540,7 +540,11 @@ Variant::operator bool() const {
 }
 
 Variant::operator string() const {
-    return str();
+    if (type) {
+        return str();
+    }else {
+        return "";
+    }
 }
 
 Variant::Variant(const string &str) : Variant() {

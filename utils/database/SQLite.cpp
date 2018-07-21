@@ -20,7 +20,7 @@ void SQLQuery::insertAction(const string &name, const Variant &val, const char *
     sql_sentence.push_back(' ');
     sql_sentence += action;
     sql_sentence.push_back(' ');
-    if (val.getType()->isTypeOf(String::getClass())) {
+    if (val.getType()->isTypeOf(_String::getClass())) {
         params.push_back(val);
         sql_sentence += '?';
     }else {
@@ -186,7 +186,7 @@ void SQLite::action(const string &statement, variant_vector *params, const Ref<C
                     }else if (type->isTypeOf(Float::getClass()) ||
                               type->isTypeOf(Double::getClass())) {
                         sqlite3_bind_double(stmt, count++, (double)variant);
-                    }else if (type->isTypeOf(String::getClass())) {
+                    }else if (type->isTypeOf(_String::getClass())) {
                         const char *chs = (const char *)variant;
                         sqlite3_bind_text(stmt, count++, chs, strlen(chs), NULL);
                     }
