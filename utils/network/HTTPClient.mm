@@ -6,8 +6,8 @@
 //  Copyright © 2017年 gen. All rights reserved.
 //
 
-#import "HTTPClient.h"
 #import <Foundation/Foundation.h>
+#import "HTTPClient.h"
 #import "DIManager.h"
 
 const StringName event_complete("COMPLETE");
@@ -16,7 +16,7 @@ const StringName event_process("PROCESS");
 
 @interface HTTPClientObject : NSObject <DIItemDelegate> {
 @public
-    hirender::HTTPClient *c_client;
+    gr::HTTPClient *c_client;
 }
 
 @property (nonatomic, strong) NSURLSession *session;
@@ -75,11 +75,11 @@ const StringName event_process("PROCESS");
 
 @end
 
-using namespace hirender;
+using namespace gr;
 
 const StringName ObjcTarget("OBJECT_C_OBJECT");
 
-void HTTPClient::event(const hicore::StringName &name, void *data) {
+void HTTPClient::event(const gcore::StringName &name, void *data) {
     if (name == event_complete) {
         path = (const char *)data;
         error.clear();
