@@ -26,38 +26,40 @@ typedef xmlXPathContext *xmlXPathContextPtr;
 
 namespace gr {
     CLASS_BEGIN_N(XMLDocument, RefObject)
-    
-public:
-    typedef int DocumentType;
-    static const DocumentType XML = 0;
-    static const DocumentType HTML = 1;
-    
-private:
-    
-    xmlDocPtr c_doc;
-    xmlXPathContextPtr xpath_context;
-    Ref<XMLNode> root;
-    pointer_vector xpath_objects;
-    Array xpathNode(const void *node, const char *str);
-    
-    friend class XMLNode;
-    
-public:
-    XMLDocument() : c_doc(NULL), xpath_context(NULL) {
-    }
-    ~XMLDocument();
-    
-    void initialize(const Ref<Data> &data, DocumentType type = XML);
-    
-    METHOD const Ref<XMLNode> &getRoot();
-    
-    METHOD Array xpath(const char *str);
-    
+
+    public:
+        typedef int DocumentType;
+        static const DocumentType XML = 0;
+        static const DocumentType HTML = 1;
+
+    private:
+
+        xmlDocPtr c_doc;
+        xmlXPathContextPtr xpath_context;
+        Ref<XMLNode> root;
+        pointer_vector xpath_objects;
+        Array xpathNode(const void *node, const char *str);
+
+        friend class XMLNode;
+
+    public:
+        XMLDocument() : c_doc(NULL), xpath_context(NULL) {
+        }
+        ~XMLDocument();
+
+        void initialize(const Ref<Data> &data, DocumentType type = XML);
+
+        METHOD const Ref<XMLNode> &getRoot();
+
+        METHOD Array xpath(const char *str);
+        METHOD static Ref<XMLDocument> parse(const Ref<Data> &data, DocumentType type = XML, const char *coding = NULL);
+
     protected:
         ON_LOADED_BEGIN(cls, RefObject)
             INITIALIZER(cls, XMLDocument, initialize);
             ADD_METHOD(cls, XMLDocument, getRoot);
             ADD_METHOD(cls, XMLDocument, xpath);
+            ADD_METHOD(cls, XMLDocument, parse);
         ON_LOADED_END
     CLASS_END
 }

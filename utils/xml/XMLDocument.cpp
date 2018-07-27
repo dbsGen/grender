@@ -20,9 +20,9 @@ void XMLDocument::initialize(const Ref<Data> &data, DocumentType type) {
         case HTML:
             c_doc = htmlReadMemory(data->text(),
                                    (int)data->getSize(),
-                                   NULL, xmlGetCharEncodingName(XML_CHAR_ENCODING_UTF8),
+                                   NULL, NULL,
                                    HTML_PARSE_NOBLANKS | HTML_PARSE_NOERROR | HTML_PARSE_NOWARNING | HTML_PARSE_NONET);
-            
+
         default:
             break;
     }
@@ -50,17 +50,37 @@ Array XMLDocument::xpath(const char *str) {
         xpath_context = xmlXPathNewContext(c_doc);
     }
     xmlXPathObjectPtr result = xmlXPathEvalExpression((const xmlChar *)str, xpath_context);
-    xpath_objects.push_back(result);
     variant_vector vs;
-    if (result->nodesetval) {
-        for (int i = 0; i < result->nodesetval->nodeNr; ++i) {
-            Ref<XMLNode> node = new_t(XMLNode);
-            node->doc = this;
-            node->c_node = result->nodesetval->nodeTab[i];
-            vs.push_back(node);
+    if (result) {
+        xpath_objects.push_back(result);
+        if (result->nodesetval) {
+            for (int i = 0; i < result->nodesetval->nodeNr; ++i) {
+                Ref<XMLNode> node = new_t(XMLNode);
+                node->doc = this;
+                node->c_node = result->nodesetval->nodeTab[i];
+                vs.push_back(node);
+            }
         }
     }
     return vs;
+}
+
+Ref<XMLDocument> XMLDocument::parse(const Ref<Data> &data, DocumentType type, const char *coding) {
+    XMLDocument *doc = new XMLDocument();
+    switch (type) {
+        case XML:
+            doc->c_doc = xmlParseMemory(data->text(), (int)data->getSize());
+            break;
+        case HTML:
+            doc->c_doc = htmlReadMemory(data->text(),
+                                   (int)data->getSize(),
+                                   NULL, coding,
+                                   HTML_PARSE_NOBLANKS | HTML_PARSE_NOERROR | HTML_PARSE_NOWARNING | HTML_PARSE_NONET);
+
+        default:
+            break;
+    }
+    return doc;
 }
 
 Array XMLDocument::xpathNode(const void *ptr, const char *str) {

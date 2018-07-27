@@ -71,11 +71,13 @@ bool XMLNode::hasAttribute(const char *name) const {
 string XMLNode::getAttribute(const char *name) const {
     if (c_node) {
         char *str = (char*)xmlGetProp(c_node, (const xmlChar *)name);
-        string ret(str);
-        xmlFree(str);
-        return ret;
+        if (str) {
+            string ret(str);
+            xmlFree(str);
+            return ret;
+        }
     }
-    return NULL;
+    return string();
 }
 
 void XMLNode::setAttribute(const char *name, const char *value) const {
