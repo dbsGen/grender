@@ -70,10 +70,12 @@ void BufferData::initialize(void* buffer, long size, RetainType retain) {
             this->b_buffer = malloc(size);
             memcpy(this->b_buffer, buffer, size);
             this->retain = true;
+            break;
         }
         case Ref: {
             this->b_buffer = buffer;
             this->retain = false;
+            break;
         }
 
         default:
