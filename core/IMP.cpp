@@ -183,8 +183,15 @@ void HObject::apply(const StringName &name, Variant *result, const Variant **par
 #endif
 
 void HObject::call(const StringName &name, Variant *result, const Variant **params, int count) {
-    if (result)
-        *result = getInstanceClass()->getMethod(name)->call(this, params, count);
+    const HMethod *method = getInstanceClass()->getMethod(name);
+    if (method) {
+        if (result) {
+            *result = method->call(this, params, count);
+        }
+        else {
+            method->call(this, params, count);
+        }
+    }
 }
 
 bool HObject::copy(const HObject *other) {
@@ -1053,6 +1060,10 @@ void *gcore::h(const char *chs) {
 //    }
 //    return NULL;
 //}
+
+
+void ClassDB::loadClasses() {
+}
 
 StringName StringName::_null;
 

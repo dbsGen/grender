@@ -174,7 +174,7 @@ enum {
 #define ADD_METHOD(CLASS, TYPE, M) CLASS->addMethod(gcore::MethodImp_makeMethod<TYPE>(#M, &TYPE::M))
 #define ADD_METHOD_E(CLASS, TYPE, M_TYPE, M) CLASS->addMethod(MethodImp_makeMethod<TYPE>(#M, (M_TYPE)&TYPE::M))
 
-#define ADD_PROPERTY(CLASS, ...) CLASS->addProperty(new Property(CLASS, __VA_ARGS__))
+#define ADD_PROPERTY(CLASS, ...) CLASS->addProperty(new gcore::Property(CLASS, __VA_ARGS__))
 #define ADD_PROPERTY_EX(CLASS, NAME, TYPE, GETTER, SETTER) ADD_PROPERTY(CLASS, NAME, ADD_MEMBER_METHOD(CLASS, TYPE, GETTER), ADD_MEMBER_METHOD(CLASS, TYPE, SETTER))
 
 #else

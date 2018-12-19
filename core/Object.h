@@ -82,9 +82,9 @@ namespace gcore {
             apply(name, &ret, (const Variant **)params.data(), (int)params.size());
             return ret;
         }
-        void call(const StringName &name, Variant *result = NULL, const Variant **params = NULL, int count = 0);
+        void call(const StringName &name, Variant *result, const Variant **params = NULL, int count = 0);
         
-        Variant call(const StringName &name, const pointer_vector &params) {
+        Variant call(const StringName &name, const pointer_vector &params = pointer_vector()) {
             Variant ret;
             call(name, &ret, (const Variant **)params.data(), (int)params.size());
             return ret;
