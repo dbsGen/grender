@@ -11,7 +11,7 @@
 
 namespace gcore {
 
-    class HObject;
+    class Object;
     
     
     template<int... Is>
@@ -24,7 +24,7 @@ namespace gcore {
     struct gen_seq<0, Is...> : seq<Is...> { };
     
     template <typename _T> struct type_convert {
-        _FORCE_INLINE_ static typename remove_reference<typename remove_const<_T>::type>::type toType(const Variant &v) { return v; }
+        _FORCE_INLINE_ static typename std::remove_reference<typename std::remove_const<_T>::type>::type toType(const Variant &v) { return v; }
         _FORCE_INLINE_ static Variant toVariant(_T v) { return v; }
     };
     template <class _T> struct type_convert<_T*> {
@@ -46,71 +46,71 @@ namespace gcore {
     
     template <class ...T_> struct base_type {};
     template <class T_, class C> struct base_type<T_, C> {
-        _FORCE_INLINE_ static const HClass *getClass() {
-            return remove_pointer<typename remove_reference<T_>::type>::type::getClass();
+        _FORCE_INLINE_ static const Class *getClass() {
+            return std::remove_pointer<typename std::remove_reference<T_>::type>::type::getClass();
         }
     };
     template <class C> struct base_type<short, C> {
-        _FORCE_INLINE_ static const HClass *getClass() {
+        _FORCE_INLINE_ static const Class *getClass() {
             static const StringName name("gcore::Short");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<unsigned short, C> {
-        _FORCE_INLINE_ static const HClass *getClass() {
+        _FORCE_INLINE_ static const Class *getClass() {
             static const StringName name("gcore::Short");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<int, C> {
-        _FORCE_INLINE_ static const HClass *getClass() {
+        _FORCE_INLINE_ static const Class *getClass() {
             static const StringName name("gcore::Integer");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<void, C> {
-        _FORCE_INLINE_ static const HClass *getClass() {
+        _FORCE_INLINE_ static const Class *getClass() {
             return NULL;
         }
     };
-    template <class C> struct base_type<const string &, C> {
-        static const HClass *getClass() {
+    template <class C> struct base_type<const std::string &, C> {
+        static const Class *getClass() {
             static const StringName name("gcore::String");
             return ClassDB::getInstance()->find(name);
         }
     };
-    template <class C> struct base_type<string, C> {
-        _FORCE_INLINE_ static const HClass *getClass() {
+    template <class C> struct base_type<std::string, C> {
+        _FORCE_INLINE_ static const Class *getClass() {
             static const StringName name("gcore::String");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<const char *, C> {
-        _FORCE_INLINE_ static const HClass *getClass() {
+        _FORCE_INLINE_ static const Class *getClass() {
             static const StringName name("gcore::String");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<float, C> {
-        _FORCE_INLINE_ static const HClass *getClass() {
+        _FORCE_INLINE_ static const Class *getClass() {
             static const StringName name("gcore::Float");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<double, C> {
-        _FORCE_INLINE_ static const HClass *getClass() {
+        _FORCE_INLINE_ static const Class *getClass() {
             static const StringName name("gcore::Double");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<long, C> {
-        _FORCE_INLINE_ static const HClass *getClass() {
+        _FORCE_INLINE_ static const Class *getClass() {
             static const StringName name("gcore::Long");
             return ClassDB::getInstance()->find(name);
         }
     };
     template <class C> struct base_type<bool, C> {
-        _FORCE_INLINE_ static const HClass *getClass() {
+        _FORCE_INLINE_ static const Class *getClass() {
             static const StringName name("gcore::Boolean");
             return ClassDB::getInstance()->find(name);
         }
@@ -118,11 +118,11 @@ namespace gcore {
     template <class T_> struct get_type : base_type<T_, T_> {};
 
     template <class T, typename M>
-    static HMethod *MethodImp_makeMethod(const string &name, M method, const vector<Variant> &dvs);
-    template <class T, typename M> static HMethod *MethodImp_makeMethod(const string &name, M method);
+    static Method *MethodImp_makeMethod(const std::string &name, M method, const std::vector<Variant> &dvs);
+    template <class T, typename M> static Method *MethodImp_makeMethod(const std::string &name, M method);
 
     template <class T, typename M, typename Ret, typename... Args>
-    CLASS_BEGIN_N(MethodImp, HMethod)
+    CLASS_BEGIN_N(MethodImp, Method)
 
     public:
         typedef M method_type;
@@ -156,7 +156,7 @@ namespace gcore {
         }
         template <int... Is>
         _FORCE_INLINE_ Variant _call(void *obj, const Variant **params, seq<Is...>*) const {
-            return call(obj, type_convert<typename tuple_element<Is, tuple<Args...> >::type >::toType(*params[Is])...);
+            return call(obj, type_convert<typename std::tuple_element<Is, std::tuple<Args...> >::type >::toType(*params[Is])...);
 //            return call(obj, (*params[Is])...);
         }
 
@@ -165,15 +165,15 @@ namespace gcore {
             setParamsType(NULL, sizeof...(Args));
         }
 
-        friend HMethod *MethodImp_makeMethod<T, M>(const string &name, M method);
+        friend Method *MethodImp_makeMethod<T, M>(const std::string &name, M method);
 
     public:
-        _FORCE_INLINE_ MethodImp() : HMethod("") {}
+        _FORCE_INLINE_ MethodImp() : Method("") {}
         MethodImp(const char *name,
                   const method_type &method,
                   bool is_const,
                   const Variant *dv = NULL,
-                  int count = 0) : HMethod(name), method(method) {
+                  int count = 0) : Method(name), method(method) {
             setType(is_const ? ConstMb : Member);
 //            setReturnType(get_type<Ret>::getClass());
             makeParamsTypes();
@@ -184,7 +184,7 @@ namespace gcore {
                   bool is_const,
                   const variant_map &labels,
                   const Variant *dv = NULL,
-                  int count = 0) : HMethod(name), method(method) {
+                  int count = 0) : Method(name), method(method) {
             setType(is_const ? ConstMb : Member);
 //            setReturnType(get_type<Ret>::getClass());
             makeParamsTypes();
@@ -200,7 +200,7 @@ namespace gcore {
     CLASS_END
 
     template <class T, typename M, typename Ret, typename... Args>
-    CLASS_BEGIN_N(StaticMethodImp, HMethod)
+    CLASS_BEGIN_N(StaticMethodImp, Method)
 
     public:
         typedef M method_type;
@@ -231,7 +231,7 @@ namespace gcore {
     
         template <int... Is>
         _FORCE_INLINE_ Variant _call(const Variant **params, seq<Is...>*) const {
-            return call(type_convert<typename tuple_element<Is, tuple<Args...> >::type >::toType(*params[Is])...);
+            return call(type_convert<typename std::tuple_element<Is, std::tuple<Args...> >::type >::toType(*params[Is])...);
         }
 
         void makeParamsTypes() {
@@ -239,14 +239,14 @@ namespace gcore {
             setParamsType(NULL, sizeof...(Args));
         }
 
-        friend HMethod *MethodImp_makeMethod<T, M>(const string &name, M method);
+        friend Method *MethodImp_makeMethod<T, M>(const std::string &name, M method);
 
 public:
-    _FORCE_INLINE_ StaticMethodImp() : HMethod("") {}
+    _FORCE_INLINE_ StaticMethodImp() : Method("") {}
     StaticMethodImp(const char *name,
                     const method_type &method,
                     const Variant *dv = NULL,
-                    int count = 0) : HMethod(name), method(method) {
+                    int count = 0) : Method(name), method(method) {
         setType(Static);
 //        setReturnType(get_type<Ret>::getClass());
         makeParamsTypes();
@@ -256,7 +256,7 @@ public:
                     const method_type &method,
                     const variant_map &labels,
                     const Variant *dv = NULL,
-                    int count = 0) : HMethod(name), method(method) {
+                    int count = 0) : Method(name), method(method) {
         setType(Static);
 //        setReturnType(get_type<Ret>::getClass());
         makeParamsTypes();
@@ -278,11 +278,11 @@ public:
     struct function_traits<ReturnType(ClassType::*)(Args...)>
     {
         template <class T, class M>
-        _FORCE_INLINE_ static HMethod *makeMethod(const char *name, M method, const variant_vector &dvs) {
+        _FORCE_INLINE_ static Method *makeMethod(const char *name, M method, const variant_vector &dvs) {
             return new MethodImp<T, M, ReturnType, Args...>(name, method, false, dvs);
         }
         template <class T, class M>
-        _FORCE_INLINE_ static HMethod *makeMethod(const char *name, M method) {
+        _FORCE_INLINE_ static Method *makeMethod(const char *name, M method) {
             return new MethodImp<T, M, ReturnType, Args...>(name, method, false);
         }
     };
@@ -290,33 +290,33 @@ public:
     struct function_traits<ReturnType(*)(Args...)>
     {
         template <class T, class M>
-        _FORCE_INLINE_ static HMethod *makeMethod(const char *name, M method, const variant_vector &dvs) {
+        _FORCE_INLINE_ static Method *makeMethod(const char *name, M method, const variant_vector &dvs) {
             return new StaticMethodImp<T, M, ReturnType, Args...>(name, method, dvs);
         }
         template <class T, class M>
-        _FORCE_INLINE_ static HMethod *makeMethod(const char *name, M method) {
+        _FORCE_INLINE_ static Method *makeMethod(const char *name, M method) {
             return new StaticMethodImp<T, M, ReturnType, Args...>(name, method);
         }
     };
     template <typename ClassType, typename ReturnType, typename... Args>
     struct function_traits<ReturnType(ClassType::*)(Args...) const> {
         template<class T, class M>
-        _FORCE_INLINE_ static HMethod *makeMethod(const char *name, M method, const variant_vector &dvs) {
+        _FORCE_INLINE_ static Method *makeMethod(const char *name, M method, const variant_vector &dvs) {
             return new MethodImp<T, M, ReturnType, Args...>(name, method, true, dvs);
         }
 
         template<class T, class M>
-        _FORCE_INLINE_ static HMethod *makeMethod(const char *name, M method) {
+        _FORCE_INLINE_ static Method *makeMethod(const char *name, M method) {
             return new MethodImp<T, M, ReturnType, Args...>(name, method, true);
         }
     };
 
     template <class T, typename M>
-    _FORCE_INLINE_ static HMethod *MethodImp_makeMethod(const char *name, M method, const vector<Variant> &dvs) {
+    _FORCE_INLINE_ static Method *MethodImp_makeMethod(const char *name, M method, const std::vector<Variant> &dvs) {
         return function_traits<M>::template makeMethod<T>(name, method, dvs);
     }
     template <class T, typename M>
-    _FORCE_INLINE_ static HMethod *MethodImp_makeMethod(const char *name, M method) {
+    _FORCE_INLINE_ static Method *MethodImp_makeMethod(const char *name, M method) {
         return function_traits<M>::template makeMethod<T>(name, method);
     }
 }

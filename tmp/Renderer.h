@@ -18,8 +18,6 @@
 #include "Plugin.h"
 #include "render_define.h"
 
-using namespace std;
-
 namespace gr {
     class RendererIMP;
 

@@ -38,7 +38,7 @@ namespace gcore {
 
         friend class Script;
         friend class ScriptClass;
-        friend class HObject;
+        friend class Object;
 
     public:
         _FORCE_INLINE_ ScriptInstance() : target(NULL), script(NULL), cls(NULL), single_class(false) {}

@@ -13,7 +13,6 @@
 #include <math.h>
 #include <core/core_define.h>
 
-using namespace std;
 
 namespace gcore {
     inline unsigned int nextPowerOf2(unsigned int in) {
@@ -29,7 +28,7 @@ namespace gcore {
     }
 
     template <class T>
-    inline typename vector<T>::const_iterator list_find(vector<T> list, T target) {
+    inline typename std::vector<T>::const_iterator list_find(std::vector<T> list, T target) {
         auto it = list.begin();
         for (auto _e = list.end(); it != _e; ++it) {
             if (*it == target) {

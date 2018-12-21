@@ -12,8 +12,6 @@
 #include "../core/Singleton.h"
 #include "../core/Data.h"
 
-using namespace gcore;
-
 namespace gr {
     CLASS_BEGIN_TNV(FileSystem, Singleton, 1, FileSystem)
     

@@ -13,8 +13,6 @@
 #include <core/Array.h>
 #include "../../render_define.h"
 
-using namespace gcore;
-
 struct _xmlNode;
 typedef struct _xmlNode xmlNode;
 typedef xmlNode *xmlNodePtr;

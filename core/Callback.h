@@ -28,8 +28,8 @@ namespace gcore {
         _FORCE_INLINE_ Variant operator() (Args && ...args) {
             return invoke(variant_vector{{args...}});
         }
-        METHOD virtual Variant invoke(const Array &params);
-        EVENT(Variant, _invoke, const Array &params);
+        METHOD virtual Variant invoke(const RArray &params);
+        EVENT(Variant, _invoke, const RArray &params);
     
     protected:
         ON_LOADED_BEGIN(cls, RefObject)
@@ -39,8 +39,8 @@ namespace gcore {
     
     // The Function is too big, do not command to use.
     template <int N>
-    _FORCE_INLINE_ static const Variant &_var(const Array &params) {
-        return N < params.size() ? (*params)->operator[](N) : Variant::null();
+    _FORCE_INLINE_ static const Variant &_var(const RArray &params) {
+        return N < params.size() ? params[N] : Variant::null();
     }
     
     template <class M>
@@ -48,14 +48,14 @@ namespace gcore {
     
     template<class ..._ArgType>
     class Function<void(_ArgType...)> : public Callback {
-        
-        function<void(_ArgType...)> func;
+
+        std::function<void(_ArgType...)> func;
         
     public:
         _FORCE_INLINE_ Function() {}
         _FORCE_INLINE_ Function(const Function &other) : func(other.func) {
         }
-        _FORCE_INLINE_ Function(function<void(_ArgType...)> func) : func(func) {
+        _FORCE_INLINE_ Function(std::function<void(_ArgType...)> func) : func(func) {
         }
         template <typename M>
         _FORCE_INLINE_ Function(M func) : func(func) {
@@ -70,12 +70,12 @@ namespace gcore {
         }
         
         template <int... Is>
-        _FORCE_INLINE_ Variant _call(const Array &params, seq<Is...>*) const {
-            func(type_convert<typename tuple_element<Is, tuple<_ArgType...> >::type >::toType(_var<Is>(params))...);
+        _FORCE_INLINE_ Variant _call(const RArray &params, seq<Is...>*) const {
+            func(type_convert<typename std::tuple_element<Is, std::tuple<_ArgType...> >::type >::toType(_var<Is>(params))...);
             return Variant::null();
         }
         
-        virtual Variant invoke(const Array &params) {
+        virtual Variant invoke(const RArray &params) {
             static const int size = sizeof...(_ArgType);
             gen_seq<size> d;
             return _call(params, &d);
@@ -85,14 +85,14 @@ namespace gcore {
     
     template<class _Rp, class ..._ArgType>
     class Function<_Rp(_ArgType...)> : public Callback {
-        
-        function<_Rp(_ArgType...)> func;
+
+        std::function<_Rp(_ArgType...)> func;
         
     public:
         _FORCE_INLINE_ Function() {}
         _FORCE_INLINE_ Function(const Function &other) : func(other.func) {
         }
-        _FORCE_INLINE_ Function(function<_Rp(_ArgType...)> func) : func(func) {
+        _FORCE_INLINE_ Function(std::function<_Rp(_ArgType...)> func) : func(func) {
         }
         template <typename M>
         _FORCE_INLINE_ Function(M func) : func(func) {
@@ -107,11 +107,11 @@ namespace gcore {
         }
         
         template <int... Is>
-        _FORCE_INLINE_ Variant _call(const Array &params, seq<Is...>*) const {
-            return func(type_convert<typename tuple_element<Is, tuple<_ArgType...> >::type >::toType(_var<Is>(params))...);
+        _FORCE_INLINE_ Variant _call(const RArray &params, seq<Is...>*) const {
+            return func(type_convert<typename std::tuple_element<Is, std::tuple<_ArgType...> >::type >::toType(_var<Is>(params))...);
         }
         
-        virtual Variant invoke(const Array &params) {
+        virtual Variant invoke(const RArray &params) {
             static const int size = sizeof...(_ArgType);
             gen_seq<size> d;
             return _call(params, &d);
@@ -145,15 +145,15 @@ namespace gcore {
             return func == other.func;
         }
         template <int... Is>
-        _FORCE_INLINE_ Variant _call(const Array &params, seq<Is...>*) const {
-            func(type_convert<typename tuple_element<Is, tuple<_ArgType...> >::type >::toType(_var<Is>(params))...);
+        _FORCE_INLINE_ Variant _call(const RArray &params, seq<Is...>*) const {
+            func(type_convert<typename std::tuple_element<Is, std::tuple<_ArgType...> >::type >::toType(_var<Is>(params))...);
             return Variant::null();
         }
-        virtual Variant invoke(const Array &params) {
+        virtual Variant invoke(const RArray &params) {
             static const int size = sizeof...(_ArgType);
             gen_seq<size> d;
             if (data) {
-                Array arr;
+                RArray arr;
                 arr->push_back(data);
                 arr.contact(params);
                 return _call(std::move(arr), &d);
@@ -186,15 +186,15 @@ namespace gcore {
             return func == other.func;
         }
         template <int... Is>
-        _FORCE_INLINE_ Variant _call(const Array &params, seq<Is...>*) const {
-            return func(type_convert<typename tuple_element<Is, tuple<_ArgType...> >::type >::toType(_var<Is>(params))...);
+        _FORCE_INLINE_ Variant _call(const RArray &params, seq<Is...>*) const {
+            return func(type_convert<typename std::tuple_element<Is, std::tuple<_ArgType...> >::type >::toType(_var<Is>(params))...);
         }
-        virtual Variant invoke(const Array &params) {
+        virtual Variant invoke(const RArray &params) {
             static const int size = sizeof...(_ArgType);
             gen_seq<size> d;
             if (data) {
-                Array arr;
-                arr->push_back(data);
+                RArray arr;
+                arr.push_back(data);
                 arr.contact(params);
                 return _call(std::move(arr), &d);
             }else {
@@ -231,16 +231,16 @@ namespace gcore {
             return target == other.target && func == other.func;
         }
         template <int... Is>
-        _FORCE_INLINE_ Variant _call(const Array &params, seq<Is...>*) const {
-            (target->*func)(type_convert<typename tuple_element<Is, tuple<_ArgType...> >::type >::toType(_var<Is>(params))...);
+        _FORCE_INLINE_ Variant _call(const RArray &params, seq<Is...>*) const {
+            (target->*func)(type_convert<typename std::tuple_element<Is, std::tuple<_ArgType...> >::type >::toType(_var<Is>(params))...);
             return Variant::null();
         }
-        virtual Variant invoke(const Array &params) {
+        virtual Variant invoke(const RArray &params) {
             static const int size = sizeof...(_ArgType);
             gen_seq<size> d;
             if (!data.empty()) {
-                Array arr;
-                arr->push_back(data);
+                RArray arr;
+                arr.push_back(data);
                 arr.contact(params);
                 return _call(std::move(arr), &d);
             }else {
@@ -273,14 +273,14 @@ namespace gcore {
             return target == other.target && func == other.func;
         }
         template <int... Is>
-        _FORCE_INLINE_ Variant _call(const Array &params, seq<Is...>*) const {
-            return (target->*func)(type_convert<typename tuple_element<Is, tuple<_ArgType...> >::type >::toType(_var<Is>(params))...);
+        _FORCE_INLINE_ Variant _call(const RArray &params, seq<Is...>*) const {
+            return (target->*func)(type_convert<typename std::tuple_element<Is, std::tuple<_ArgType...> >::type >::toType(_var<Is>(params))...);
         }
-        virtual Variant invoke(const Array &params) {
+        virtual Variant invoke(const RArray &params) {
             static const int size = sizeof...(_ArgType);
             gen_seq<size> d;
             if (data) {
-                Array arr;
+                RArray arr;
                 arr->push_back(data);
                 arr.contact(params);
                 return _call(std::move(arr), &d);
@@ -304,8 +304,8 @@ namespace gcore {
         typedef ReturnType(function_type)(Args...);
         
     };
-    
-    CLASS_BEGIN_TN(RefCallback, Ref, 1, Callback)
+
+    class RCallback : public Ref<Callback> {
     
 public:
     template <typename ...Args>
@@ -316,43 +316,43 @@ public:
             return Variant::null();
         }
     }
-    _FORCE_INLINE_ RefCallback() {}
-    _FORCE_INLINE_ RefCallback(Callback *ref) : Ref(ref) {
+    _FORCE_INLINE_ RCallback() {}
+    _FORCE_INLINE_ RCallback(Callback *ref) : Ref(ref) {
     }
     template <class T>
-    _FORCE_INLINE_ RefCallback(Function<T> *ref) : Ref(ref) {
+    _FORCE_INLINE_ RCallback(Function<T> *ref) : Ref(ref) {
     }
     template <class T>
-    _FORCE_INLINE_ RefCallback(SFunction<T> *ref) : Ref(ref) {
+    _FORCE_INLINE_ RCallback(SFunction<T> *ref) : Ref(ref) {
     }
-    _FORCE_INLINE_ RefCallback(const Reference &ref) : Ref(ref) {
+    _FORCE_INLINE_ RCallback(const Reference &ref) : Ref(ref) {
     }
-    _FORCE_INLINE_ RefCallback(const Variant &var) : Ref(var) {
+    _FORCE_INLINE_ RCallback(const Variant &var) : Ref(var) {
     }
-    _FORCE_INLINE_ RefCallback(const RefCallback &ref) : Ref(ref) {
+    _FORCE_INLINE_ RCallback(const RCallback &ref) : Ref(ref) {
     }
-    
-    CLASS_END
+
+    };
     
     template <typename M>
-    RefCallback C(M f) {
+    RCallback C(M f) {
         typedef ft<M> func;
         return new Function<typename func::function_type>(f);
     }
     template <class _Rp, class ..._ArgType>
-    RefCallback C(_Rp(*f)(_ArgType...)) {
+    RCallback C(_Rp(*f)(_ArgType...)) {
         return new SFunction<_Rp(*)(_ArgType...)>(f);
     }
     template <class _Rp, class ..._ArgType>
-    RefCallback C(_Rp(*f)(_ArgType...), Variant data) {
+    RCallback C(_Rp(*f)(_ArgType...), Variant data) {
         return new SFunction<_Rp(*)(_ArgType...)>(f, data);
     }
     template <class T, class _Rp1, class _C2, class ..._ArgType>
-    RefCallback C(T t, _Rp1(_C2::*f)(_ArgType...)) {
+    RCallback C(T t, _Rp1(_C2::*f)(_ArgType...)) {
         return new MFunction<_Rp1(_C2::*)(_ArgType...)>(t, f);
     }
     template <class T, class _Rp1, class _C2, class ..._ArgType>
-    RefCallback C(T t, _Rp1(_C2::*f)(_ArgType...), Variant data) {
+    RCallback C(T t, _Rp1(_C2::*f)(_ArgType...), Variant data) {
         return new MFunction<_Rp1(_C2::*)(_ArgType...)>(t, f, data);
     }
 }

@@ -16,7 +16,7 @@ pointer_map Script::scripts;
 ScriptClass* Script::find(const StringName &fullname, bool &create) {
     auto it = classes.find(fullname);
     if (it == classes.end()) {
-        const HClass *cls = ClassDB::getInstance()->find(fullname);
+        const Class *cls = ClassDB::getInstance()->find(fullname);
         if (cls) {
             ScriptClass *scls = makeClass();
             scls->setNativeClass(cls);
@@ -47,9 +47,9 @@ ScriptClass *Script::find(const StringName &fullname) const {
     return (ScriptClass*)it->second;
 }
 
-ScriptClass *Script::find(const HClass *cls) const {
+ScriptClass *Script::find(const Class *cls) const {
     auto it = classes.find(cls->getFullname());
-    const HClass *parent = cls->getParent();
+    const Class *parent = cls->getParent();
     while (it == classes.end() && parent) {
         it = classes.find(parent->getFullname());
         parent = parent->getParent();
@@ -65,17 +65,17 @@ Script::Script(const StringName &name) : name(name) {
 }
 
 Variant ScriptClass::call(const StringName &name, const Variant **params, int count) const {
-    const HMethod *mtd = cls->getMethod(name);
-    if (mtd && mtd->getType() == HMethod::Static) return mtd->call(NULL, params, count);
+    const Method *mtd = cls->getMethod(name);
+    if (mtd && mtd->getType() == Method::Static) return mtd->call(NULL, params, count);
     return Variant::null();
 }
 
 ScriptInstance* ScriptClass::newInstance(const Variant **params, int count) const {
-    Reference *ref = new Reference((HObject*)cls->instance());
+    Reference *ref = new Reference((Object*)cls->instance());
     ScriptInstance *sin = makeInstance();
     sin->setScript(script);
     sin->setMiddleClass(const_cast<ScriptClass*>(this));
-    if (cls->isTypeOf(HObject::getClass())) {
+    if (cls->isTypeOf(Object::getClass())) {
         (*ref)->addScript(sin);
     }
     sin->setTarget(ref, true);
@@ -89,7 +89,7 @@ ScriptInstance *ScriptClass::newInstance() const {
     return sin;
 }
 
-ScriptInstance *ScriptClass::get(HObject *target) const {
+ScriptInstance *ScriptClass::get(Object *target) const {
     return script->getScriptInstance(target);
 }
 
@@ -101,7 +101,7 @@ ScriptInstance *ScriptClass::create(void *target) const {
     return ins;
 }
 
-ScriptInstance* ScriptClass::createVariant(HObject *target) const {
+ScriptInstance* ScriptClass::createVariant(Object *target) const {
     ScriptInstance *ins = makeInstance();
     ins->setScript(script);
     ins->setMiddleClass(const_cast<ScriptClass*>(this));
@@ -117,7 +117,7 @@ ScriptInstance* ScriptClass::createVariant(HObject *target) const {
 
 Variant ScriptInstance::call(const StringName &name, const Variant **params, int count) const {
     if (target) {
-        const HMethod *mtd = cls->getNativeClass()->getMethod(name);
+        const Method *mtd = cls->getNativeClass()->getMethod(name);
         if (mtd) {
             return mtd->call((void*)getTarget(), params, count);
         }
@@ -151,7 +151,7 @@ ScriptInstance::~ScriptInstance() {
             (*ref)->removeScript(this);
             delete ref;
         }else {
-            ((HObject*)target)->removeScript(this);
+            ((Object*)target)->removeScript(this);
         }
     }
     if (single_class && cls) {

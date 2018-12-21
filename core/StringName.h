@@ -11,7 +11,7 @@
 #include "core_define.h"
 
 namespace gcore {
-    class HClass;
+    class Class;
     
     class StringName {
         BASE_CLASS_DEFINE

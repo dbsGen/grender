@@ -101,52 +101,52 @@ class NAME : public SUPER T { \
 
 #define BASE_FINAL_CLASS_DEFINE \
 protected:\
-    _FORCE_INLINE_ static void onClassLoaded(HClass *clz) {}\
+    _FORCE_INLINE_ static void onClassLoaded(Class *clz) {}\
     friend class ClassDB;\
 public:\
-    static const HClass *getClass();\
-    const HClass *getInstanceClass() const;\
+    static const Class *getClass();\
+    const Class *getInstanceClass() const;\
 private:
 
 #define BASE_FINAL_CLASS_DEFINE_T(TYPE) \
 protected:\
-    _FORCE_INLINE_ static void onClassLoaded(HClass *clz) { \
+    _FORCE_INLINE_ static void onClassLoaded(Class *clz) { \
         clz->setLabels(variant_map{{HObject::LABEL_CATEGORY, TYPE}}); \
     } \
     friend class ClassDB;\
 public:\
-    static const HClass *getClass();\
+    static const Class *getClass();\
     const HClass *getInstanceClass() const;\
 private:
 
 #define BASE_CLASS_DEFINE \
 protected:\
-    _FORCE_INLINE_ static void onClassLoaded(HClass *clz) {}\
+    _FORCE_INLINE_ static void onClassLoaded(Class *clz) {}\
     friend class ClassDB;\
 public:\
-    static const HClass *getClass();\
-    virtual const HClass *getInstanceClass() const;\
+    static const Class *getClass();\
+    virtual const Class *getInstanceClass() const;\
 private:
 
-#define BASE_CLASS_IMPLEMENT(CLZ) const HClass *CLZ::getClass() {\
+#define BASE_CLASS_IMPLEMENT(CLZ) const Class *CLZ::getClass() {\
     if (!_class_contrainer<CLZ>::_class) {\
-        const HClass *clazz = ClassDB::getInstance()->find_loaded(ClassDB::connect("gcore", #CLZ));\
+        const Class *clazz = ClassDB::getInstance()->find_loaded(ClassDB::connect("gcore", #CLZ));\
         _class_contrainer<CLZ>::_class = clazz ? clazz : ClassDB::getInstance()->cl<CLZ>("gcore", #CLZ, NULL);\
     }\
     return _class_contrainer<CLZ>::_class;\
 }\
-const HClass *CLZ::getInstanceClass() const {\
+const Class *CLZ::getInstanceClass() const {\
     return CLZ::getClass();\
 }
 
-#define BASE_CLASS_IMPLEMENT_V(CLZ) const HClass *CLZ::getClass() {\
+#define BASE_CLASS_IMPLEMENT_V(CLZ) const Class *CLZ::getClass() {\
     if (!_class_contrainer<CLZ>::_class) {\
-        const HClass *clazz = ClassDB::getInstance()->find_loaded(ClassDB::connect("gcore", #CLZ));\
+        const Class *clazz = ClassDB::getInstance()->find_loaded(ClassDB::connect("gcore", #CLZ));\
         _class_contrainer<CLZ>::_class = clazz ? clazz : ClassDB::getInstance()->vr<CLZ>("gcore", #CLZ, NULL);\
     }\
     return _class_contrainer<CLZ>::_class;\
 }\
-const HClass *CLZ::getInstanceClass() const {\
+const Class *CLZ::getInstanceClass() const {\
     return CLZ::getClass();\
 }
 
@@ -166,7 +166,7 @@ enum {
 #ifdef USING_SCRIPT
 
 #define SET_LABELS(...) cls->setLabels(variant_map{__VA_ARGS__});
-#define ON_LOADED_BEGIN(CLZ, SUPER) _FORCE_INLINE_ static void onClassLoaded(gcore::HClass *CLZ) { \
+#define ON_LOADED_BEGIN(CLZ, SUPER) _FORCE_INLINE_ static void onClassLoaded(gcore::Class *CLZ) { \
     SUPER::onClassLoaded(CLZ);
 #define ON_LOADED_END }
 
@@ -196,26 +196,26 @@ enum {
 // ----- getClass() and getInstanceClass()
 
 #define DEFINE_GET_CLASS_NS(NS, NAME, SUPER, METHOD) \
-static const __CLASS_NS(HClass) *getClass() { \
+static const __CLASS_NS(Class) *getClass() { \
     if (!__CLASS_NS(_class_contrainer)<NAME>::_class) {\
-        const __CLASS_NS(HClass) *cls = __CLASS_NS(ClassDB)::getInstance()->find_loaded(__CLASS_NS(ClassDB)::connect(NS, #NAME));\
+        const __CLASS_NS(Class) *cls = __CLASS_NS(ClassDB)::getInstance()->find_loaded(__CLASS_NS(ClassDB)::connect(NS, #NAME));\
         __CLASS_NS(_class_contrainer)<NAME>::_class = cls ? cls : __CLASS_NS(ClassDB)::getInstance()->METHOD<NAME>(NS, #NAME, SUPER::getClass()); \
     }\
     return __CLASS_NS(_class_contrainer)<NAME>::_class; \
 } \
-_FORCE_INLINE_ virtual const __CLASS_NS(HClass) *getInstanceClass() const { \
+_FORCE_INLINE_ virtual const __CLASS_NS(Class) *getInstanceClass() const { \
     return NAME::getClass(); \
 }
 
 #define DEFINE_GET_CLASS(NAME, SUPER, METHOD) \
-static const __CLASS_NS(HClass) *getClass() { \
+static const __CLASS_NS(Class) *getClass() { \
     if (!__CLASS_NS(_class_contrainer)<NAME>::_class) {\
-        const __CLASS_NS(HClass) *cls = __CLASS_NS(ClassDB)::getInstance()->find_loaded(#NAME);\
+        const __CLASS_NS(Class) *cls = __CLASS_NS(ClassDB)::getInstance()->find_loaded(#NAME);\
         __CLASS_NS(_class_contrainer)<NAME>::_class = cls ? cls : __CLASS_NS(ClassDB)::getInstance()->METHOD<NAME>(NULL, #NAME, SUPER::getClass()); \
     }\
     return __CLASS_NS(_class_contrainer)<NAME>::_class;\
 } \
-_FORCE_INLINE_ virtual const __CLASS_NS(HClass) *getInstanceClass() const { \
+_FORCE_INLINE_ virtual const __CLASS_NS(Class) *getInstanceClass() const { \
     return NAME::getClass(); \
 }
 

@@ -13,16 +13,16 @@
 namespace gcore {
     CLASS_BEGIN_N(_Map, RefObject)
 
-        std::map<string, Variant> _map;
+        std::map<std::string, Variant> _map;
 
     public:
         _FORCE_INLINE_ _Map() {}
-        _FORCE_INLINE_ _Map(const map<string, Variant> &m) : _map(m) {}
-        _FORCE_INLINE_ _Map(map<string, Variant> &&m) : _map(m) {}
-        _FORCE_INLINE_ _Map(initializer_list<map<const string, Variant>::value_type> list) : _map(list) {
+        _FORCE_INLINE_ _Map(const std::map<std::string, Variant> &m) : _map(m) {}
+        _FORCE_INLINE_ _Map(std::map<std::string, Variant> &&m) : _map(m) {}
+        _FORCE_INLINE_ _Map(std::initializer_list<std::map<const std::string, Variant>::value_type> list) : _map(list) {
         }
     
-        METHOD const Variant &get(const string &key) const {
+        METHOD const Variant &get(const std::string &key) const {
             auto it = _map.find(key);
             if (it == _map.end()) {
                 return Variant::null();
@@ -30,35 +30,35 @@ namespace gcore {
             return it->second;
         }
 
-        METHOD _FORCE_INLINE_ void set(const string &key, const Variant &val) {
+        METHOD _FORCE_INLINE_ void set(const std::string &key, const Variant &val) {
             _map[key] = val;
         }
 
-        _FORCE_INLINE_ map<string, Variant>::iterator begin() {
+        _FORCE_INLINE_ std::map<std::string, Variant>::iterator begin() {
             return _map.begin();
         }
 
-        _FORCE_INLINE_ map<string, Variant>::iterator end() {
+        _FORCE_INLINE_ std::map<std::string, Variant>::iterator end() {
             return _map.end();
         }
-        _FORCE_INLINE_ map<string, Variant>::iterator find(const string &key) {
+        _FORCE_INLINE_ std::map<std::string, Variant>::iterator find(const std::string &key) {
             return _map.find(key);
         };
 
-        METHOD _FORCE_INLINE_ void erase(const string &key) {
+        METHOD _FORCE_INLINE_ void erase(const std::string &key) {
             _map.erase(key);
         }
 
-        _FORCE_INLINE_ Variant &at(const string &key) {
+        _FORCE_INLINE_ Variant &at(const std::string &key) {
             return  _map[key];
         }
         METHOD _FORCE_INLINE_ long size() const {
             return _map.size();
         }
-        METHOD Array keys() const {
-            Array ks;
+        METHOD RArray keys() const {
+            RArray ks;
             for (auto it = _map.begin(), _e = _map.end(); it != _e; ++it) {
-                ks->push_back(it->first);
+                ks.push_back(it->first);
             }
             return ks;
         }
@@ -80,18 +80,18 @@ namespace gcore {
 
     public:
         _FORCE_INLINE_ Map() : Ref(new _Map()) {}
-        _FORCE_INLINE_ Map(const map<string, Variant> &_map) : Ref(new _Map(_map)) {
+        _FORCE_INLINE_ Map(const std::map<std::string, Variant> &_map) : Ref(new _Map(_map)) {
         }
-        _FORCE_INLINE_ Map(initializer_list<map<const string, Variant>::value_type> list) : Ref(new _Map(list)) {
+        _FORCE_INLINE_ Map(std::initializer_list<std::map<const std::string, Variant>::value_type> list) : Ref(new _Map(list)) {
         }
-        _FORCE_INLINE_ Map(map<string, Variant> &&_map) : Ref(new _Map(_map)) {
+        _FORCE_INLINE_ Map(std::map<std::string, Variant> &&_map) : Ref(new _Map(_map)) {
         }
 
         _FORCE_INLINE_ Map(const Variant &var) : Ref(var) {
         }
         _FORCE_INLINE_ Map(const Reference &ref) : Ref(ref) {
         }
-        _FORCE_INLINE_ void set(const string &key, const Variant &var) {
+        _FORCE_INLINE_ void set(const std::string &key, const Variant &var) {
             operator*()->set(key, var);
         }
 

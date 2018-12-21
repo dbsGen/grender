@@ -8,8 +8,6 @@
 #include <core/Singleton.h>
 #include "graphics_define.h"
 
-using namespace gcore;
-
 namespace higraphics {
     CLASS_BEGIN_TN(Factory, Singleton, 1, Factory)
 

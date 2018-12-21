@@ -11,7 +11,6 @@
 #include "Ref.h"
 #include "Object.h"
 
-using namespace std;
 namespace gcore {
     template <class T>
     CLASS_BEGIN_NV(Singleton, HObject)

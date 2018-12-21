@@ -26,7 +26,9 @@
 #include <core/math/Math.hpp>
 #include <sys/time.h>
 #include <cstring>
+#include <stdarg.h>
 
+using namespace std;
 using namespace gcore;
 
 const void *Data::getBuffer() {
@@ -43,7 +45,7 @@ const char *Data::text() {
 }
 
 
-Ref<Data> Data::fromString(const string &str) {
+Ref<Data> Data::fromString(const std::string &str) {
     return new_t(BufferData, (void*)str.data(), str.size(), BufferData::Copy);
 }
 
@@ -121,7 +123,7 @@ const void *FileData::getBuffer() {
     return NULL;
 }
 
-struct HObject::Scripts  {
+struct Object::Scripts  {
     list<ScriptInstance*> scripts;
     Scripts() {}
     ~Scripts() {
@@ -131,24 +133,21 @@ struct HObject::Scripts  {
     }
 };
 
-const HClass *const Variant::ref_class(Reference::getClass());
-const HClass *const Variant::pointer_class(Pointer::getClass());
-
 ClassDB* ClassDB::instance = NULL;
-mutex ClassDB::mtx;
+std::mutex ClassDB::mtx;
 
 Reference Reference::nullRef;
 
 const Variant Variant::_null;
 
-void HObject::addScript(ScriptInstance *ins) {
+void Object::addScript(ScriptInstance *ins) {
     if (!scripts_container) {
         scripts_container = new Scripts;
     }
     scripts_container->scripts.push_back(ins);
 }
 
-void HObject::removeScript(ScriptInstance *instance) {
+void Object::removeScript(ScriptInstance *instance) {
     if (scripts_container) {
         auto it = scripts_container->scripts.begin();
         while (it != scripts_container->scripts.end()) {
@@ -159,7 +158,7 @@ void HObject::removeScript(ScriptInstance *instance) {
     }
 }
 
-void HObject::clearScripts() {
+void Object::clearScripts() {
     if (scripts_container) {
         delete scripts_container;
         scripts_container = nullptr;
@@ -167,7 +166,7 @@ void HObject::clearScripts() {
 }
 
 #ifdef USING_SCRIPT
-void HObject::apply(const StringName &name, Variant *result, const Variant **params, int count) {
+void Object::apply(const StringName &name, Variant *result, const Variant **params, int count) {
     if (scripts_container) {
         list<ScriptInstance*> scripts = scripts_container->scripts;
         for (auto it = scripts.begin(), _e = scripts.end(); it != _e; ++it) {
@@ -182,8 +181,8 @@ void HObject::apply(const StringName &name, Variant *result, const Variant **par
 }
 #endif
 
-void HObject::call(const StringName &name, Variant *result, const Variant **params, int count) {
-    const HMethod *method = getInstanceClass()->getMethod(name);
+void Object::call(const StringName &name, Variant *result, const Variant **params, int count) {
+    const Method *method = getInstanceClass()->getMethod(name);
     if (method) {
         if (result) {
             *result = method->call(this, params, count);
@@ -194,7 +193,7 @@ void HObject::call(const StringName &name, Variant *result, const Variant **para
     }
 }
 
-bool HObject::copy(const HObject *other) {
+bool Object::copy(const Object *other) {
     if (other->getInstanceClass()->isTypeOf(getInstanceClass())) {
         _copy(other);
         return true;
@@ -202,22 +201,22 @@ bool HObject::copy(const HObject *other) {
     return false;
 }
 
-Variant HObject::var()  {
+Variant Object::var()  {
     Pointer p(this);
     return Variant(&p);
 }
 
 
-void HObject::pushOnDestroy(ActionCallback callback, void *data) {
+void Object::pushOnDestroy(ActionCallback callback, void *data) {
     if (!on_destroy) on_destroy = new ActionManager;
     on_destroy->push(callback, data);
 }
-void HObject::removeOnDestroy(ActionCallback callback, void *data) {
+void Object::removeOnDestroy(ActionCallback callback, void *data) {
     if (on_destroy)
         on_destroy->remove(callback, data);
 }
 
-HObject::~HObject() {
+Object::~Object() {
     if (on_destroy) {
         on_destroy->operator()(this);
         delete on_destroy;
@@ -227,69 +226,8 @@ HObject::~HObject() {
     }
 }
 
-template <typename ...A>
-struct _typeset {
-};
-template <typename T,typename C>
-struct _typeset<T, C> {
-    typedef HObject TYPE;
-    _FORCE_INLINE_ static const HClass *type() {
-        return NULL;
-    }
-};
-template <typename C>
-struct _typeset<char, C> {
-    typedef Char TYPE;
-    _FORCE_INLINE_ static const HClass *type() {
-        return Char::getClass();
-    }
-};
-template <typename C>
-struct _typeset<short, C> {
-    typedef Short TYPE;
-    _FORCE_INLINE_ static const HClass *type() {
-        return Short::getClass();
-    }
-};
-template <typename C>
-struct _typeset<int, C> {
-    typedef Integer TYPE;
-    _FORCE_INLINE_ static const HClass *type() {
-        return Integer::getClass();
-    }
-};
-template <typename C>
-struct _typeset<long, C> {
-    typedef Long TYPE;
-    _FORCE_INLINE_ static const HClass *type() {
-        return Long::getClass();
-    }
-};
-template <typename C>
-struct _typeset<long long, C> {
-    typedef LongLong TYPE;
-    _FORCE_INLINE_ static const HClass *type() {
-        return LongLong::getClass();
-    }
-};
-template <typename C>
-struct _typeset<float, C> {
-    typedef Float TYPE;
-    _FORCE_INLINE_ static const HClass *type() {
-        return Float::getClass();
-    }
-};
-template <typename C>
-struct _typeset<double, C> {
-    typedef Double TYPE;
-    _FORCE_INLINE_ static const HClass *type() {
-        return Double::getClass();
-    }
-};
-template <class T_> struct typeset : _typeset<T_, T_> {};
-
 //template <typename T>
-//T trans_target(void *target, const HClass *type) {
+//T trans_target(void *target, const Class *type) {
 //    if (type && type->isTypeOf(HObject::getClass())) {
 //        Number *num = ((HObject*)target)->cast_to<Number>();
 //        if (num)
@@ -298,30 +236,45 @@ template <class T_> struct typeset : _typeset<T_, T_> {};
 //    return (T)(long)target;
 //}
 
+
+struct VariantHelper {
+
+};
 template <typename T>
-T trans_target2(void *target, const HClass *type) {
-#define CHECK_TYPE(TYPE) if (type == TYPE::getClass()) { \
-    return (T)*((TYPE*)target); \
-}
-    if (typeset<T>::type() == type) {
-        return (T)*((typename typeset<T>::TYPE*) target);
+T trans_target2(Variant::u_value value, Variant::Type type) {
+    switch (type) {
+        case Variant::TypeNull: {
+            return (T)0;
+        }
+        case Variant::TypeChar: {
+            return (T)value.v_char;
+        }
+        case Variant::TypeShort: {
+            return (T)value.v_short;
+        }
+        case Variant::TypeInt: {
+            return (T)value.v_int;
+        }
+        case Variant::TypeLong: {
+            return (T)value.v_long;
+        }
+        case Variant::TypeLongLong: {
+            return (T)value.v_longlong;
+        }
+        case Variant::TypeFloat: {
+            return (T)value.v_float;
+        }
+        case Variant::TypeDouble: {
+            return (T)value.v_double;
+        }
+        default: {
+            return (T)(long)value.v_pointer;
+        }
     }
-    CHECK_TYPE(Char)
-    else CHECK_TYPE(Short)
-    else CHECK_TYPE(Integer)
-    else CHECK_TYPE(Long)
-    else CHECK_TYPE(LongLong)
-    else CHECK_TYPE(Float)
-    else CHECK_TYPE(Double)
-    else CHECK_TYPE(Boolean)
-
-#undef CHECK_TYPE
-
-    return (T)(long)target;
 }
 
 bool Variant::operator==(const Variant &other) const {
-    const HClass *type = getType();
+    const Class *type = getType();
     if (type == other.getType()) {
         if (type == Char::getClass()) {
             return operator char () == (char)other;
@@ -331,13 +284,11 @@ bool Variant::operator==(const Variant &other) const {
             return operator int() == (int)other;
         }else if (type == Long::getClass()) {
             return operator long() == (long)other;
-        }else if (type == LongLong::getClass()) {
-            return operator long long() == (long long)other;
         }else if (type == Float::getClass()) {
             return operator float() == (float)other;
         }else if (type == Double::getClass()) {
             return operator float() == (float)other;
-        }else if (type == String::getClass()) {
+        }else if (type == _String::getClass()) {
             return strcmp(operator const char *(), (const char *)other) == 0;
         }else if (type == StringName::getClass()) {
             StringName sn = operator StringName();
@@ -351,48 +302,36 @@ bool Variant::operator==(const Variant &other) const {
 }
 
 Variant::operator char() const {
-    return trans_target2<char>(mem, getType());
+    return trans_target2<char>(value, type);
 }
 Variant::operator short() const {
-    return trans_target2<short>(mem, getType());
+    return trans_target2<short>(value, type);
 }
 Variant::operator int() const {
-    return trans_target2<int>(mem, getType());
+    return trans_target2<int>(value, type);
 }
 Variant::operator long() const {
-    return trans_target2<long>(mem, getType());
+    return trans_target2<long>(value, type);
 }
 Variant::operator long long() const {
-    return trans_target2<long long>(mem, getType());
+    return trans_target2<long long>(value, type);
 }
 Variant::operator float() const {
-    return trans_target2<float>(mem, getType());
+    return trans_target2<float>(value, type);
 }
 Variant::operator double() const {
-    return trans_target2<double>(mem, getType());
+    return trans_target2<double>(value, type);
 }
 
 Variant::operator void *() const {
-    const HClass *t = type;
-    if (t) {
-        if (t->isTypeOf(Pointer::getClass())) {
-            return (void*)*_get<Pointer>();
-        }else if (t->isTypeOf(String::getClass())) {
-            return (void*)_get<_String>()->c_str();
-        }
-    }
-    return _get<void>();
-}
-
-const Pointer *Variant::pointer() const {
-    if (type == Pointer::getClass()) {
-        return (const Pointer*)mem;
+    if (type >= TypePointer) {
+        return value.v_pointer;
     }
     return NULL;
 }
 
 Variant::operator StringName() const {
-    const HClass *type = getType();
+    const Class *type = getType();
     if (type->isTypeOf(StringName::getClass())) {
         return *get<StringName>();
     }else if (type->isTypeOf(_String::getClass())){
@@ -402,148 +341,144 @@ Variant::operator StringName() const {
     return StringName::null();
 }
 
-const HClass* Variant::getType() const {
-    if (isRef()) {
-        return ((Reference*)mem)->getType();
-    }else {
-        if (type == Pointer::getClass()) {
-            const HClass *cls = ((const Pointer*)mem)->getType();
-            if (cls) return cls;
+const Class* Variant::getType() const {
+    switch (type) {
+        case TypeObject:
+        case TypeReference: {
+            return get<Object>()->getInstanceClass();
         }
-        return type;
+        default: {
+            return class_type;
+        }
     }
 }
 
 void Variant::release() {
-    if (type) {
-        if (isRef())
-            delete ((Reference*)mem);
-        else free(mem);
-        mem = NULL;
-        type = NULL;
+    switch (type) {
+        case TypeReference: {
+            get<RefObject>()->release();
+            break;
+        }
+        case TypeMemory: {
+            free(value.v_pointer);
+            break;
+        }
     }
+    value.v_pointer = NULL;
+    type = TypeNull;
+    class_type = NULL;
 }
 
-void Variant::retain(void *buffer, const HClass *cls) {
-    if (cls) {
-        if (type) {
-            if (type == ref_class && cls->isTypeOf(ref_class)) {
-                ((Reference*)mem)->ref((Reference*)buffer);
-            }else if (type == ref_class) {
-                delete ((Reference*)mem);
-                mem = malloc(cls->getSize());
-                goto copy_f;
-            }else if (cls->isTypeOf(ref_class)) {
-                free(mem);
-                goto ref_f;
-            }else {
-                if (type->getSize() == cls->getSize()) {
-                    goto copy_f;
-                }else  {
-                    mem = realloc(mem, cls->getSize());
-                    goto copy_f;
-                }
-            }
+void Variant::retain(const u_value &value, const Class *class_type, int8_t type) {
+    if (type < 0) {
+        if (class_type == NULL) {
+            type = TypeNull;
+        }else if (class_type == Char::getClass()) {
+            type = TypeChar;
+        }else if (class_type == Short::getClass()) {
+            type = TypeShort;
+        }else if (class_type == Integer::getClass()) {
+            type = TypeInt;
+        }else if (class_type == Long::getClass()) {
+            type = TypeLong;
+        }else if (class_type == LongLong::getClass()) {
+            type = TypeLongLong;
+        }else if (class_type == Float::getClass()) {
+            type = TypeFloat;
+        }else if (class_type == Double::getClass()) {
+            type = TypeDouble;
+        }else if (class_type == Pointer::getClass()) {
+            type = TypePointer;
+        }else if (class_type == StringName::getClass()) {
+            type = TypeStringName;
+        }else if (class_type->isTypeOf(RefObject::getClass())) {
+            type = TypeReference;
+        }else if (class_type->isTypeOf(Object::getClass())) {
+            type = TypeObject;
         }else {
-            if (cls->isTypeOf(ref_class)) {
-                goto ref_f;
-            }else {
-                mem = malloc(cls->getSize());
-                goto copy_f;
-            }
+            type = TypeMemory;
         }
-    }else {
-        release();
-        return;
     }
-copy_f:
-    memcpy(mem, buffer, cls->getSize());
-    type = cls;
-    return;
-ref_f:
-    mem = new Reference(*(Reference*)buffer);
-    type = cls;
-    return;
+    switch (type) {
+        case TypeReference: {
+            static_cast<RefObject *>(value.v_pointer)->retain();
+            this->value = value;
+            break;
+        }
+        case TypeMemory: {
+            this->value.v_pointer = malloc(class_type->getSize());
+            memcpy(this->value.v_pointer, value.v_pointer, class_type->getSize());
+            break;
+        }
+        default: {
+            this->value = value;
+        }
+    }
+    this->type = type;
+    this->class_type = class_type;
 }
 
 Variant::Variant(char n) : Variant() {
-    Char v(n);
-    const HClass *cls = Char::getClass();
-    retain(&v, cls);
+    value.v_char = n;
+    type = TypeChar;
+    class_type = Char::getClass();
 }
 Variant::Variant(short n) : Variant() {
-    Short v(n);
-    const HClass *cls = Short::getClass();
-    retain(&v, cls);
+    value.v_short = n;
+    type = TypeShort;
+    class_type = Short::getClass();
 }
 Variant::Variant(int n) : Variant() {
-    Integer v(n);
-    const HClass *cls = Integer::getClass();
-    retain(&v, cls);
+    value.v_int = n;
+    type = TypeInt;
+    class_type = Integer::getClass();
 }
 Variant::Variant(long n) : Variant() {
-    Long v(n);
-    const HClass *cls = Long::getClass();
-    retain(&v, cls);
+    value.v_long = n;
+    type = TypeLong;
+    class_type = Long::getClass();
 }
 Variant::Variant(long long n) : Variant() {
-    LongLong v(n);
-    const HClass *cls = LongLong::getClass();
-    retain(&v, cls);
+    value.v_longlong = n;
+    type = TypeLongLong;
+    class_type = LongLong::getClass();
 }
 Variant::Variant(float n) : Variant() {
-    Float v(n);
-    const HClass *cls = Float::getClass();
-    retain(&v, cls);
+    value.v_float = n;
+    type = TypeFloat;
+    class_type = Float::getClass();
 }
 Variant::Variant(double n) : Variant() {
-    Double v(n);
-    const HClass *cls = Double::getClass();
-    retain(&v, cls);
+    value.v_double = n;
+    type = TypeDouble;
+    class_type = Double::getClass();
 }
 Variant::Variant(bool n) : Variant()  {
-    Boolean v(n);
-    const HClass *cls = Boolean::getClass();
-    retain(&v, cls);
+    value.v_bool = n;
+    type = TypeBool;
+    class_type = Boolean::getClass();
 }
 
-Variant::Variant(const HObject *obj) : Variant() {
+Variant::Variant(const Object *obj) : Variant() {
     if (obj) {
-        Pointer v(obj);
-        retain(&v, Pointer::getClass());
+        class_type = obj->getInstanceClass();
+        retain(u_value{v_pointer: (void*)obj}, class_type);
     }
 }
 
 Variant::Variant(void *ptr) : Variant() {
     if (ptr) {
-        Pointer v(ptr);
-        retain(&v, Pointer::getClass());
+        retain(u_value{v_pointer: ptr}, Pointer::getClass());
     }
 }
 
 Variant::Variant(const StringName &name) : Variant() {
-    StringName cn = name;
-    retain(&cn, StringName::getClass());
+    retain(u_value{v_pointer: (void *)name}, StringName::getClass(), TypeStringName);
 }
 
 Variant::operator bool() const {
-    if (type) {
-        if (isRef()) {
-            return *(Reference*)mem;
-        }else {
-            if (type->isTypeOf(Boolean::getClass())) {
-                return *get<Boolean>();
-            }
-            if (type->isTypeOf(Integer::getClass())) {
-                return (bool) (int)*get<Integer>();
-            }else if (type->isTypeOf(Long::getClass())){
-                return (bool) (long)*get<Long>();
-            }else if (type->isTypeOf(Float::getClass())) {
-                return (bool) (float)*get<Float>();
-            }else if (type->isTypeOf(Double::getClass())) {
-                return (bool) (double)*get<Double>();
-            }else return (bool) mem;
-        }
+    if (type != TypeNull) {
+        return trans_target2<bool>(value, type);
     }
     return false;
 }
@@ -557,60 +492,41 @@ Variant::operator string() const {
 }
 
 Variant::Variant(const string &str) : Variant() {
-    String v(str);
-    const HClass *cls = String::getClass();
-    retain(&v, cls);
+    const Class *cls = _String::getClass();
+    RString s(str);
+    retain(u_value{v_pointer: s.get()}, cls);
 }
 
 string Variant::str() const {
-    if (mem) {
-        if (isRef()) {
-            return ((Reference*)mem)->str();
-        }else {
-            if (type->isTypeOf(Integer::getClass())) {
-                return get<Integer>()->str();
-            }else if (type->isTypeOf(Long::getClass())){
-                return get<Long>()->str();
-            }else if (type->isTypeOf(LongLong::getClass())){
-                return get<LongLong>()->str();
-            }else if (type->isTypeOf(Float::getClass())) {
-                return get<Float>()->str();
-            }else if (type->isTypeOf(Double::getClass())) {
-                return get<Double>()->str();
-            }else if (type->isTypeOf(Boolean::getClass())) {
-                return get<Boolean>()->str();
-            }
-            HObject *obj = get<HObject>();
-            if (obj) return obj->str();
-        }
+    if (type == TypeReference && class_type == _String::getClass()) {
+        return get<_String>()->str();
+    }else if (type == TypeStringName) {
+        return StringName(get<void>()).str();
     }
     return "(NULL)";
 }
 
-bool Variant::isRef(const HClass *cls) {
-    if (!cls) return false;
-    return cls == Reference::getClass() || cls->isSubclassOf(Reference::getClass());
+bool Variant::isRef(int8_t type) {
+    return type == TypeReference;
 }
 
 Variant::operator const char *() const {
-    if (getType() == _String::getClass()) {
-        _String *str = (_String*)**(Reference*)mem;
-        return str->c_str();
-    }else if (getType() == StringName::getClass()) {
-        StringName *name = get<StringName>();
-        return name->str();
+    if (type == TypeReference && class_type == _String::getClass()) {
+        return get<_String>()->c_str();
+    }else if (type == TypeStringName) {
+        return StringName(get<void>()).str();
     }
-    return NULL;
+    return "(NULL)";
 }
 
-Variant::operator HObject *() const {
-    return get<HObject>();
+Variant::operator Object *() const {
+    return get<Object>();
 }
 
 Variant::Variant(const char *str) : Variant() {
-    String v(str);
-    const HClass *cls = String::getClass();
-    retain(&v, cls);
+    const Class *cls = _String::getClass();
+    RString s(str);
+    retain(u_value{v_pointer: s.get()}, cls);
 }
 
 Variant ptr(void *pointer) {
@@ -618,43 +534,33 @@ Variant ptr(void *pointer) {
     return Variant(&p);
 }
 
-bool Reference::isRefObject() {
-    if (ptr) {
-        return ptr->getInstanceClass()->isTypeOf(RefObject::getClass());
-    }
-    return false;
-}
-
 void Reference::release() {
     if (ptr) {
-        if (isRefObject()) {
-            if (ptr->cast_to<RefObject>()->release() == 0)
-                goto r_del;
-        }else if (ref_count && ref_count->release() == 0) goto r_del;
+        if (ptr->cast_to<RefObject>()->release() == 0)
+            goto r_del;
     }
     goto r_end;
     r_del:
     delete ptr;
-    delete ref_count;
     ptr = NULL;
-    ref_count = NULL;
     r_end:
     return;
 }
 
 string Reference::str() const {
     if (ptr) {
-        return operator*()->str();
+        return get()->str();
     }else return "";
 }
 
 void Reference::retain() {
     if (ptr) {
-        if (isRefObject()) {
-            ptr->cast_to<RefObject>()->retain();
-        }else if (ref_count){
-            ref_count->retain();
-        }else ref_count = new __ref_count(1);
+        RefObject *obj = ptr->cast_to<RefObject>();
+        if (obj)
+            obj->retain();
+        else {
+            ptr = NULL;
+        }
     }
 }
 
@@ -663,29 +569,15 @@ Reference::Reference(const Variant &other) {
     if (other.isRef()) {
         const Reference &r = other.ref();
         ptr = r.ptr;
-        ref_count = r.ref_count;
         retain();
-    }else {
-        ptr = NULL;
-        ref_count = NULL;
-        const Pointer *p = other.pointer();
-        if (p && p->getType() && p->getType()->isTypeOf(RefObject::getClass())) {
-            this->operator=((RefObject*)p->operator void *());
-        }
     }
 }
 
-Reference& Reference::operator=(HObject *p) {
+Reference& Reference::operator=(Object *p) {
     release();
     ptr = p;
     if (ptr) {
-        if (isRefObject()) {
-            ptr->cast_to<RefObject>()->retain();
-        }else {
-            ref_count = ptr ? new __ref_count(1) : NULL;
-        }
-    }else {
-        ref_count = NULL;
+        ptr->cast_to<RefObject>()->retain();
     }
     return *this;
 }
@@ -709,25 +601,25 @@ Reference& Reference::operator=(HObject *p) {
 //}
 
 namespace gcore {
-    const StringName HMethodInitialer("initialize");
+    const StringName MethodInitialer("initialize");
 }
 
-const HMethod *HClass::addMethod(const HMethod *method) {
-    if (method->getName() == HMethodInitialer) {
+const Method *Class::addMethod(const Method *method) {
+    if (method->getName() == MethodInitialer) {
         setInitializer(method);
     }else
         methods[method->getName()] = (void*)method;
     return method;
 }
 
-const Property *HClass::addProperty(const Property *property) {
+const Property *Class::addProperty(const Property *property) {
     properties[property->getName()] = (void*)property;
     return property;
 }
 
-Property::Property(const HClass *clazz, const char *name, const HMethod *getter,
-                   const HMethod *setter) {
-    if ((getter && getter->getType() == HMethod::Static) || (setter && setter->getType() == HMethod::Static)) {
+Property::Property(const Class *clazz, const char *name, const Method *getter,
+                   const Method *setter) {
+    if ((getter && getter->getType() == Method::Static) || (setter && setter->getType() == Method::Static)) {
         LOG(e, "Setter and Getter must be a member method.");
     }else {
         this->getter = getter;
@@ -737,8 +629,8 @@ Property::Property(const HClass *clazz, const char *name, const HMethod *getter,
     this->name = new StringName(name);
 }
 
-Property::Property(const HClass *clazz, const char *name, const HMethod *getter,
-                   const HMethod *setter, const variant_map &labels) : Property(clazz, name, getter, setter) {
+Property::Property(const Class *clazz, const char *name, const Method *getter,
+                   const Method *setter, const variant_map &labels) : Property(clazz, name, getter, setter) {
     this->labels = new variant_map;
     this->labels->operator=(labels);
 }
@@ -749,9 +641,9 @@ Property::~Property() {
 }
 
 BASE_CLASS_IMPLEMENT(Reference)
-BASE_CLASS_IMPLEMENT_V(HMethod)
+BASE_CLASS_IMPLEMENT_V(Method)
 
-Variant HMethod::call(void *obj, const Variant **params, int count) const {
+Variant Method::call(void *obj, const Variant **params, int count) const {
     int pc = getParamsCount();
     int dc = getDefaultCount();
     if (count < pc) {
@@ -776,12 +668,12 @@ Variant HMethod::call(void *obj, const Variant **params, int count) const {
     }
 }
 
-HMethod::HMethod(const char *name) : return_type(NULL), params_types(NULL), labels(NULL), default_values(NULL) {
+Method::Method(const char *name) : return_type(NULL), params_types(NULL), labels(NULL), default_values(NULL) {
     *(uint32_t*)(&params) = 0;
     this->name = name;
 }
 
-HMethod::~HMethod() {
+Method::~Method() {
     if (params_types) free(params_types);
     if (labels) free(labels);
     if (default_values) delete []default_values;
@@ -793,20 +685,20 @@ BASE_CLASS_IMPLEMENT(Variant)
 
 BASE_CLASS_IMPLEMENT(Property)
 
-const pointer_map &HClass::getMethods() const {
+const pointer_map &Class::getMethods() const {
     return methods;
 }
 
-const pointer_map &HClass::getProperties() const {
+const pointer_map &Class::getProperties() const {
     return properties;
 }
 
-void HClass::setLabels(const variant_map &labels) {
+void Class::setLabels(const variant_map &labels) {
     this->labels = labels;
 }
 
-const HClass *ClassDB::find(const StringName &fullname) {
-    const HClass *result = find_loaded(fullname);
+const Class *ClassDB::find(const StringName &fullname) {
+    const Class *result = find_loaded(fullname);
     if (!result) {
         auto it = class_loaders.find(fullname);
         result = it == class_loaders.end() ? NULL : (*(ClassLoader*)it->second)();
@@ -814,26 +706,26 @@ const HClass *ClassDB::find(const StringName &fullname) {
     return result;
 }
 
-Variant HClass::call(const StringName &name, object_type obj, const Variant **params, int count) const {
-    const HMethod *mtd = getMethod(name);
+Variant Class::call(const StringName &name, object_type obj, const Variant **params, int count) const {
+    const Method *mtd = getMethod(name);
     if (mtd) return mtd->call(obj, params, count);
     return Variant::null();
 }
 
-const HClass *ClassDB::find_loaded(const StringName &fullname) {
+const Class *ClassDB::find_loaded(const StringName &fullname) {
     auto it = classes_index.find(fullname);
-    return (const HClass *) (it == classes_index.end() ? NULL : it->second);
+    return (const Class *) (it == classes_index.end() ? NULL : it->second);
 }
 
-const HClass *Reference::getType() const {
+const Class *Reference::getType() const {
     return ptr? ptr->getInstanceClass() : NULL;
 }
 
-HClass::~HClass() {
+Class::~Class() {
     delete fullname;
 }
 
-HClass::HClass(const char *ns, const char *name) : HClass() {
+Class::Class(const char *ns, const char *name) : Class() {
     this->ns = ns;
     this->name = name;
     fullname = new StringName(ns ? (string(ns) + "::" + name).c_str() : name);
@@ -849,15 +741,13 @@ void Reference::ref(const Reference *other) {
     if (ptr != other->ptr)  {
         release();
         ptr = other->ptr;
-        ref_count = other->ref_count;
         retain();
     }else {
         ptr = other->ptr;
-        ref_count = other->ref_count;
     };
 }
 
-Variant Callback::invoke(const Array &params) {
+Variant Callback::invoke(const RArray &params) {
     const Variant *vs[1];
     Variant v1((Variant)params);
     vs[0] = &v1;
@@ -867,7 +757,7 @@ Variant Callback::invoke(const Array &params) {
 }
 
 
-ScriptInstance *Script::getScriptInstance(const HObject *target) const {
+ScriptInstance *Script::getScriptInstance(const Object *target) const {
     if (target->scripts_container) {
         for (auto it = target->scripts_container->scripts.begin(),
              _e = target->scripts_container->scripts.end(); it != _e; ++it) {
@@ -890,13 +780,13 @@ string _Array::str() const {
 }
 
 bool _Array::triger(ArrayEvent event, long idx, const Variant &v) {
-    RefCallback *lis = (RefCallback*)listener;
-    return (*lis)->invoke(Array{event, idx, v});
+    RCallback *lis = (RCallback*)listener;
+    return (*lis)->invoke(RArray{event, idx, v});
 }
 
 bool _Array::replace(long idx, const Variant &v1, const Variant &v2) {
-    RefCallback *lis = (RefCallback*)listener;
-    return (*lis)->invoke(Array{E(Replace), idx, v1, v2});
+    RCallback *lis = (RCallback*)listener;
+    return (*lis)->invoke(RArray{E(Replace), idx, v1, v2});
 }
 
 void _Array::push_back(const Variant &var) {
@@ -963,20 +853,20 @@ Variant _Array::pop_back() {
     }
 }
 
-void _Array::setListener(const RefCallback &callback) {
-    RefCallback *lis;
+void _Array::setListener(const RCallback &callback) {
+    RCallback *lis;
     if (!listener) {
-        lis = new RefCallback;
+        lis = new RCallback;
         listener = lis;
     }else {
-        lis = (RefCallback*)listener;
+        lis = (RCallback*)listener;
     }
     lis->operator=(callback);
 }
 
 _Array::~_Array() {
     if (listener) {
-        delete (RefCallback*)listener;
+        delete (RCallback*)listener;
     }
 }
 

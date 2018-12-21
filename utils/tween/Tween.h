@@ -12,8 +12,6 @@
 
 #include <render_define.h>
 
-using namespace gcore;
-
 namespace gr {
 
     typedef double Time;

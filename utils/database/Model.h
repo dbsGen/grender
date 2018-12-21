@@ -15,11 +15,9 @@
 #include "DBMaker.h"
 #include "../../render_define.h"
 
-using namespace gcore;
-
 namespace gr {
     struct Table {
-        const HClass *cls;
+        const Class *cls;
         pointer_map fields;
         float version;
         bool is_init;

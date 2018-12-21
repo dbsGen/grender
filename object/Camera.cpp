@@ -52,9 +52,9 @@ HPoint Camera::worldToScreen(const HPoint &world_point) {
 }
 
 bool Camera::sortCompare(Object *o1, Object *o2) {
-    const HClass *c1 = o1->getInstanceClass();
-    const HClass *c2 = o2->getInstanceClass();
-    const HClass *vc = View::getClass();
+    const Class *c1 = o1->getInstanceClass();
+    const Class *c2 = o2->getInstanceClass();
+    const Class *vc = View::getClass();
     if (c1->isTypeOf(vc)) {
         if (c2->isTypeOf(vc)) {
             View *v1 = o1->cast_to<View>();

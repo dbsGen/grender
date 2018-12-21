@@ -12,9 +12,6 @@
 
 #include "render_define.h"
 
-using namespace std;
-using namespace gcore;
-
 namespace gr {
     class Renderer;
 

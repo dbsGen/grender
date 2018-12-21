@@ -14,8 +14,6 @@
 #include "XMLNode.h"
 #include "../../render_define.h"
 
-using namespace gcore;
-
 struct _xmlDoc;
 typedef struct _xmlDoc xmlDoc;
 typedef xmlDoc *xmlDocPtr;

@@ -27,7 +27,7 @@ public:
     PROPERTY(int_value, getIntValue, setIntValue)
 
 protected:
-    ON_LOADED_BEGIN(cls, HObject)
+    ON_LOADED_BEGIN(cls, gcore::RefObject)
         ADD_PROPERTY(cls, "int_value", ADD_METHOD(cls, TestObject, getIntValue), ADD_METHOD(cls, TestObject, setIntValue));
     ON_LOADED_END
 CLASS_END

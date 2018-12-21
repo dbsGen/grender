@@ -15,9 +15,6 @@
 #include "Character.h"
 #include "../render_define.h"
 
-using namespace std;
-using namespace gcore;
-
 namespace gr {
     CLASS_BEGIN_0_NV(Font)
 

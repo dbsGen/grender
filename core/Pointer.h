@@ -18,12 +18,12 @@ namespace gcore {
         BASE_FINAL_CLASS_DEFINE
         
         void *ptr;
-        const HClass *type;
+        const Class *type;
         
     public:
         _FORCE_INLINE_ Pointer() : ptr(NULL), type(NULL) {}
         _FORCE_INLINE_ Pointer(void *ptr) : ptr(ptr), type(NULL) {}
-        _FORCE_INLINE_ Pointer(const HObject *obj) : ptr((void*)obj), type(obj ? obj->getInstanceClass() : NULL) {}
+        _FORCE_INLINE_ Pointer(const Object *obj) : ptr((void*)obj), type(obj ? obj->getInstanceClass() : NULL) {}
         _FORCE_INLINE_ Pointer(const Pointer &other) {
             type = other.type;
             ptr = other.ptr;
@@ -34,7 +34,7 @@ namespace gcore {
         _FORCE_INLINE_ operator void*() const {
             return ptr;
         }
-        _FORCE_INLINE_ const HClass *getType() const {
+        _FORCE_INLINE_ const Class *getType() const {
             return type;
         }
         

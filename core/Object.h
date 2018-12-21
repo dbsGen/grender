@@ -14,8 +14,6 @@
 #include "Define.h"
 #include "runtime.h"
 
-using namespace std;
-
 /**
  * CLASS_BEGIN_0 定义一个继承自Object的类
  */
@@ -24,8 +22,8 @@ using namespace std;
 #define CLASS_BEGIN_0_NV(NAME)  CLASS_BEGIN_NV(NAME, __CLASS_NS(OBJECT_CLASS))
 #define CLASS_BEGIN_0_V(NAME)   CLASS_BEGIN_V(NAME, __CLASS_NS(OBJECT_CLASS))
 
-#define OBJECT_CLASS    HObject
-#define OBJECT_NAME     "HObject"
+#define OBJECT_CLASS    Object
+#define OBJECT_NAME     "Object"
 
 namespace gcore {
     class Script;
@@ -42,27 +40,27 @@ namespace gcore {
         friend class Script;
 
     protected:
-        _FORCE_INLINE_ static void onClassLoaded(HClass *clz) {}
-        _FORCE_INLINE_ virtual void _copy(const HObject *other) {}
+        _FORCE_INLINE_ static void onClassLoaded(Class *clz) {}
+        _FORCE_INLINE_ virtual void _copy(const Object *other) {}
 
         friend class ClassDB;
 
     public:
         virtual void initialize() {}
-        static const HClass *getClass() {
-            if (!_class_contrainer<HObject>::_class) {
-                const HClass *clazz = ClassDB::getInstance()->find_loaded(ClassDB::connect("gcore", OBJECT_NAME));
-                _class_contrainer<HObject>::_class = clazz ? clazz : ClassDB::getInstance()->cl<OBJECT_CLASS>("gcore", OBJECT_NAME, NULL);
+        static const Class *getClass() {
+            if (!_class_contrainer<Object>::_class) {
+                const Class *clazz = ClassDB::getInstance()->find_loaded(ClassDB::connect("gcore", OBJECT_NAME));
+                _class_contrainer<Object>::_class = clazz ? clazz : ClassDB::getInstance()->cl<OBJECT_CLASS>("gcore", OBJECT_NAME, NULL);
             }
-            return _class_contrainer<HObject>::_class;
+            return _class_contrainer<Object>::_class;
         }
 
-        _FORCE_INLINE_ virtual const HClass *getInstanceClass() const {
-            return HObject::getClass();
+        _FORCE_INLINE_ virtual const Class *getInstanceClass() const {
+            return Object::getClass();
         }
 
-        _FORCE_INLINE_ bool instanceOf(const HClass *clz) const {
-            const HClass *cClz = getInstanceClass();
+        _FORCE_INLINE_ bool instanceOf(const Class *clz) const {
+            const Class *cClz = getInstanceClass();
             while (cClz) {
                 if (cClz == clz) return true;
                 cClz = cClz->getParent();
@@ -89,6 +87,22 @@ namespace gcore {
             call(name, &ret, (const Variant **)params.data(), (int)params.size());
             return ret;
         }
+        template<typename ...ARGS>
+        Variant callArgs(const StringName &name, ARGS &&...args) {
+            const int size = sizeof...(ARGS);
+            Variant ret;
+            if (size) {
+                variant_vector vs{{args...}};
+                pointer_vector pv;
+                for (int i = 0; i < size; ++i) {
+                    pv.push_back(&vs[i]);
+                }
+                call(name, &ret, (const Variant **)pv.data(), (int)pv.size());
+            }else {
+                call(name, &ret);
+            }
+            return ret;
+        }
         
         template<class T>
         _FORCE_INLINE_ T *cast_to() {
@@ -99,19 +113,19 @@ namespace gcore {
             return this ? (getInstanceClass()->isTypeOf(T::getClass()) ? static_cast<const T*>(this) : NULL) : NULL;
         }
 
-        _FORCE_INLINE_ virtual string str() const {
-            const HClass *cls = getInstanceClass();
-            return "[" + string(cls->getFullname().str()) + "]";
+        _FORCE_INLINE_ virtual std::string str() const {
+            const Class *cls = getInstanceClass();
+            return "[" + std::string(cls->getFullname().str()) + "]";
         }
         void pushOnDestroy(ActionCallback callback, void *data);
         void removeOnDestroy(ActionCallback callback, void *data);
         Variant var();
 
-        bool copy(const HObject *other);
+        bool copy(const Object *other);
 
 //        bool test_object;
-        _FORCE_INLINE_ HObject():scripts_container(NULL), on_destroy(NULL) {}
-        virtual ~HObject();
+        _FORCE_INLINE_ Object():scripts_container(NULL), on_destroy(NULL) {}
+        virtual ~Object();
     };
 }
 

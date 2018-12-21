@@ -31,45 +31,43 @@ namespace gcore {
     CLASS_END
 
     template <class T>
-    CLASS_BEGIN_N(Ref, Reference)
+    class Ref : public Reference {
     private:
-        _FORCE_INLINE_ bool checkType(const HClass *cls) {
+        _FORCE_INLINE_ bool checkType(const Class *cls) {
             return cls && (cls == T::getClass() || cls->isSubclassOf(T::getClass()));
         }
 
     public:
 
         _FORCE_INLINE_ Ref() : Ref(NULL) {}
+
         _FORCE_INLINE_ Ref(T *p) : Reference(p) {}
+
         _FORCE_INLINE_ Ref(const Reference &other) : Reference(other) {}
+
         _FORCE_INLINE_ ~Ref() {}
 
-        _FORCE_INLINE_ virtual Ref &operator=(const Reference &other) {
-            if (checkType(other.getType())) ref(&other);
-            return *this;
-        }
-
         _FORCE_INLINE_ Ref &operator=(T *p) {
-            Reference::operator=((HObject*)p);
+            Reference::operator=((Object *) p);
             return *this;
         }
 
-        _FORCE_INLINE_ T *operator*() {return static_cast<T*>(Reference::operator*());}
-        _FORCE_INLINE_ T *operator*() const {return static_cast<T*>(const_cast<Ref*>(this)->Reference::operator*());}
+        _FORCE_INLINE_ T *operator*() { return static_cast<T *>(get()); }
+
+        _FORCE_INLINE_ T *
+        operator*() const { return static_cast<T *>(const_cast<Ref *>(this)->get()); }
+
         _FORCE_INLINE_ T *operator->() {
             return operator*();
         }
+
         _FORCE_INLINE_ T *operator->() const {
             return operator*();
         }
+
         _FORCE_INLINE_ Ref(const Variant &other) : Reference(other) {
         }
-        static const Ref<T> &null() {
-            static Ref<T> _null;
-            return _null;
-        }
-
-    CLASS_END
+    };
 }
 
 #endif //HICORE_REFERENCE_H

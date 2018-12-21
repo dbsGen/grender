@@ -16,8 +16,6 @@
 
 #include <render_define.h>
 
-using namespace gcore;
-
 namespace gr {
     class Model;
     class FieldInfo;
@@ -106,13 +104,13 @@ namespace gr {
         CLASS_END
 
     private:
-        const HClass *modelClass;
+        const Class *modelClass;
         pointer_map fields;
         string name;
 
     public:
         _FORCE_INLINE_ Table() : modelClass(NULL) {}
-        _FORCE_INLINE_ Table(const HClass *modelClass) : Table() {
+        _FORCE_INLINE_ Table(const Class *modelClass) : Table() {
             this->modelClass = modelClass;
             name = string(getInstanceClass()->getNS()) + "_" + getInstanceClass()->getName();
         }
@@ -225,7 +223,7 @@ namespace gr {
 
     public:
 
-        const Table *tableForClass(const HClass *clazz);
+        const Table *tableForClass(const Class *clazz);
 
         void setup(const string &sandbox_path, const string &database_name = default_database);
 
@@ -298,7 +296,7 @@ namespace gr {
         }
 
     public:
-        _FORCE_INLINE_ Model(const HClass *clazz) : id(-1) {
+        _FORCE_INLINE_ Model(const Class *clazz) : id(-1) {
             table = Database::sharedInstance()->tableForClass(clazz);
         }
 

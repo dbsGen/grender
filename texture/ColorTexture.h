@@ -13,8 +13,6 @@
 #include <core/math/Type.h>
 #include <render_define.h>
 
-using namespace gcore;
-
 namespace gr {
     CLASS_BEGIN_N(ColorTexture, Texture)
 

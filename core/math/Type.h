@@ -150,7 +150,7 @@ _FORCE_INLINE_ current_type(const T *src) { \
     } \
 } \
 protected: \
-_FORCE_INLINE_ void _copy(const HObject *other) { \
+_FORCE_INLINE_ void _copy(const Object *other) { \
     operator=(*(current_type*)other); \
 } \
 private:

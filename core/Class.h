@@ -16,26 +16,24 @@
 
 #include "Define.h"
 
-using namespace std;
-
 namespace gcore  {
-    class HObject;
+    class Object;
     class ClassDB;
-    class HMethod;
+    class Method;
     class Property;
     class StringName;
 
     typedef void * object_type;
 
-    class HClass {
+    class Class {
     private:
         const char *ns;
         const char *name;
         StringName *fullname;
-        const HClass *parent;
+        const Class *parent;
         pointer_map methods;
         pointer_map properties;
-        const HMethod *initializer;
+        const Method *initializer;
 
         variant_map labels;
 
@@ -43,10 +41,10 @@ namespace gcore  {
 
     protected:
         size_t size;
-        HClass() : ns(NULL), parent(NULL), initializer(NULL) {}
-        HClass(const char *ns, const char *name);
+        Class() : ns(NULL), parent(NULL), initializer(NULL) {}
+        Class(const char *ns, const char *name);
     public:
-        ~HClass();
+        ~Class();
 
         /**
          * Get the class name
@@ -72,7 +70,7 @@ namespace gcore  {
         /**
          * Get parent class
          */
-        _FORCE_INLINE_ const HClass *getParent() const {
+        _FORCE_INLINE_ const Class *getParent() const {
             return  parent;
         }
         /**
@@ -90,8 +88,8 @@ namespace gcore  {
         /**
          * Check if this class is the subclass of the other class.
          */
-        _FORCE_INLINE_ bool isSubclassOf(const HClass *cls) const {
-            const HClass *p = getParent();
+        _FORCE_INLINE_ bool isSubclassOf(const Class *cls) const {
+            const Class *p = getParent();
             while (p) {
                 if (p == cls) return true;
                 p = p->getParent();
@@ -99,21 +97,21 @@ namespace gcore  {
             return false;
         }
 
-        _FORCE_INLINE_ bool isTypeOf(const HClass *cls) const {
+        _FORCE_INLINE_ bool isTypeOf(const Class *cls) const {
             return this == cls || isSubclassOf(cls);
         }
         _FORCE_INLINE_ virtual void del(void *object) const {}
 
-        const HMethod *addMethod(const HMethod *method);
+        const Method *addMethod(const Method *method);
 
-        _FORCE_INLINE_ const HMethod *getMethod(const StringName &name) const {
+        _FORCE_INLINE_ const Method *getMethod(const StringName &name) const {
             auto it = methods.find(name);
-            return it == methods.end() ? NULL:(const HMethod *)it->second;
+            return it == methods.end() ? NULL:(const Method *)it->second;
         }
-        _FORCE_INLINE_ const void setInitializer(const HMethod *method) {
+        _FORCE_INLINE_ const void setInitializer(const Method *method) {
             initializer = method;
         }
-        _FORCE_INLINE_ const HMethod *getInitializer() const {
+        _FORCE_INLINE_ const Method *getInitializer() const {
             return initializer;
         }
 
@@ -141,24 +139,24 @@ namespace gcore  {
     
     template<class T>
     struct _class_contrainer {
-        static const HClass *_class;
+        static const Class *_class;
     };
     template<class T>
-    const HClass * _class_contrainer<T>::_class = NULL;
+    const Class * _class_contrainer<T>::_class = NULL;
 
     class ClassDB {
     public:
-        typedef const HClass *(ClassLoader)();
+        typedef const Class *(ClassLoader)();
 
     private:
         static ClassDB *instance;
-        static mutex mtx;
+        static std::mutex mtx;
 
         template<class T>
-        class VirtualClass : HClass {
+        class VirtualClass : Class {
         private:
             friend class ClassDB;
-            _FORCE_INLINE_ VirtualClass(const char *ns, const char *name) : HClass(ns, name) {
+            _FORCE_INLINE_ VirtualClass(const char *ns, const char *name) : Class(ns, name) {
                 size = sizeof(T);
             }
         public:
@@ -186,34 +184,34 @@ namespace gcore  {
         pointer_map     class_loaders;
 
         template<class T>
-        const HClass *_vcls(const char *ns, const char *name, const HClass *super) {
-            void* hash = ns ? h(string(ns) + "::" + name) : h(name);
+        const Class *_vcls(const char *ns, const char *name, const Class *super) {
+            void* hash = ns ? h(std::string(ns) + "::" + name) : h(name);
             auto ite = classes_index.find(hash);
 
             if (ite == classes_index.end()) {
-                HClass *clz = new VirtualClass<T>(ns, name);
+                Class *clz = new VirtualClass<T>(ns, name);
                 classes_index[hash] = clz;
                 classes.push_back(clz);
                 clz->parent = super;
                 T::onClassLoaded(clz);
                 return clz;
             }else
-                return (const HClass *) (*ite).second;
+                return (const Class *) (*ite).second;
         }
 
         template<class T>
-        const HClass *_cls(const char *ns, const char *name, const HClass *super) {
-            void *hash = ns ? h(string(ns) + "::" + name) : h(name);
+        const Class *_cls(const char *ns, const char *name, const Class *super) {
+            void *hash = ns ? h(std::string(ns) + "::" + name) : h(name);
             auto ite = classes_index.find(hash);
             if (ite == classes_index.end()) {
-                HClass *clz = (HClass*)new TypeClass<T>(ns, name);
+                Class *clz = (Class*)new TypeClass<T>(ns, name);
                 classes_index[hash] = clz;
                 classes.push_back(clz);
                 clz->parent = super;
                 T::onClassLoaded(clz);
                 return clz;
             }else
-                return (const HClass *) (*ite).second;
+                return (const Class *) (*ite).second;
         }
 
         void loadClasses();
@@ -222,7 +220,7 @@ namespace gcore  {
         _FORCE_INLINE_ ClassDB(){}
         _FORCE_INLINE_ ~ClassDB() {
             for (auto ite = classes.begin(); ite != classes.end(); ++ite) {
-                delete((HClass*)*ite);
+                delete((Class*)*ite);
             }
         }
 
@@ -240,21 +238,21 @@ namespace gcore  {
             return instance;
         }
 
-        const HClass * find_loaded(const StringName &fullname);
-        const HClass * find(const StringName &fullname);
+        const Class * find_loaded(const StringName &fullname);
+        const Class * find(const StringName &fullname);
 
         _FORCE_INLINE_ static StringName connect(const char *ns, const char *name) {
-            return StringName(ns? (string(ns) + "::" + name).c_str() : name);
+            return StringName(ns? (std::string(ns) + "::" + name).c_str() : name);
         }
         
         /**
          * Register or get a class
          */
         template<class Tc>
-        _FORCE_INLINE_ const HClass *cl(const char *ns, const char *name, const HClass *super = NULL)
+        _FORCE_INLINE_ const Class *cl(const char *ns, const char *name, const Class *super = NULL)
         {return _cls<Tc>(ns, name, super);}
         template<class Tc>
-        _FORCE_INLINE_ const HClass *vr(const char *ns, const char *name, const HClass *super = NULL)
+        _FORCE_INLINE_ const Class *vr(const char *ns, const char *name, const Class *super = NULL)
         {return _vcls<Tc>(ns, name, super);}
         
 

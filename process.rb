@@ -107,7 +107,7 @@ def check_class_begin(args)
     type = $1
     res = []
     res_cls = nil
-    $2.gsub /\w+/ do |w|
+    $2.gsub /[\w:]+/ do |w|
       res << w
     end
     if res.size > 0 and res[0] != 'NAME'

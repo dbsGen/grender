@@ -104,11 +104,11 @@ namespace gcore {
         _FORCE_INLINE_ Char():FixType(0){}
         _FORCE_INLINE_ Char(char c) : FixType(c){}
         
-        _FORCE_INLINE_ string str() const {
+        _FORCE_INLINE_ std::string str() const {
             char ch[2];
             ch[0] = (char)*this;
             ch[1] = 0;
-            return string(ch);
+            return std::string(ch);
         }
     };
     
@@ -119,9 +119,9 @@ namespace gcore {
         _FORCE_INLINE_ Short():FixType(0){}
         _FORCE_INLINE_ Short(short s) : FixType(s){}
         
-        _FORCE_INLINE_ string str() const {
+        _FORCE_INLINE_ std::string str() const {
             short ret = *this;
-            stringstream ss;
+            std::stringstream ss;
             ss << ret;
             return ss.str();
         }
@@ -134,9 +134,9 @@ namespace gcore {
         _FORCE_INLINE_ Integer():FixType(0){}
         _FORCE_INLINE_ Integer(int i) : FixType(i){}
         
-        _FORCE_INLINE_ string str() const {
+        _FORCE_INLINE_ std::string str() const {
             int ret = *this;
-            stringstream ss;
+            std::stringstream ss;
             ss << ret;
             return ss.str();
         }
@@ -149,9 +149,9 @@ namespace gcore {
         _FORCE_INLINE_ Long():FixType(0){}
         _FORCE_INLINE_ Long(long l) : FixType(l){}
         
-        _FORCE_INLINE_ string str() const {
+        _FORCE_INLINE_ std::string str() const {
             long ret = *this;
-            stringstream ss;
+            std::stringstream ss;
             ss << ret;
             return ss.str();
         }
@@ -164,9 +164,9 @@ namespace gcore {
         _FORCE_INLINE_ LongLong():FixType(0){}
         _FORCE_INLINE_ LongLong(long long l) : FixType(l){}
         
-        _FORCE_INLINE_ string str() const {
+        _FORCE_INLINE_ std::string str() const {
             long long ret = *this;
-            stringstream ss;
+            std::stringstream ss;
             ss << ret;
             return ss.str();
         }
@@ -179,9 +179,9 @@ namespace gcore {
         _FORCE_INLINE_ Float():FixType(0){}
         _FORCE_INLINE_ Float(float f) : FixType(f){}
         
-        _FORCE_INLINE_ string str() const {
+        _FORCE_INLINE_ std::string str() const {
             float ret = *this;
-            stringstream ss;
+            std::stringstream ss;
             ss << ret;
             return ss.str();
         }
@@ -194,9 +194,9 @@ namespace gcore {
         _FORCE_INLINE_ Double():FixType(0){}
         _FORCE_INLINE_ Double(double d) : FixType(d){}
         
-        _FORCE_INLINE_ string str() const {
+        _FORCE_INLINE_ std::string str() const {
             double ret = *this;
-            stringstream ss;
+            std::stringstream ss;
             ss << ret;
             return ss.str();
         }
@@ -209,7 +209,7 @@ namespace gcore {
         _FORCE_INLINE_ Boolean():FixType(0){}
         _FORCE_INLINE_ Boolean(double d) : FixType(d){}
 
-        _FORCE_INLINE_ string str() const {
+        _FORCE_INLINE_ std::string str() const {
             return (bool)(*this) ? "true" : "false";
         }
     };

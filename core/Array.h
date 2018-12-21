@@ -18,11 +18,9 @@
 #include "Variant.h"
 #include "core_define.h"
 
-using namespace std;
-
 namespace gcore {
-    class Array;
-    class RefCallback;
+    class RArray;
+    class RCallback;
 
     CLASS_BEGIN_N(_Array, RefObject)
     
@@ -56,7 +54,7 @@ namespace gcore {
         }
         ~_Array();
     
-        virtual string str() const;
+        virtual std::string str() const;
         template<class T>
         _FORCE_INLINE_ _Array &operator=(const T &vs) {
             variants.clear();
@@ -70,6 +68,9 @@ namespace gcore {
             return *this;
         }
 
+        _FORCE_INLINE_ Variant &operator[](long n) {
+            return variants.at(n);
+        }
         _FORCE_INLINE_ const Variant &operator[](long n) const {
             return at(n);
         }
@@ -112,7 +113,7 @@ namespace gcore {
         /**
          * (ArrayEvent, long idx, Variant new_variant, Variant old_variant)
          */
-        METHOD void setListener(const RefCallback &callback);
+        METHOD void setListener(const RCallback &callback);
 
     protected:
         ON_LOADED_BEGIN(cls, RefObject)
@@ -127,13 +128,13 @@ namespace gcore {
         ON_LOADED_END
     CLASS_END
 
-    CLASS_BEGIN_TN(Array, Ref, 1, _Array)
+    class RArray : public Ref<_Array> {
 
     public:
-        _FORCE_INLINE_ Array() : Ref(new _Array(variant_vector())) {}
-        _FORCE_INLINE_ Array(const variant_vector &variants) : Ref(new _Array(variants)) {}
-        _FORCE_INLINE_ Array(initializer_list<variant_vector::value_type> list) : Ref(new _Array(list)) {}
-        _FORCE_INLINE_ Array(const Reference &ref) : Ref(ref) {}
+        _FORCE_INLINE_ RArray() : Ref(new _Array(variant_vector())) {}
+        _FORCE_INLINE_ RArray(const variant_vector &variants) : Ref(new _Array(variants)) {}
+        _FORCE_INLINE_ RArray(std::initializer_list<variant_vector::value_type> list) : Ref(new _Array(list)) {}
+        _FORCE_INLINE_ RArray(const Reference &ref) : Ref(ref) {}
 
         _FORCE_INLINE_ const Variant &at(long n) const {
             return operator*()->operator[](n);
@@ -146,17 +147,21 @@ namespace gcore {
         _FORCE_INLINE_ operator Variant() const {
             return Variant(*this);
         }
-        Array(const Variant &var) : Array() {
+        RArray(const Variant &var) : RArray() {
             if (var && var.getType()->isTypeOf(_Array::getClass())) {
                 operator=(var.ref());
             }else {
                 operator*()->push_back(var);
             }
         }
-        _FORCE_INLINE_ void contact(const Array &other) {
+        _FORCE_INLINE_ void contact(const RArray &other) {
             if (other) {
                 operator*()->contact(**other);
             }
+        }
+
+        _FORCE_INLINE_ Variant &operator[](long n) const {
+            return operator*()->operator[](n);
         }
 
         _FORCE_INLINE_ variant_vector &vec() const {

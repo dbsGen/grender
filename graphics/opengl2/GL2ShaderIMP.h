@@ -15,8 +15,6 @@
 
 #include <graphics/graphics_define.h>
 
-using namespace gr;
-
 namespace higraphics {
     CLASS_BEGIN_N(GL2ShaderIMP, ShaderIMP)
     

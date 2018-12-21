@@ -13,8 +13,6 @@
 
 #include "../render_define.h"
 
-using namespace gcore;
-
 namespace gr {
 
     CLASS_BEGIN_0_N(LoopThread)

@@ -26,7 +26,7 @@ namespace gcore {
         _FORCE_INLINE_ Data() : buffer(NULL) {}
         _FORCE_INLINE_ ~Data() {if (buffer) free(buffer);}
     
-        METHOD static Ref<Data> fromString(const string &str);
+        METHOD static Ref<Data> fromString(const std::string &str);
 
     protected:
         ON_LOADED_BEGIN(cls, RefObject)
@@ -76,7 +76,7 @@ namespace gcore {
     
         long size;
         FILE *file;
-        string path;
+        std::string path;
         void *buffer;
     
         void loadFile() {
@@ -104,7 +104,7 @@ namespace gcore {
         virtual const void *getBuffer();
     
         FileData() : file(NULL), size(0), buffer(NULL) {}
-        FileData(const string &path) : FileData() {
+        FileData(const std::string &path) : FileData() {
             this->path = path;
         }
         ~FileData() {

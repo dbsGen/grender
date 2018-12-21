@@ -12,8 +12,6 @@
 #include <core/math/Type.h>
 #include "../render_define.h"
 
-using namespace std;
-
 namespace gr {
     class Renderer;
     class MeshIMP;

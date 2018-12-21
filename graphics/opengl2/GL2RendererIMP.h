@@ -15,8 +15,6 @@
 
 #include <graphics/graphics_define.h>
 
-using namespace gr;
-
 namespace higraphics {
     class GL2FrameBuffer;
     

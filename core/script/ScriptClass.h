@@ -12,7 +12,7 @@
 #include "../core_define.h"
 
 namespace gcore {
-    class HObject;
+    class Object;
     class Script;
 
     
@@ -26,7 +26,7 @@ namespace gcore {
      */
     CLASS_BEGIN_0_V(ScriptClass)
     private:
-        const HClass *cls;
+        const Class *cls;
         const Script *script;
         friend class Script;
 
@@ -41,13 +41,13 @@ namespace gcore {
         _FORCE_INLINE_ ScriptClass() : cls(NULL), script(NULL) {}
         _FORCE_INLINE_ virtual ~ScriptClass() {}
 
-        _FORCE_INLINE_ const HClass *getNativeClass() const {
+        _FORCE_INLINE_ const Class *getNativeClass() const {
             return cls;
         }
         _FORCE_INLINE_ const Script *getScript() const {
             return script;
         }
-        _FORCE_INLINE_ void setNativeClass(const HClass *cls) {
+        _FORCE_INLINE_ void setNativeClass(const Class *cls) {
             this->cls = cls;
         }
         _FORCE_INLINE_ void setScript(const Script *script) {
@@ -66,7 +66,7 @@ namespace gcore {
         /**
          * 获得一个中间件，没有找到返回空(NULL)
          */
-        ScriptInstance *get(HObject *target) const;
+        ScriptInstance *get(Object *target) const;
     
         /**
          * 创建一个中间件, 通过这个方法得到ScriptInstance
@@ -82,7 +82,7 @@ namespace gcore {
          * 否则将会作为指针保存
          * 在回调给script层的参数中有native对象时使用。
          */
-        ScriptInstance *createVariant(HObject *target) const;
+        ScriptInstance *createVariant(Object *target) const;
     
         /**
          * 初始化一个新的ScriptInstance并且会创建对应的c++对象，
