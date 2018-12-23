@@ -11,6 +11,14 @@ using namespace gcore;
 
 #define STR(S) #S
 
+TEST(Class, ClassRelationships)
+{
+    EXPECT_EQ(TestObject::getClass()->getParent(), RefObject::getClass());
+    EXPECT_TRUE(TestObject::getClass()->isTypeOf(RefObject::getClass()));
+    EXPECT_TRUE(TestObject::getClass()->isSubclassOf(RefObject::getClass()));
+    EXPECT_FALSE(TestObject::getClass()->isSubclassOf(TestObject::getClass()));
+}
+
 TEST(Object, NameOfTestObject)
 {
     Ref<TestObject> obj(new TestObject());
