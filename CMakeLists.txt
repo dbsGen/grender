@@ -1,20 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(grender)
-
-include_directories("." "thirdparties")
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+include_directories(gcore)
 
-set(CORE_SRC
-        core/script/Script.cpp
-        core/math/Type.cpp
-        core/IMP.cpp
-        )
-
-add_library(gcore STATIC ${CORE_SRC})
-
-
+add_subdirectory(gcore)
 
 project(grender_test)
 
