@@ -4,64 +4,48 @@
 #include <core/Array.h>
 #include <vector>
 #include <core/Callback.h>
+#include <script/ruby/RubyScript.h>
 
 #include <gtest/gtest.h>
 
 using namespace gcore;
+using namespace gscript;
 
-#define STR(S) #S
+#define PATH "/Users/gen2/Programs/grender/test/ruby"
 
-TEST(Class, ClassRelationships)
+
+TEST(Ruby, RunSimpleScript)
 {
-    EXPECT_EQ(TestObject::getClass()->getParent(), RefObject::getClass());
-    EXPECT_TRUE(TestObject::getClass()->isTypeOf(RefObject::getClass()));
-    EXPECT_TRUE(TestObject::getClass()->isSubclassOf(RefObject::getClass()));
-    EXPECT_FALSE(TestObject::getClass()->isSubclassOf(TestObject::getClass()));
+    RubyScript ruby;
+    EXPECT_EQ((int)ruby.runScript("1+2"), 3);
+    RArray arr = ruby.runScript("[1,'hello', 3]");
+
+    EXPECT_EQ((int)arr[0], 1);
+    EXPECT_STREQ((const char *)arr[1], "hello");
+    EXPECT_EQ((int)arr[2], 3);
 }
 
-TEST(Object, NameOfTestObject)
+TEST(Ruby, RunEnvFile)
 {
-    Ref<TestObject> obj(new TestObject());
-    EXPECT_STREQ(obj->getClass()->getFullname().str(), STR(TestObject));
-}
+    Ref<TestObject> obj;
 
-TEST(Object, SetterAndGetter)
-{
-    Ref<TestObject> obj(new TestObject());
-    obj->callArgs("setIntValue", 1023);
-    EXPECT_EQ((int)obj->call("getIntValue"), obj->getIntValue());
+    RubyScript ruby;
+    ruby.setup(PATH);
+
+    ruby.run(PATH "/test.rb");
+
+    obj = ruby.runScript("$to");
+
+    EXPECT_EQ(obj->getIntValue(), 333);
+
+    obj->setCallback(C([](const std::string &str){
+        EXPECT_STREQ(str.c_str(), "InRuby");
+    }));
+    ruby.runScript("$to.call_cb");
 }
 
 int main(int argc, char* argv[]) {
-    Ref<TestObject> obj(new TestObject());
-
-    printf("ClassName %s\n", obj->getClass()->getFullname().str());
-
-    obj->callArgs("setIntValue", 1023);
-    printf("int value is %d -> %d\n", (int)obj->call("getIntValue"), obj->getIntValue());
-
-    printf("Ref size %d\n", sizeof(Variant));
-
-    RCallback cb = C([](int l){
-        printf("output %d\n", l);
-    });
-
-    cb(30.32);
-    cb(2883);
-    cb("你好");
-
-    RCallback cb2 = C([](Object *object){
-        if (object) {
-            printf("output %s\n", object->getInstanceClass()->getFullname().str());
-        }else {
-            printf("Object is NULL\n");
-        }
-    });
-
-    cb2(30.32);
-    cb2(2883);
-    cb2("你好");
-    cb2(obj);
+    TestObject::getClass();
 
     testing::InitGoogleTest(&argc, argv);
 
