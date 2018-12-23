@@ -5,14 +5,30 @@
 #include <vector>
 #include <core/Callback.h>
 
+#include <gtest/gtest.h>
+
 using namespace gcore;
 
-int main() {
+#define STR(S) #S
+
+TEST(Object, NameOfTestObject)
+{
+    Ref<TestObject> obj(new TestObject());
+    EXPECT_STREQ(obj->getClass()->getFullname().str(), STR(TestObject));
+}
+
+TEST(Object, SetterAndGetter)
+{
+    Ref<TestObject> obj(new TestObject());
+    obj->callArgs("setIntValue", 1023);
+    EXPECT_EQ((int)obj->call("getIntValue"), obj->getIntValue());
+}
+
+int main(int argc, char* argv[]) {
     Ref<TestObject> obj(new TestObject());
 
     printf("ClassName %s\n", obj->getClass()->getFullname().str());
 
-//    Variant iv = 1023;
     obj->callArgs("setIntValue", 1023);
     printf("int value is %d -> %d\n", (int)obj->call("getIntValue"), obj->getIntValue());
 
@@ -39,5 +55,7 @@ int main() {
     cb2("你好");
     cb2(obj);
 
-    return 0;
+    testing::InitGoogleTest(&argc, argv);
+
+    return RUN_ALL_TESTS();
 }
