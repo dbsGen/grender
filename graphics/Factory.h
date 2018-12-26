@@ -8,8 +8,8 @@
 #include <core/Singleton.h>
 #include "graphics_define.h"
 
-namespace higraphics {
-    CLASS_BEGIN_TN(Factory, Singleton, 1, Factory)
+namespace gg {
+    CLASS_BEGIN_TN(Factory, gc::Singleton, 1, Factory)
 
     public:
         enum GraphicsAPI {
@@ -22,7 +22,7 @@ namespace higraphics {
 
     public:
     
-        static const gcore::HClass *mesh_class,
+        static const gc::Class *mesh_class,
                                     *texture_class,
                                     *material_class,
                                     *shader_class,
@@ -45,7 +45,7 @@ namespace higraphics {
          *      RendererIMP::getClass()
          * @result A instance of cls.
          */
-        HObject *create(const gcore::HClass *cls);
+        gc::Object *create(const gc::Class *cls);
 
         Factory();
 

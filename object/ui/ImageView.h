@@ -14,8 +14,8 @@ namespace gr {
     public:
         ImageView();
 
-        METHOD void setTexture(const Ref<Texture> &texture);
-        METHOD Ref<Texture> getTexture();
+        METHOD void setTexture(const gc::Ref<Texture> &texture);
+        METHOD gc::Ref<Texture> getTexture();
     
         void makePixelPerfect();
 

@@ -8,7 +8,7 @@
 
 #include <gtest/gtest.h>
 
-using namespace gcore;
+using namespace gc;
 using namespace gscript;
 
 

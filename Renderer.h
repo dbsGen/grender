@@ -16,7 +16,7 @@
 #include <physics/Ray.h>
 #include "utils/LoopThread.h"
 #include "core/Define.h"
-#include "object/Object.h"
+#include "object/Object3D.h"
 #include "Plugin.h"
 #include "types.h"
 #include "core/Callback.h"
@@ -25,11 +25,11 @@
 namespace gr {
     class RendererIMP;
 
-    CLASS_BEGIN_N(Renderer, RefObject)
+    CLASS_BEGIN_N(Renderer, gc::RefObject)
     private:
         static Renderer *shared_instance;
 
-        CLASS_BEGIN_N(RenderRoot, Object)
+        CLASS_BEGIN_N(RenderRoot, Object3D)
         private:
             bool need_update;
             _FORCE_INLINE_ void updated() {need_update=false;}
@@ -37,12 +37,12 @@ namespace gr {
 
             friend class Renderer;
 
-            static bool travCheck(Object *, void *data);
-            static void travAddDo(Object *, void *data);
-            static void travRemoveDo(Object *, void *data);
+            static bool travCheck(Object3D *, void *data);
+            static void travAddDo(Object3D *, void *data);
+            static void travRemoveDo(Object3D *, void *data);
 
         protected:
-            virtual bool onMessage(const StringName &key, const Array *vars);
+            virtual bool onMessage(const gc::StringName &key, const gc::RArray *vars);
 
         public:
             Renderer *renderer;
@@ -57,32 +57,32 @@ namespace gr {
         RenderRoot root;
 
 //        static Renderer defaultRenderer;
-        mutex mtx;
+        std::mutex mtx;
         RendererIMP *imp;
-        vector<Ref<Camera> > cameras;
+        std::vector<gc::Ref<Camera> > cameras;
 
-        Ref<Controller> main_controller;
+        gc::Ref<Controller> main_controller;
 
         LoopThread fixed_thread;
-        mutex render_mtx;
+        std::mutex render_mtx;
         Time last_frame;
         Time last_step_time;
         static float screen_scale;
 
-        HSize   size;
+        Size   size;
 
-        _FORCE_INLINE_ void addObject(Object *object) {
+        _FORCE_INLINE_ void addObject(Object3D *object) {
             object->_added(this);
         }
-        _FORCE_INLINE_ void removeObject(Object *object) {
+        _FORCE_INLINE_ void removeObject(Object3D *object) {
             object->_removed(this);
         }
 
         pointer_map plugins;
-        mutex will_do_mtx;
+        std::mutex will_do_mtx;
         pointer_list will_do;
-        vector<RefCallback >  will_callback;
-        vector<RefCallback >  next_frame_callback;
+        std::vector<gc::RCallback >  will_callback;
+        std::vector<gc::RCallback >  next_frame_callback;
     
         int required_reset_count;
         bool required_rendering;
@@ -119,22 +119,22 @@ namespace gr {
             MainThread,
         };
     
-        static const StringName NOTIFICATION_PREV_FRAME;
-        static const StringName NOTIFICATION_POST_FRAME;
+        static const gc::StringName NOTIFICATION_PREV_FRAME;
+        static const gc::StringName NOTIFICATION_POST_FRAME;
 
         /**
          * Notified when render frame
          * @params [Time delta]
          */
-        static const StringName NOTIFICATION_FRAME_STEP;
-        static const StringName NOTIFICATION_FIXED_UPDATE;
-        static const StringName NOTIFICATION_RENDERER_DELETE;
+        static const gc::StringName NOTIFICATION_FRAME_STEP;
+        static const gc::StringName NOTIFICATION_FIXED_UPDATE;
+        static const gc::StringName NOTIFICATION_RENDERER_DELETE;
 
         /**
          * Notified event not handled
          * @params [EventType type, Point screenPoint]
          */
-        static const StringName NOTIFICATION_HANDLE_EVENT;
+        static const gc::StringName NOTIFICATION_HANDLE_EVENT;
 
         METHOD static  Renderer *sharedInstance();
     
@@ -153,27 +153,27 @@ namespace gr {
          */
         EVENT(void, _step);
 
-        METHOD const Ref<Camera> &getCamera(int index);
+        METHOD const gc::Ref<Camera> &getCamera(int index);
 
-        _FORCE_INLINE_ METHOD const HSize &getSize() {
+        _FORCE_INLINE_ METHOD const Size &getSize() {
             return size;
         }
 
-        METHOD void setSize(const HSize &size);
+        METHOD void setSize(const Size &size);
 
         // Objects manager
 
-        METHOD void add(const Ref<Object> &object);
-        METHOD void remove(const Ref<Object> &object);
-        _FORCE_INLINE_ const list<Ref<Object>> &getObjects() {return root.getChildren();}
+        METHOD void add(const gc::Ref<Object3D> &object);
+        METHOD void remove(const gc::Ref<Object3D> &object);
+        _FORCE_INLINE_ const std::list<gc::Ref<Object3D>> &getObjects() {return root.getChildren();}
 
-        METHOD void setMainController(const Ref<Controller> &controller);
-        METHOD const Ref<Controller> &getMainController();
+        METHOD void setMainController(const gc::Ref<Controller> &controller);
+        METHOD const gc::Ref<Controller> &getMainController();
         PROPERTY(main_controller, getMainController, setMainController)
 
-        METHOD void attach(const Ref<Plugin> &plugin);
-        METHOD const Ref<Plugin> &plugin(const StringName &name);
-        METHOD void disattach(const StringName &name);
+        METHOD void attach(const gc::Ref<Plugin> &plugin);
+        METHOD const gc::Ref<Plugin> &plugin(const gc::StringName &name);
+        METHOD void disattach(const gc::StringName &name);
 
         METHOD static Time time();
 
@@ -195,13 +195,13 @@ namespace gr {
         }
         _FORCE_INLINE_ RendererIMP *getIMP() { return imp; }
     
-        void *doOnMainThread(void *target, ActionCallback callback, void *data = nullptr);
+        void *doOnMainThread(void *target, gc::ActionCallback callback, void *data = nullptr);
         void *cancelDoOnMainThread(void *target);
-        void doNextFrame(const RefCallback &callback) {
+        void doNextFrame(const gc::RCallback &callback) {
             next_frame_callback.push_back(callback);
         }
     
-        void doOnMainThread(const RefCallback &callback) {
+        void doOnMainThread(const gc::RCallback &callback) {
             will_callback.push_back(callback);
         }
 
@@ -212,9 +212,9 @@ namespace gr {
             return frame_per_second;
         }
 
-        void reload(Object *object);
-        void maskChange(Object *object, Mask from, Mask to);
-        void hitMaskChange(Object *object, Mask from, Mask to);
+        void reload(Object3D *object);
+        void maskChange(Object3D *object, Mask from, Mask to);
+        void hitMaskChange(Object3D *object, Mask from, Mask to);
 
         static void destroy(Renderer *renderer);
     
@@ -246,10 +246,10 @@ namespace gr {
 
     protected:
 
-        _FORCE_INLINE_ void addObject(Object *object) {
+        _FORCE_INLINE_ void addObject(Object3D *object) {
             getTarget()->addObject(object);
         }
-        _FORCE_INLINE_ void removeObject(Object *object) {
+        _FORCE_INLINE_ void removeObject(Object3D *object) {
             getTarget()->removeObject(object);
         }
 //        _FORCE_INLINE_ void drawBegin() {
@@ -263,16 +263,16 @@ namespace gr {
         }
 
         virtual void prepare() = 0;
-        virtual void add(const Ref<Object> &object) = 0;
-        virtual void remove(const Ref<Object> &object) = 0;
-        virtual void reload(Object *object, Material *old_mat) = 0;
+        virtual void add(const gc::Ref<Object3D> &object) = 0;
+        virtual void remove(const gc::Ref<Object3D> &object) = 0;
+        virtual void reload(Object3D *object, Material *old_mat) = 0;
         virtual void reload() = 0;
         virtual void render() = 0;
-        virtual void updateSize(const HSize &size) = 0;
-        virtual void maskChanged(const Ref<Object> &object, Mask from, Mask to) = 0;
-        virtual void hitMaskChanged(const Ref<Object> &object, Mask from, Mask to) = 0;
+        virtual void updateSize(const Size &size) = 0;
+        virtual void maskChanged(const gc::Ref<Object3D> &object, Mask from, Mask to) = 0;
+        virtual void hitMaskChanged(const gc::Ref<Object3D> &object, Mask from, Mask to) = 0;
 
-        _FORCE_INLINE_ const vector<Ref<Camera> > &getCameras() {
+        _FORCE_INLINE_ const std::vector<gc::Ref<Camera> > &getCameras() {
             return getTarget()->cameras;
         }
 

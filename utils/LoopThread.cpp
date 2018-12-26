@@ -5,6 +5,8 @@
 #include "LoopThread.h"
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 LoopThread::LoopThread(ActionCallback callback, void *data) : w(true),
                                                               i(callback, data),

@@ -26,26 +26,26 @@ namespace gr {
     private:
         Vector2f    _offset;
 
-        Ref<Font>   font;
-        string      text;
-        HSize       space;
+        gc::Ref<Font>   font;
+        std::string text;
+        Size        space;
         float       max_width;
-        HColor      color;
+        Color       color;
         ref_vector  characters;
         ref_map     materials;
         float       point_size;
         bool        ellipsis;
 
         pointer_map     cache_characters;
-        Reference popChar(const Ref<Character> &ch);
-        Reference popChar(unsigned long ch);
-        void pushChar(const Reference &ch);
+        gc::Reference popChar(const gc::Ref<Character> &ch);
+        gc::Reference popChar(unsigned long ch);
+        void pushChar(const gc::Reference &ch);
         void clearCachedChars();
         void pushAllToCache();
-        HSize text_size;
+        Size text_size;
 
         bool changed;
-        StringName notification_key;
+        gc::StringName notification_key;
 
         Anchor h_anchor;
         Anchor v_anchor;
@@ -55,7 +55,7 @@ namespace gr {
         void makeLine(const pointer_vector *chs, float lineWidth, float totalHeight);
 
     protected:
-        virtual bool onMessage(const StringName &key, const Array *vars);
+        virtual bool onMessage(const gc::StringName &key, const gc::RArray *vars);
         virtual void awake(Renderer *renderer);
         virtual void updateSize(const Vector2f &originalSize, const Vector2f &size);
 
@@ -63,7 +63,7 @@ namespace gr {
         Label();
         ~Label();
 
-        _FORCE_INLINE_ const HSize &getTextSize() {
+        _FORCE_INLINE_ const Size &getTextSize() {
             if (changed) {
                 refresh();
             }
@@ -82,20 +82,20 @@ namespace gr {
         }
         void setEllipsis(bool ellipsis);
     
-        void setFont(const Ref<Font> &font);
-        const Ref<Font> &getFont() const;
+        void setFont(const gc::Ref<Font> &font);
+        const gc::Ref<Font> &getFont() const;
 
-        void setText(const string &text);
-        const string &getText() const;
+        void setText(const std::string &text);
+        const std::string &getText() const;
 
-        void setSpace(const HSize &space);
-        const HSize &getSpace();
+        void setSpace(const Size &space);
+        const Size &getSpace();
 
         void setMaxWidth(float maxWidth);
         float getMaxWidth();
 
-        void setColor(const HColor &color);
-        const HColor &getColor();
+        void setColor(const Color &color);
+        const Color &getColor();
 
         Anchor getHAnchor();
         void setHAnchor(Anchor anchor);

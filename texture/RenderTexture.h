@@ -11,7 +11,7 @@
 
 
 #include "Texture.h"
-#include <core/math/Type.h>
+#include <math/Type.h>
 
 #include <render_define.h>
 
@@ -35,7 +35,7 @@ public:
                );
     ~RenderTexture();
 
-    void setSize(const HSize &size);
+    void setSize(const Size &size);
     
     CLASS_END
 }

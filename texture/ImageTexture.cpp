@@ -8,9 +8,11 @@
 
 #include "ImageTexture.h"
 #include <Renderer.h>
-#include <core/math/Math.hpp>
+#include <math/Math.hpp>
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 ImageTexture::~ImageTexture() {
     cancelLoad();
@@ -62,7 +64,7 @@ void ImageTexture::readTexture() {
     }
 }
 
-void ImageTexture::asynThread(Ref<Callback> on_complete) {
+void ImageTexture::asynThread(const RCallback &on_complete) {
     readed_buffer = loadBuffer();
     loaded = true;
     
@@ -77,14 +79,14 @@ void ImageTexture::asynThread(Ref<Callback> on_complete) {
     load_thread = NULL;
 }
 
-void ImageTexture::asynLoad(const Ref<Callback> &complete) {
+void ImageTexture::asynLoad(const RCallback &complete) {
     if (!loaded) {
         if (!load_thread) {
             is_cancel = false;
             load_thread = new thread(&ImageTexture::asynThread, this, complete);
         }
     }else {
-        complete->invoke(Array());
+        complete->invoke(RArray());
     }
 }
 

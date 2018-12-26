@@ -5,7 +5,7 @@
 #include "ModelLoader.h"
 
 using namespace gr;
-using namespace gcore;
+using namespace gc;
 
 typedef uint8_t ModelType;
 
@@ -45,9 +45,9 @@ void ModelLoader::load(Data *data) {
     if (read(data, key, 3) && key[0] == 'H' && key[1] == 'M' && key[2] == 'D') {
         if (read(data, &version, sizeof(float))) {
             ModelType type;
-            string tmp;
+            std::string tmp;
             variant_vector ns;
-            vector<int> indexes;
+            std::vector<int> indexes;
 
             if (read(data, &type, sizeof(ModelType)) && type == TYPE_OBJECT) {
                 while (true) {
@@ -57,7 +57,7 @@ void ModelLoader::load(Data *data) {
                         read(data, &tmp[0], s);
                         StringName name(tmp.c_str());
                         Ref<Mesh> mesh = new Mesh;
-                        mesh->setColor(HColor(1,1,1,1), Mesh::DEFAULT_COLOR_NAME);
+                        mesh->setColor(Color(1,1,1,1), Mesh::DEFAULT_COLOR_NAME);
                         while (true) {
                             if (read(data, &type, sizeof(ModelType))) {
                                 switch (type) {
@@ -125,7 +125,7 @@ void ModelLoader::load(Data *data) {
                     }
                 }
             }
-            names = Array(ns);
+            names = RArray(ns);
             return;
         }
     }

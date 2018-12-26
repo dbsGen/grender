@@ -15,15 +15,15 @@
 namespace gr {
     class Renderer;
 
-    CLASS_BEGIN_NV(Plugin, RefObject)
+    CLASS_BEGIN_NV(Plugin, gc::RefObject)
 
-        StringName  name;
+        gc::StringName  name;
         Renderer *renderer;
         friend class Renderer;
 
     protected:
         _FORCE_INLINE_ Plugin() {}
-        _FORCE_INLINE_ Plugin(const StringName &name) : name(name) {}
+        _FORCE_INLINE_ Plugin(const gc::StringName &name) : name(name) {}
 
         _FORCE_INLINE_ virtual void attach(Renderer *renderer) {}
         _FORCE_INLINE_ virtual void disattach(Renderer *renderer) {}
@@ -37,8 +37,8 @@ namespace gr {
         friend class Renderer;
 
     public:
-        const StringName &getName();
-        _FORCE_INLINE_ void setName(const StringName &name) {
+        const gc::StringName &getName();
+        _FORCE_INLINE_ void setName(const gc::StringName &name) {
             this->name = name;
         }
 

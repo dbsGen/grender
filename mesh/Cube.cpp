@@ -9,6 +9,8 @@
 #include "Cube.h"
 
 using namespace gr;
+using namespace std;
+using namespace gc;
 
 Cube::Cube() {
     size.x(1);

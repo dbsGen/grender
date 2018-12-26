@@ -11,6 +11,7 @@
 #include "ShaderCompiler.h"
 
 using namespace gr;
+using namespace gc;
 
 namespace gr {
     class ShaderContextItem {
@@ -19,7 +20,7 @@ namespace gr {
         ShaderParser *parser;
         
     public:
-        _FORCE_INLINE_ ShaderContextItem(const StringName &name, const Ref<Data> &data) {
+        _FORCE_INLINE_ ShaderContextItem(const StringName &name, const Ref<gc::Data> &data) {
             this->name = name;
             this->data = data;
             parser = nullptr;
@@ -34,7 +35,7 @@ namespace gr {
         _FORCE_INLINE_ ShaderParser *getParser() {
             return parser;
         }
-        _FORCE_INLINE_ const StringName &getName() {
+        _FORCE_INLINE_ const gc::StringName &getName() {
             return name;
         }
         

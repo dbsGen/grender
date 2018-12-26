@@ -10,7 +10,7 @@
 #define HIRENDER_COLOR_TEXTURE_H
 
 #include "Texture.h"
-#include <core/math/Type.h>
+#include "../math/Type.h"
 #include <render_define.h>
 
 namespace gr {
@@ -41,11 +41,11 @@ namespace gr {
             texture_info.width = 1;
             texture_info.height = 1;
         }
-        _FORCE_INLINE_ ColorTexture(const HColor &color) : color(color) {
+        _FORCE_INLINE_ ColorTexture(const Color &color) : color(color) {
             texture_info.width = 1;
             texture_info.height = 1;
         }
-        _FORCE_INLINE_ void setColor(const HColor &color) {
+        _FORCE_INLINE_ void setColor(const Color &color) {
             this->color = __color(color);
             update();
         }

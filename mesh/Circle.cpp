@@ -8,7 +8,7 @@
 
 using namespace gr;
 
-Circle::Circle() : Mesh(),r(1), size(HSize(1,1)),anchor(CENTER) {
+Circle::Circle() : Mesh(),r(1), size(Size(1,1)),anchor(CENTER) {
     createVertexes();
 }
 
@@ -19,7 +19,7 @@ void Circle::createVertexes() {
     if(anchor==CENTER)center = Vector3f(0,0,0);
     else center = Vector3f(1,1,0).scale(-r/2);
 
-    vector<int> idx;
+    std::vector<int> idx;
     AttrVector *uv_attr = getAttribute(Mesh::DEFAULT_UV1_NAME);
 
     push(center);
@@ -60,7 +60,7 @@ void Circle::updateVertexes() {
 }
 
 void Circle::setRadius(float radius) {
-    setSize(HSize(radius,radius).scale(2));
+    setSize(Size(radius,radius).scale(2));
 }
 
 void Circle::setSize(const Vector2f &size) {

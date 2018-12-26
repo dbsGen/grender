@@ -14,17 +14,17 @@
 namespace gr {
     CLASS_BEGIN(ShadowView, View)
     
-    static Ref<Material> shadow_material;
-    static const StringName ATTR_BLUR;
-    static const StringName ATTR_CORNER;
-    static const StringName ATTR_SIZE_WIDTH;
-    static const StringName ATTR_SIZE_HEIGHT;
+    static gc::Ref<Material> shadow_material;
+    static const gc::StringName ATTR_BLUR;
+    static const gc::StringName ATTR_CORNER;
+    static const gc::StringName ATTR_SIZE_WIDTH;
+    static const gc::StringName ATTR_SIZE_HEIGHT;
     
 protected:
     void updateSize(const Vector2f &originalSize, const Vector2f &size);
 public:
     ShadowView();
-    void setColor(const HColor &color);
+    void setColor(const Color &color);
     void setBlur(float blur);
     void setCorner(float corner);
     

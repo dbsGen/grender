@@ -28,7 +28,7 @@ protected:
                                       unsigned int &height);
     virtual void drawCharacter(unsigned int ch,
                                const Vector2i &off,
-                               const Ref<Texture> &tex,
+                               const gc::Ref<Texture> &tex,
                                int &width, int &height,
                                Vector2i &corner);
     

@@ -15,27 +15,27 @@ namespace gr {
     CLASS_BEGIN_0_N(ModelLoader)
 
         pointer_map meshes;
-        Array names;
+        gc::RArray names;
         float version;
         size_t cursor;
 
-        bool read(Data *data, void *buffer, size_t len);
-        uint64_t readLength(Data *data);
+        bool read(gc::Data *data, void *buffer, size_t len);
+        uint64_t readLength(gc::Data *data);
 
     public:
         ~ModelLoader();
 
         void clear();
-        void load(Data *data);
+        void load(gc::Data *data);
 
         /**
          *
          * @return array of StringName
          */
-        const Array &getNames() {
+        const gc::RArray &getNames() {
             return names;
         }
-        const Ref<Mesh> &getMesh(const StringName &name);
+        const gc::Ref<Mesh> &getMesh(const gc::StringName &name);
         _FORCE_INLINE_ float getVersion() {
             return version;
         }

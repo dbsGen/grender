@@ -18,7 +18,7 @@ RenderTexture::~RenderTexture() {
     LOG(i, "Render delete");
 }
 
-void RenderTexture::setSize(const HSize &size) {
+void RenderTexture::setSize(const Size &size) {
     if (texture_info.width != size.x() || texture_info.height != size.y()) {
         texture_info.width = size.x();
         texture_info.height = size.y();

@@ -8,13 +8,11 @@
 #include <material/Material.h>
 #include <mesh/Mesh.h>
 #include <core/Ref.h>
-#include <core/math/Type.h>
+#include "../math/Type.h"
 #include <core/Array.h>
 #include <core/Object.h>
 
 #include <render_define.h>
-
-using namespace gcore;
 
 namespace gr {
     class Linker;
@@ -29,7 +27,7 @@ namespace gr {
     _FORCE_INLINE_ Mask MaskIgnoreAt(Mask mask, int i) {return (mask & ~MaskAt(i)) & MaskMask;}
     _FORCE_INLINE_ bool MaskHit(Mask m1, Mask m2) {return (bool) (m1 & m2);}
 
-    CLASS_BEGIN_N(Object, RefObject)
+    CLASS_BEGIN_N(Object3D, gc::RefObject)
     public:
         enum _NotifyDirection {
             BOTH,
@@ -51,16 +49,16 @@ namespace gr {
         typedef char EventType;
 
     private:
-        Ref<Material>       material;
-        Ref<Mesh>           mesh;
-        list<Ref<Object>>   children;
-        Object              *parent;
+        gc::Ref<Material>   material;
+        gc::Ref<Mesh>       mesh;
+        std::list<gc::Ref<Object3D>>   children;
+        Object3D            *parent;
         Matrix4             pose;
         Matrix4             global_pose;
         bool                dirty_global_pose;
 
         Vector3f            position;
-        HQuaternion         rotation;
+        Quaternion          rotation;
         Vector3f            _scale;
 
         int                 awake_count;
@@ -75,12 +73,12 @@ namespace gr {
         bool                _static;
 
         bool                collision;
-        Ref<Mesh>           collider;
+        gc::Ref<Mesh>       collider;
 
-        StringName          name;
-        StringName          notification_key;
+        gc::StringName      name;
+        gc::StringName      notification_key;
 
-        ActionItem          on_event;
+        gc::ActionItem      on_event;
     
         pointer_map         pose_update_callbacks;
     
@@ -89,11 +87,11 @@ namespace gr {
         Mask    mask;
         Mask    hitMask;
 
-        void _addChild(const Ref<Object> &child, Object *parent);
-        void _removeChild(const Ref<Object> &child, Object *parent);
-        void _changeMaterial(Object *object, Material *old);
+        void _addChild(const gc::Ref<Object3D> &child, Object3D *parent);
+        void _removeChild(const gc::Ref<Object3D> &child, Object3D *parent);
+        void _changeMaterial(Object3D *object, Material *old);
         void _updatePose();
-        void _message(const StringName &key, NotifyDirection direction, const Array *vars);
+        void _message(const gc::StringName &key, NotifyDirection direction, const gc::RArray *vars);
 
         void _added(Renderer *renderer);
         void _removed(Renderer *renderer);
@@ -119,7 +117,7 @@ namespace gr {
         friend class Camera;
 
     protected:
-        virtual bool onMessage(const StringName &key, const Array *vars);
+        virtual bool onMessage(const gc::StringName &key, const gc::RArray *vars);
 
         _FORCE_INLINE_ virtual void awake(Renderer *renderer) {}
 
@@ -148,65 +146,65 @@ namespace gr {
          * Notifitied when changed
          * No param
          */
-        static const StringName MESSAGE_DISPLAY_CHANGED;
+        static const gc::StringName MESSAGE_DISPLAY_CHANGED;
         /**
          * Notifity when mask changed, SELF
          * @param [Object* self, Mask from, Mask to]
          */
-        static const StringName MESSAGE_MASK_CHANGE;
+        static const gc::StringName MESSAGE_MASK_CHANGE;
 
         /**
          * Notifity when enable changed
          * @param [Object* self, bool old, bool new]
          */
-        static const StringName MESSAGE_ENABLE_CHANGE;
+        static const gc::StringName MESSAGE_ENABLE_CHANGE;
         /**
          * Notifity when hit mask changed, UP
          * @param [Object* self, Mask from, Mask to]
          */
-        static const StringName MESSAGE_HIT_MASK_CHANGE;
+        static const gc::StringName MESSAGE_HIT_MASK_CHANGE;
 
         /**
          * Notifity when added a child, UP
          * @param [Object* parent, Object *child]
          */
-        static const StringName MESSAGE_ADD_CHILD;
+        static const gc::StringName MESSAGE_ADD_CHILD;
 
         /**
          * Notifity when removed a child, UP
          * @param [Object* parent, Object *child]
          */
-        static const StringName MESSAGE_REMOVE_CHILD;
+        static const gc::StringName MESSAGE_REMOVE_CHILD;
 
         /**
          * Notifity when the material changed, UP
          * @param [Object *child, Material *old_material]
          */
-        static const StringName MESSAGE_CHANGE_MATERIAL;
+        static const gc::StringName MESSAGE_CHANGE_MATERIAL;
 
         /**
          * Notifity when the pose updated, DOWN
          * @param [Object *child]
          */
-        static const StringName MESSAGE_UPDATE_POSE;
+        static const gc::StringName MESSAGE_UPDATE_POSE;
 
         /**
          * Notifity when receive the touch event
          * @param [EventType, Vector2f screenPoint]
          */
-        static const StringName MESSAGE_TOUCH_EVENT;
+        static const gc::StringName MESSAGE_TOUCH_EVENT;
 
-        void sendMessage(const StringName &key, NotifyDirection direction, const Array *vars = NULL);
-        METHOD _FORCE_INLINE_ void sendMessageV(const StringName &key, NotifyDirection direction, const Array &vars) {
+        void sendMessage(const gc::StringName &key, NotifyDirection direction, const gc::RArray *vars = NULL);
+        METHOD _FORCE_INLINE_ void sendMessageV(const gc::StringName &key, NotifyDirection direction, const gc::RArray &vars) {
             sendMessage(key, direction, &vars);
         }
 
         /**
          * Material
          */
-        METHOD _FORCE_INLINE_ virtual const Ref<Material> &getMaterial() const {return material;}
-        METHOD virtual void setMaterial(const Ref<Material> &material) {
-            Ref<Material> old = this->material;
+        METHOD _FORCE_INLINE_ virtual const gc::Ref<Material> &getMaterial() const {return material;}
+        METHOD virtual void setMaterial(const gc::Ref<Material> &material) {
+            gc::Ref<Material> old = this->material;
             this->material = material;
             _changeMaterial(this, *old);
         }
@@ -214,8 +212,8 @@ namespace gr {
         /**
          * Mesh
          */
-        METHOD _FORCE_INLINE_ virtual const Ref<Mesh> &getMesh() const {return mesh;}
-        METHOD _FORCE_INLINE_ virtual void setMesh(const Ref<Mesh> &mesh) {
+        METHOD _FORCE_INLINE_ virtual const gc::Ref<Mesh> &getMesh() const {return mesh;}
+        METHOD _FORCE_INLINE_ virtual void setMesh(const gc::Ref<Mesh> &mesh) {
             this->mesh = mesh;
         }
     
@@ -226,7 +224,7 @@ namespace gr {
         METHOD void setPose(const Matrix4 &pose);
         PROPERTY(pose, getPose, setPose)
     
-        void addPoseCallback(void *target, ActionCallback callback, void *data);
+        void addPoseCallback(void *target, gc::ActionCallback callback, void *data);
         void *removePoseCallback(void *target);
 
         METHOD virtual void rotate(float radias, const Vector3f &axis);
@@ -236,10 +234,10 @@ namespace gr {
             return position;
         }
         void setPosition(const Vector3f &pos);
-        _FORCE_INLINE_ const HQuaternion &getRotation() const {
+        _FORCE_INLINE_ const Quaternion &getRotation() const {
             return rotation;
         }
-        void setRotation(const HQuaternion & rot);
+        void setRotation(const Quaternion & rot);
         _FORCE_INLINE_ const Vector3f &getScale() const {
             return _scale;
         }
@@ -249,17 +247,17 @@ namespace gr {
         /**
          * Name of object.
          */
-        METHOD _FORCE_INLINE_ const StringName &getName() {
+        METHOD _FORCE_INLINE_ const gc::StringName &getName() {
             return name;
         }
-        METHOD _FORCE_INLINE_ void setName(const StringName &name) {
+        METHOD _FORCE_INLINE_ void setName(const gc::StringName &name) {
             this->name = name;
         }
 
         /**
          * Parent
          */
-        METHOD _FORCE_INLINE_ Object *getParent() const {return parent;}
+        METHOD _FORCE_INLINE_ Object3D *getParent() const {return parent;}
 
         METHOD _FORCE_INLINE_ Mask getMask() const {return mask;}
         METHOD void setMask(Mask mask);
@@ -274,17 +272,17 @@ namespace gr {
         METHOD void setCollision(bool collision);
         METHOD _FORCE_INLINE_ bool getCollition() const { return collision;}
 
-        METHOD const Ref<Mesh> &getCollider() const;
-        METHOD _FORCE_INLINE_ void setCollider(Ref<Mesh> collider) { this->collider = collider; }
+        METHOD const gc::Ref<Mesh> &getCollider() const;
+        METHOD _FORCE_INLINE_ void setCollider(gc::Ref<Mesh> collider) { this->collider = collider; }
 
         /**
          * Children manage
          */
-        METHOD virtual void add(const Ref<Object> &object);
-        METHOD virtual void remove(const Ref<Object> &object);
-        _FORCE_INLINE_ const list<Ref<Object> > &getChildren() const {return children;}
+        METHOD virtual void add(const gc::Ref<Object3D> &object);
+        METHOD virtual void remove(const gc::Ref<Object3D> &object);
+        _FORCE_INLINE_ const std::list<gc::Ref<Object3D> > &getChildren() const {return children;}
 
-        _FORCE_INLINE_ void setOnEvent(ActionCallback event, void *data) {
+        _FORCE_INLINE_ void setOnEvent(gc::ActionCallback event, void *data) {
             on_event.callback = event;
             on_event.data = data;
         }
@@ -294,13 +292,13 @@ namespace gr {
 
         METHOD bool isFinalEnable();
 
-        virtual void copyParameters(const Ref<Object> &other);
+        virtual void copyParameters(const gc::Ref<Object3D> &other);
 
         /**
          * Traversal
          */
-        typedef bool(TraversalChecker)(Object *target, void *data);
-        typedef void(TraversalHandle)(Object *target, void *data);
+        typedef bool(TraversalChecker)(Object3D *target, void *data);
+        typedef void(TraversalHandle)(Object3D *target, void *data);
         void traversal(TraversalChecker checker, TraversalHandle dofun, void *data);
 
         void change();
@@ -316,8 +314,8 @@ namespace gr {
             return renderer;
         }
 
-        Object();
-        ~Object();
+        Object3D();
+        ~Object3D();
 
         /**
          * Set update
@@ -331,7 +329,7 @@ namespace gr {
         _FORCE_INLINE_ void setStatic(bool s) {_static = s;}
         _FORCE_INLINE_ bool isStatic() {return _static;}
 
-        INITIALIZE(Object, PARAMS(Ref<Material> &material,Ref<Mesh> &mesh),
+        INITIALIZE(Object3D, PARAMS(gc::Ref<Material> &material, gc::Ref<Mesh> &mesh),
                    this->material = material;
                            this->mesh = mesh;
                            parent = NULL;

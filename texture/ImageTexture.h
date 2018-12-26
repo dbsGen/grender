@@ -16,9 +16,6 @@
 #include <core/Callback.h>
 #include "../render_define.h"
 
-using namespace std;
-using namespace gcore;
-
 namespace gr {
     
     CLASS_BEGIN_N(ImageTexture, Texture)
@@ -32,17 +29,17 @@ namespace gr {
         typedef int ResizingType;
     private:
         bool loaded;
-        Ref<Data> data;
-        string path;
+        gc::Ref<gc::Data> data;
+        std::string path;
         ResizingType resizing_type;
         bool raw_image;
         uint imageSize(uint input);
     
-        atomic<bool> is_cancel;
-        thread *load_thread;
+        std::atomic<bool> is_cancel;
+        std::thread *load_thread;
         void *readed_buffer;
     
-        void asynThread(Ref<Callback> on_complete);
+        void asynThread(const gc::RCallback &on_complete);
 
     protected:
         virtual void readSize();
@@ -56,19 +53,19 @@ namespace gr {
         }
         ~ImageTexture();
 
-        METHOD _FORCE_INLINE_ void setPath(const string &path) {
+        METHOD _FORCE_INLINE_ void setPath(const std::string &path) {
             this->path = path;
             data = nullptr;
             update();
         }
-        METHOD _FORCE_INLINE_ const string &getPath() {
+        METHOD _FORCE_INLINE_ const std::string &getPath() {
             return path;
         }
-        METHOD _FORCE_INLINE_ void setData(const Ref<Data> &data) {
+        METHOD _FORCE_INLINE_ void setData(const gc::Ref<gc::Data> &data) {
             this->data = data;
             update();
         }
-        METHOD _FORCE_INLINE_ const Ref<Data> &getData() {
+        METHOD _FORCE_INLINE_ const gc::Ref<gc::Data> &getData() {
             return data;
         }
         _FORCE_INLINE_ void setResizingType(ResizingType type) {
@@ -78,21 +75,21 @@ namespace gr {
             return resizing_type;
         }
 
-        _FORCE_INLINE_ ImageTexture(const string &path) : ImageTexture() {
+        _FORCE_INLINE_ ImageTexture(const std::string &path) : ImageTexture() {
             initialize(path);
         }
-        _FORCE_INLINE_ ImageTexture(const Ref<Data> &data) : ImageTexture() {
+        _FORCE_INLINE_ ImageTexture(const gc::Ref<gc::Data> &data) : ImageTexture() {
             initialize(data);
         }
-        _FORCE_INLINE_ ImageTexture(const Ref<Data> &raw, int width, int height) : ImageTexture() {
+        _FORCE_INLINE_ ImageTexture(const gc::Ref<gc::Data> &raw, int width, int height) : ImageTexture() {
             initialize(raw, width, height);
         }
-        void initialize(const string &path);
-        void initialize(const Ref<Data> &data);
-        void initialize(const Ref<Data> &raw, int width, int height);
+        void initialize(const std::string &path);
+        void initialize(const gc::Ref<gc::Data> &data);
+        void initialize(const gc::Ref<gc::Data> &raw, int width, int height);
     
-        static const Ref<ImageTexture> &cachedTexture(const string &path);
-        void asynLoad(const Ref<Callback> &complete);
+        static const gc::Ref<ImageTexture> &cachedTexture(const std::string &path);
+        void asynLoad(const gc::RCallback &complete);
         void cancelLoad();
 
     protected:

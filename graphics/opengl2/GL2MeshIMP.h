@@ -15,20 +15,20 @@
 
 #include <graphics/graphics_define.h>
 
-namespace higraphics {
+namespace gg {
     
-    CLASS_BEGIN_N(GL2AttrVector, AttrVector)
+    CLASS_BEGIN_N(GL2AttrVector, gr::AttrVector)
     
 public:
     
     CLASS_END
     
-    CLASS_BEGIN_N(GL2MeshIMP, MeshIMP)
+    CLASS_BEGIN_N(GL2MeshIMP, gr::MeshIMP)
     
 private:
     
 protected:
-    virtual AttrVector *newAttribute();
+    virtual gr::AttrVector *newAttribute();
     
 public:
     ~GL2MeshIMP();

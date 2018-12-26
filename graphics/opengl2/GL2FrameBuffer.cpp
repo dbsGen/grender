@@ -9,8 +9,8 @@
 #include "GL2FrameBuffer.h"
 #include "GL2TextureIMP.h"
 
-
-using namespace higraphics;
+using namespace gr;
+using namespace gg;
 
 GL2FrameBuffer::GL2FrameBuffer() : ID(0), depth_buffer(0), target(NULL), binded(false) {
 }

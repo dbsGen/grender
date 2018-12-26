@@ -7,6 +7,7 @@
 #define STEP_N 80
 
 using namespace gr;
+using namespace std;
 
 Cylinder::Cylinder() : Mesh(),r(1),h(0.1) {
     createVertexes();
@@ -173,7 +174,7 @@ void Cylinder::updateVertexes() {
     }
     }
 
-void Cylinder::setSize(VSize size) {
+void Cylinder::setSize(Size3D size) {
     if (size.x() != this->size.x() || size.y() != this->size.y()|| size.z() != this->size.z()) {
         this->size = size;
         this->h = size.z();

@@ -12,34 +12,34 @@
 namespace gr {
     CLASS_BEGIN_N(ScrollView, View)
 
-        Ref<View> container;
+        gc::Ref<View> container;
         Vector2f offset;
         Vector2f old_pos;
         Vector2f old_speed;
-        Ref<Tween> tween;
+        gc::Ref<Tween> tween;
 
         bool enable_horizontal;
         bool enable_vertical;
     
-        ActionManager on_scroll;
-        ActionManager on_drag_down;
+        gc::ActionManager on_scroll;
+        gc::ActionManager on_drag_down;
         Vector4f padding;
     
         void checkBorder();
 
     protected:
-        virtual bool onMessage(const StringName &key, const Array *vars);
+        virtual bool onMessage(const gc::StringName &key, const gc::RArray *vars);
 
         _FORCE_INLINE_ virtual void onScroll() {}
 
     public:
-        _FORCE_INLINE_ const Ref<View> &getContainer() {
+        _FORCE_INLINE_ const gc::Ref<View> &getContainer() {
             return container;
         }
-        _FORCE_INLINE_ void setContentSize(const HSize &size) {
+        _FORCE_INLINE_ void setContentSize(const Size &size) {
             container->setSize(size);
         }
-        _FORCE_INLINE_ const HSize &getContentSize() {
+        _FORCE_INLINE_ const Size &getContentSize() {
             return container->getSize();
         }
         void setOffset(const Vector2f &offset);
@@ -60,10 +60,10 @@ namespace gr {
             enable_vertical = enable;
         }
     
-        _FORCE_INLINE_ void addOnScroll(ActionCallback callback, void *data) {
+        _FORCE_INLINE_ void addOnScroll(gc::ActionCallback callback, void *data) {
             on_scroll.push(callback, data);
         }
-        _FORCE_INLINE_ void addOnDragDown(ActionCallback callback, void *data) {
+        _FORCE_INLINE_ void addOnDragDown(gc::ActionCallback callback, void *data) {
             on_drag_down.push(callback, data);
         }
     

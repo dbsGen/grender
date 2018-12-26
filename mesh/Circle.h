@@ -30,7 +30,7 @@ namespace gr {
 
         Circle();
         INITIALIZE(Circle, PARAMS(float r),
-                           this->r = r;this->size = HSize(r,r).scale(2);
+                           this->r = r;this->size = Size(r,r).scale(2);
                            updateVertexes();
         )
         _FORCE_INLINE_ const Vector2f &getSize(){ return Vector2f(r,r);};

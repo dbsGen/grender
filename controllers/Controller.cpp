@@ -7,11 +7,13 @@
 #include "../Renderer.h"
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 Controller::~Controller() {
 }
 
-const Ref<Object> &Controller::getMainObject() {
+const Ref<Object3D> &Controller::getMainObject() {
     if (!main_object) load();
     return main_object;
 }
@@ -24,9 +26,9 @@ void Controller::enableSolidCamera() {
         solid_camera->setType(Camera::Perspective);
         solid_camera->setClean(true);
         if (renderer) {
-            const HSize &size = renderer->getSize();
+            const Size &size = renderer->getSize();
             float as = size.x() / size.y();
-            solid_camera->setRect(HRect(-as, -1, as*2, 2));
+            solid_camera->setRect(Rect(-as, -1, as*2, 2));
         }
         if (main_object) {
             main_object->add(solid_camera);
@@ -40,8 +42,8 @@ void Controller::enableUICamera() {
         ui_camera->setName("UI Camera");
         ui_camera->setHitMask(UIMask);
         if (renderer) {
-            const HSize &size = renderer->getSize();
-            ui_camera->setRect(HRect(0, size.y(), size.x(), -size.y()));
+            const Size &size = renderer->getSize();
+            ui_camera->setRect(Rect(0, size.y(), size.x(), -size.y()));
         }
         ui_camera->setNear(1);
         ui_camera->setFar(5000);
@@ -52,20 +54,20 @@ void Controller::enableUICamera() {
     }
 }
 
-void Controller::onResize(const HSize &size) {
+void Controller::onResize(const Size &size) {
     setCameraSize(size);
 }
 
-void Controller::setCameraSize(const HSize &size) {
+void Controller::setCameraSize(const Size &size) {
     float as = size.x() / size.y();
     if (solid_camera)
-        solid_camera->setRect(HRect(-as, -1, as*2, 2));
+        solid_camera->setRect(Rect(-as, -1, as*2, 2));
     if (ui_camera)
-        ui_camera->setRect(HRect(0, size.y(), size.x(), -size.y()));
+        ui_camera->setRect(Rect(0, size.y(), size.x(), -size.y()));
 }
 
 void Controller::load() {
-    main_object = new Object;
+    main_object = new Object3D;
     if (solid_camera) {
         main_object->add(solid_camera);
     }
@@ -90,10 +92,10 @@ void Controller::unload() {
     }
 }
 
-void Controller::onLoad(const Ref<Object> &object) {
+void Controller::onLoad(const Ref<Object3D> &object) {
 }
 
-void Controller::onUnload(const Ref<Object> &object) {
+void Controller::onUnload(const Ref<Object3D> &object) {
 }
 
 Reference Controller::getNav() {

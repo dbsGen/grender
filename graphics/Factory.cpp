@@ -13,8 +13,9 @@
 #include "opengl2/GL2RendererIMP.h"
 #include "opengl2/GL2ShaderCompilerIMP.h"
 
-using namespace higraphics;
+using namespace gg;
 using namespace gr;
+using namespace gc;
 
 Factory::Factory() {
     api = GLES2;
@@ -27,20 +28,20 @@ Factory::Factory() {
     GL2ShaderCompilerIMP::getClass();
 }
 
-const HClass *Factory::mesh_class = MeshIMP::getClass();
-const HClass *Factory::texture_class = TextureIMP::getClass();
-const HClass *Factory::shader_class = ShaderIMP::getClass();
-const HClass *Factory::material_class = MaterialIMP::getClass();
-const HClass *Factory::renderer_class = RendererIMP::getClass();
-const HClass *Factory::shader_compiler_class = ShaderCompilerIMP::getClass();
+const Class *Factory::mesh_class = MeshIMP::getClass();
+const Class *Factory::texture_class = TextureIMP::getClass();
+const Class *Factory::shader_class = ShaderIMP::getClass();
+const Class *Factory::material_class = MaterialIMP::getClass();
+const Class *Factory::renderer_class = RendererIMP::getClass();
+const Class *Factory::shader_compiler_class = ShaderCompilerIMP::getClass();
 
-HObject *Factory::create(const HClass *cls) {
-#define SELECT_CLASS(MESH, TEXTURE, SHADER, MATERIAL, RENDERER, COMPILER) (cls == mesh_class ? (HObject*)MESH : \
-(cls == texture_class ? (HObject*)TEXTURE : \
-(cls == shader_class ? (HObject*)SHADER : \
-(cls == material_class ? (HObject*)MATERIAL : \
-(cls == renderer_class ? (HObject*)RENDERER : \
-(cls == shader_compiler_class ? (HObject*)COMPILER : NULL))))))
+Object *Factory::create(const Class *cls) {
+#define SELECT_CLASS(MESH, TEXTURE, SHADER, MATERIAL, RENDERER, COMPILER) (cls == mesh_class ? (Object*)MESH : \
+(cls == texture_class ? (Object*)TEXTURE : \
+(cls == shader_class ? (Object*)SHADER : \
+(cls == material_class ? (Object*)MATERIAL : \
+(cls == renderer_class ? (Object*)RENDERER : \
+(cls == shader_compiler_class ? (Object*)COMPILER : NULL))))))
 
 #define new_class(CLASS) new_c(ClassDB::getInstance()->find(#CLASS), CLASS)
     
@@ -50,12 +51,12 @@ HObject *Factory::create(const HClass *cls) {
         {
             //const HClass *cls = ClassDB::getInstance()->find("higraphics::GL2MeshIMP");
         }
-            return SELECT_CLASS(new_class(higraphics::GL2MeshIMP),
-                                new_class(higraphics::GL2TextureIMP),
-                                new_class(higraphics::GL2ShaderIMP),
-                                new_class(higraphics::GL2MaterialIMP),
-                                new_class(higraphics::GL2RendererIMP),
-                                new_class(higraphics::GL2ShaderCompilerIMP));
+            return SELECT_CLASS(new gg::GL2MeshIMP,
+                                new gg::GL2TextureIMP,
+                                new gg::GL2ShaderIMP,
+                                new gg::GL2MaterialIMP,
+                                new gg::GL2RendererIMP,
+                                new gg::GL2ShaderCompilerIMP);
             break;
             
         default:

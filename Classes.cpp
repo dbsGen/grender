@@ -1,7 +1,7 @@
 
 #include <core/Class.h>
 
-using namespace gcore;
+using namespace gc;
 
 void ClassDB::loadClasses() {
 }

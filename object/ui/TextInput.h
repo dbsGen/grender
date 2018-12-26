@@ -14,17 +14,17 @@ namespace gr {
     private:
         static TextInput *focusdTextInput;
 
-        Ref<Button>     background;
-        Ref<Label>      textLabel;
-        Ref<Label>      placeholder;
-        HSize           padding;
+        gc::Ref<Button> background;
+        gc::Ref<Label>  textLabel;
+        gc::Ref<Label>  placeholder;
+        Size            padding;
         Label::Anchor   hAnchor;
 
-        StringName notificationKey;
+        gc::StringName  notificationKey;
 
-        string value;
+        std::string     value;
 
-        bool security;
+        bool            security;
 
         void setLabelsSize();
         void checkText();
@@ -34,25 +34,25 @@ namespace gr {
         virtual void updateSize(const Vector2f &originalSize, const Vector2f &size);
 
     public:
-        static const StringName NOTIFICATION_FOCUS_CHANGE;
+        static const gc::StringName NOTIFICATION_FOCUS_CHANGE;
 
         TextInput();
         ~TextInput();
 
-        const Ref<Label> &getTextLabel();
-        const Ref<Label> &getPlaceholderLabel();
+        const gc::Ref<Label> &getTextLabel();
+        const gc::Ref<Label> &getPlaceholderLabel();
 
-        const Ref<Button> &getBackground() {return background;}
-        void setBackground(const Ref<Button> &background) {this->background = background;}
+        const gc::Ref<Button> &getBackground() {return background;}
+        void setBackground(const gc::Ref<Button> &background) {this->background = background;}
 
-        void setText(const string &text);
-        const string &getText();
+        void setText(const std::string &text);
+        const std::string &getText();
 
-        void setPlaceholder(const string &placeholder);
-        const string *getPlaceholder();
+        void setPlaceholder(const std::string &placeholder);
+        const std::string *getPlaceholder();
 
-        void setPadding(const HSize &padding);
-        const HSize &getPadding();
+        void setPadding(const Size &padding);
+        const Size &getPadding();
 
         void setHAnchor(Label::Anchor anchor);
         Label::Anchor getHAnchor();

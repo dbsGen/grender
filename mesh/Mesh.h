@@ -9,14 +9,14 @@
 #include <graphics/Factory.h>
 #include <IMP.h>
 #include <vector>
-#include <core/math/Type.h>
+#include "../math/Type.h"
 #include "../render_define.h"
 
 namespace gr {
     class Renderer;
     class MeshIMP;
     class Mesh;
-    class Object;
+    class Object3D;
 
     CLASS_BEGIN_0_NV(AttrVector)
 
@@ -68,13 +68,13 @@ namespace gr {
         }
 
         // callbacks
-        void addCallback(void *target, ActionCallback callback,
+        void addCallback(void *target, gc::ActionCallback callback,
                          void *data);
         void *removeCallback(void *target);
 
     CLASS_END
 
-    CLASS_BEGIN_N(Mesh, RefObject)
+    CLASS_BEGIN_N(Mesh, gc::RefObject)
 
     private:
 
@@ -82,7 +82,7 @@ namespace gr {
         pointer_map         attrs_map;
         size_t              vertex_length;
 
-        StringName          vertex_name;
+        gc::StringName      vertex_name;
 
         bool    setuped;
 
@@ -90,14 +90,14 @@ namespace gr {
         friend class MeshGroup;
 
     protected:
-        virtual void _copy(const HObject *other);
+        virtual void _copy(const gc::Object *other);
 
     public:
-        static const StringName INDEX_NAME;
-        static const StringName DEFAULT_VERTEX_NAME;
-        static const StringName DEFAULT_COLOR_NAME;
-        static const StringName DEFAULT_UV1_NAME;
-        static const StringName DEFAULT_NORMAL_NAME;
+        static const gc::StringName INDEX_NAME;
+        static const gc::StringName DEFAULT_VERTEX_NAME;
+        static const gc::StringName DEFAULT_COLOR_NAME;
+        static const gc::StringName DEFAULT_UV1_NAME;
+        static const gc::StringName DEFAULT_NORMAL_NAME;
 
         Mesh();
         ~Mesh();
@@ -106,21 +106,21 @@ namespace gr {
          * First of all, you must push all vertexes and commit;
          */
         void push(const Vector3f &v3);
-        void commit(const vector<int> &indexes);
+        void commit(const std::vector<int> &indexes);
 
         void setVertex(const Vector3f &v3, int i);
 
-        AttrVector *getAttribute(const StringName &name);
+        AttrVector *getAttribute(const gc::StringName &name);
         AttrVector *getIndexesAttr();
 
-        void setVertexName(const StringName &name);
-        _FORCE_INLINE_ const StringName &getVertexName() { return vertex_name; }
+        void setVertexName(const gc::StringName &name);
+        _FORCE_INLINE_ const gc::StringName &getVertexName() { return vertex_name; }
 
         const b8_vector &getVertexes();
         const b8_vector &getIndexes();
 
-        void setColor(const HColor &color, const StringName &name = DEFAULT_COLOR_NAME);
-        HColor getColor(const StringName &name = DEFAULT_COLOR_NAME);
+        void setColor(const Color &color, const gc::StringName &name = DEFAULT_COLOR_NAME);
+        Color getColor(const gc::StringName &name = DEFAULT_COLOR_NAME);
 
         size_t getVertexesCount();
         size_t getIndexesCount();

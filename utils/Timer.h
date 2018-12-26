@@ -13,13 +13,13 @@
 namespace gr {
     class TimerManager;
 
-    CLASS_BEGIN_NV(Timer, RefObject)
+    CLASS_BEGIN_NV(Timer, gc::RefObject)
 
         Time max_life;
         Time life;
-        ActionItem callback;
+        gc::ActionItem callback;
         friend class TimerManager;
-        Timer(Time, ActionCallback, void*);
+        Timer(Time, gc::ActionCallback, void*);
 
     public:
         void cancel();
@@ -31,14 +31,14 @@ namespace gr {
 
         ref_list timers;
         static TimerManager *instance;
-        static mutex mtx;
+        static std::mutex mtx;
 
     protected:
         void fixedStep(Renderer *renderer, Time delta);
 
     public:
         static TimerManager *sharedInstance();
-        Timer* fire(Time time, ActionCallback action, void *data);
+        Timer* fire(Time time, gc::ActionCallback action, void *data);
         void cancel(Timer *timer);
 
         TimerManager();

@@ -12,22 +12,20 @@
 #include <core/Object.h>
 #include "include_opengl2.h"
 
-using namespace gcore;
-
-namespace higraphics {
+namespace gg {
     CLASS_BEGIN_0_N(GL2FrameBuffer)
     
     GLuint  ID;
     GLuint  depth_buffer;
     bool    binded;
     
-    HObject *target;
+    Object *target;
     
 public:
     GL2FrameBuffer();
     ~GL2FrameBuffer();
     
-    _FORCE_INLINE_ void bind(HObject *target) {
+    _FORCE_INLINE_ void bind(Object *target) {
         this->target = target;
         binded = false;
     }

@@ -326,7 +326,7 @@ namespace cv
         float gamma;
 
         float T_GeometriccConsistency;
-        float T_GroupingCorespondances;
+        float T_Groupingcspondances;
 
         /* public interface */
         SpinImageModel();

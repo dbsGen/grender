@@ -13,26 +13,26 @@
 
 
 namespace gr {
-    CLASS_BEGIN_N(TexturePacker, RefObject)
+    CLASS_BEGIN_N(TexturePacker, gc::RefObject)
 
-        Ref<Material>   material;
+        gc::Ref<Material>   material;
         pointer_map     tex_frams;
-        HSize           size;
+        Size           size;
         float           scale;
 
     public:
         TexturePacker();
-        TexturePacker(const Ref<Data> &image, const Ref<Data> &json);
+        TexturePacker(const gc::Ref<gc::Data> &image, const gc::Ref<gc::Data> &json);
         ~TexturePacker();
 
-        _FORCE_INLINE_ const Ref<Material> &getMaterial() { return material; }
-        const Ref<Panel> &getPanel(const StringName &name);
+        _FORCE_INLINE_ const gc::Ref<Material> &getMaterial() { return material; }
+        const gc::Ref<Panel> &getPanel(const gc::StringName &name);
 
-        Ref<Panel> makePanel(const StringName &name);
+        gc::Ref<Panel> makePanel(const gc::StringName &name);
 
-        HRect getUV(const StringName &name) const;
+        Rect getUV(const gc::StringName &name) const;
 
-        const HSize &getSize(const StringName &name) const;
+        const Size &getSize(const gc::StringName &name) const;
 
     CLASS_END
 }

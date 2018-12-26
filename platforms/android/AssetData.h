@@ -11,7 +11,7 @@
 #include "../../render_define.h"
 
 namespace gr {
-    CLASS_BEGIN_N(AssetData, gcore::Data)
+    CLASS_BEGIN_N(AssetData, gc::Data)
 
         static AAssetManager *asset_manager;
         AAsset *asset;

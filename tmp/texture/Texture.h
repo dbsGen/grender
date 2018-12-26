@@ -9,7 +9,7 @@
 #include <core/Action.h>
 #include <render_define.h>
 
-using namespace gcore;
+using namespace gc;
 
 namespace gr {
     class TextureIMP;

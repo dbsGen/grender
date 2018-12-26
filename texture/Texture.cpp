@@ -6,7 +6,7 @@
 #include <graphics/Factory.h>
 
 using namespace gr;
-using namespace higraphics;
+using namespace gg;
 
 Texture::Texture() : imp(NULL) {
     texture_info.width = 0;

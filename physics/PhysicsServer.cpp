@@ -7,16 +7,16 @@
 //
 
 #include "PhysicsServer.h"
-#include <core/math/Math.hpp>
+#include <math/Math.hpp>
 #include <object/ui/View.h>
 #ifdef __ANDROID__
 #include <bits/stl_algo.h>
 
 #endif
 
-using namespace hiphysics;
-
-
+using namespace gr;
+using namespace gc;
+using namespace std;
 
 bool IntersectTriangle(const Vector3f& orig, const Vector3f& dir,
                        const Vector3f& v0, const Vector3f& v1, const Vector3f& v2,
@@ -69,7 +69,7 @@ bool IntersectTriangle(const Vector3f& orig, const Vector3f& dir,
     return true;
 }
 
-bool Result::operator<(const hiphysics::Result &other) const {
+bool Result::operator<(const Result &other) const {
     if (fabsf((weight - other.weight)) < 0.1) {
         View *v1 = target->cast_to<View>();
         View *v2 = other.target->cast_to<View>();
@@ -84,7 +84,7 @@ bool Result::operator<(const hiphysics::Result &other) const {
     return weight < other.weight;
 }
 
-bool PhysicsServer::castObject(const Ray &ray, const Ref<Object> &object, Result &ret) {
+bool PhysicsServer::castObject(const Ray &ray, const Ref<Object3D> &object, Result &ret) {
     if (!object->isFinalEnable()) return false;
     Ref<Mesh> mesh = object->getMesh();
     const Matrix4 pose = object->getGlobalPose();
@@ -124,7 +124,7 @@ bool PhysicsServer::castObject(const Ray &ray, const Ref<Object> &object, Result
     }
 }
 
-void PhysicsServer::add(Object *object) {
+void PhysicsServer::add(Object3D *object) {
     auto it = objects.begin();
     for (auto _e = objects.end(); it != _e; ++it) {
         if (**it == object) {
@@ -134,7 +134,7 @@ void PhysicsServer::add(Object *object) {
     objects.push_back(Ref<Object>(object));
 }
 
-void PhysicsServer::remove(Object *object) {
+void PhysicsServer::remove(Object3D *object) {
     for (auto it = objects.begin(), _e = objects.end(); it != _e; ++it) {
         if (**it == object) objects.erase(it);
     }

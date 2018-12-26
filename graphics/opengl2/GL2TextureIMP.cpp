@@ -11,7 +11,8 @@
 
 #define TEXTURE_ID 0xffff
 
-using namespace higraphics;
+using namespace gg;
+using namespace gr;
 
 GL2TextureIMP::GL2TextureIMP() : TextureIMP() {
     ID = TEXTURE_ID;
@@ -130,7 +131,7 @@ void GL2TextureIMP::draw(int width, int height, const void *buffer) {
     }
 }
 
-namespace higraphics {
+namespace gg {
     struct render_struct {
         unsigned int offx, offy, width, height;
         void *buffer;

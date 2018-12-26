@@ -6,7 +6,7 @@
 //  Copyright © 2016年 gen. All rights reserved.
 //
 
-#include <core/math/Math.hpp>
+#include <math/Math.hpp>
 #include "include_opengl2.h"
 #include "GL2RendererIMP.h"
 #include "GL2MeshIMP.h"
@@ -16,9 +16,12 @@
 #include <object/Canvas.h>
 #include <texture/RenderTexture.h>
 
-using namespace higraphics;
+using namespace gg;
+using namespace gr;
+using namespace gc;
+using namespace std;
 
-namespace higraphics {
+namespace gg {
     struct DrawItem {
         Material *mat;
         pointer_list    objects;
@@ -46,7 +49,7 @@ DrawItem::~DrawItem() {
     }
 }
 
-int vm_search(const list<Ref<Object> > &l, Object *t) {
+int vm_search(const list<Ref<Object3D> > &l, Object3D *t) {
     int count = 0;
     for (auto it = l.begin(), _e = l.end(); it != _e; ++it) {
         if (**it == t) {
@@ -97,7 +100,7 @@ void GL2RendererIMP::render() {
     drawEnd();
 }
 
-void GL2RendererIMP::updateSize(const HSize &size) {
+void GL2RendererIMP::updateSize(const Size &size) {
 }
 
 void GL2RendererIMP::pushFrameBuffer(GL2FrameBuffer *frame_buffer) {
@@ -147,8 +150,8 @@ GL2RendererIMP::GL2VirtualMachine *GL2RendererIMP::GL2VirtualMachine::findSubMac
     return NULL;
 }
 
-void GL2RendererIMP::maskChanged(const Ref<Object> &object, Mask from, Mask to) {
-    Object *parent = object->getParent();
+void GL2RendererIMP::maskChanged(const Ref<Object3D> &object, Mask from, Mask to) {
+    Object3D *parent = object->getParent();
     Canvas *canvas = NULL;
     while (parent) {
         Canvas *cv = parent->cast_to<Canvas>();
@@ -172,7 +175,7 @@ void GL2RendererIMP::maskChanged(const Ref<Object> &object, Mask from, Mask to) 
     }
 }
 
-void GL2RendererIMP::hitMaskChanged(const Ref<Object> &object, Mask from, Mask to) {
+void GL2RendererIMP::hitMaskChanged(const Ref<Object3D> &object, Mask from, Mask to) {
     Canvas *canvas = object->cast_to<Canvas>();
     Camera *camera = object->cast_to<Camera>();
     if (camera) {
@@ -208,7 +211,7 @@ void GL2RendererIMP::prepare() {
     }
 }
 
-void GL2RendererIMP::GL2VirtualMachine::reset(const list<Ref<Object>> &objects) {
+void GL2RendererIMP::GL2VirtualMachine::reset(const list<Ref<Object3D>> &objects) {
     _clear();
     //    auto depthIndex = items.begin();
     for (auto ite = objects.begin(), _e = objects.end(); ite != _e; ++ite) {
@@ -217,7 +220,7 @@ void GL2RendererIMP::GL2VirtualMachine::reset(const list<Ref<Object>> &objects) 
     }
 }
 
-void GL2RendererIMP::GL2VirtualMachine::_changeMaterial(Object *object, Material *old_mat) {
+void GL2RendererIMP::GL2VirtualMachine::_changeMaterial(Object3D *object, Material *old_mat) {
     if (object->getInstanceClass()->isTypeOf(Camera::getClass())) {
         return;
     }
@@ -229,9 +232,9 @@ void GL2RendererIMP::GL2VirtualMachine::_changeMaterial(Object *object, Material
     }
 }
 
-void GL2RendererIMP::GL2VirtualMachine::addObjects(const list<Ref<Object> > &objects, Canvas *canvas) {
+void GL2RendererIMP::GL2VirtualMachine::addObjects(const list<Ref<Object3D> > &objects, Canvas *canvas) {
     for (auto it = objects.begin(), _e = objects.end(); it != _e; ++it) {
-        const Ref<Object> &obj = *it;
+        const Ref<Object3D> &obj = *it;
         _add(obj, canvas);
         Canvas *cv = obj->cast_to<Canvas>();
         if (cv) {
@@ -241,7 +244,7 @@ void GL2RendererIMP::GL2VirtualMachine::addObjects(const list<Ref<Object> > &obj
     }
 }
 
-void GL2RendererIMP::GL2VirtualMachine::addToSubMachine(const Ref<Object> &object, Canvas *canvas) {
+void GL2RendererIMP::GL2VirtualMachine::addToSubMachine(const Ref<Object3D> &object, Canvas *canvas) {
     for (auto it = sub_machines.begin(), _e = sub_machines.end(); it != _e; ++it) {
         GL2RendererIMP::GL2VirtualMachine *machine = (GL2RendererIMP::GL2VirtualMachine *)*it;
         if (machine->canvas == canvas) {
@@ -252,12 +255,12 @@ void GL2RendererIMP::GL2VirtualMachine::addToSubMachine(const Ref<Object> &objec
     }
 }
 
-void *GL2RendererIMP::GL2VirtualMachine::keyOfObject(Object *object) {
+void *GL2RendererIMP::GL2VirtualMachine::keyOfObject(Object3D *object) {
     return object->isSingle() ? (void*)object : (void*)*object->getMaterial();
 }
 
-void GL2RendererIMP::GL2VirtualMachine::_add(const Ref<Object> &object, Canvas *canvas) {
-    const HClass *cls = object->getInstanceClass();
+void GL2RendererIMP::GL2VirtualMachine::_add(const Ref<Object3D> &object, Canvas *canvas) {
+    const Class *cls = object->getInstanceClass();
     if (cls->isTypeOf(Camera::getClass()) || !object->isFinalEnable()) {
         return;
     }
@@ -293,7 +296,7 @@ void GL2RendererIMP::GL2VirtualMachine::_add(const Ref<Object> &object, Canvas *
     }
 }
 
-void GL2RendererIMP::GL2VirtualMachine::_remove(const Ref<Object> &object) {
+void GL2RendererIMP::GL2VirtualMachine::_remove(const Ref<Object3D> &object) {
     if (object->getInstanceClass()->isTypeOf(Camera::getClass())) {
         return;
     }
@@ -306,7 +309,7 @@ void GL2RendererIMP::GL2VirtualMachine::_remove(const Ref<Object> &object) {
 
 void GL2RendererIMP::GL2VirtualMachine::_clear() {
     for (auto it = items.begin(), _e = items.end(); it != _e; ++it) {
-        Object *obj = (Object*)*it;
+        Object3D *obj = (Object3D*)*it;
         renderer->removeObject(obj);
     }
     items.clear();
@@ -320,13 +323,13 @@ void GL2RendererIMP::GL2VirtualMachine::_clear() {
     sub_machines.clear();
 }
 
-void GL2RendererIMP::add(const Ref<Object> &object) {
+void GL2RendererIMP::add(const Ref<Object3D> &object) {
     addWithList(object, NULL, true);
 }
 
-void GL2RendererIMP::addWithList(const Ref<Object> &object, Canvas *canvas, bool top) {
+void GL2RendererIMP::addWithList(const Ref<Object3D> &object, Canvas *canvas, bool top) {
     if (top) {
-        Object *parent = object->getParent();
+        Object3D *parent = object->getParent();
         while (parent) {
             if (!canvas) {
                 Canvas *cv = parent->cast_to<Canvas>();
@@ -338,7 +341,7 @@ void GL2RendererIMP::addWithList(const Ref<Object> &object, Canvas *canvas, bool
             parent = parent->getParent();
         }
     }
-    const HClass *cls = object->getInstanceClass();
+    const Class *cls = object->getInstanceClass();
     bool is_camera = cls->isTypeOf(Camera::getClass());
     bool is_canvas = cls->isTypeOf(Canvas::getClass());
     Canvas *ori_canvas = canvas;
@@ -355,7 +358,7 @@ void GL2RendererIMP::addWithList(const Ref<Object> &object, Canvas *canvas, bool
         ori_canvas = canvas;
         canvas = object->cast_to<Canvas>();
     }
-    const list<Ref<Object> > &children = object->getChildren();
+    const list<Ref<Object3D> > &children = object->getChildren();
     for (auto it = children.begin(), _e = children.end(); it != _e; ++it) {
         addWithList(*it, canvas, false);
     }
@@ -364,8 +367,8 @@ void GL2RendererIMP::addWithList(const Ref<Object> &object, Canvas *canvas, bool
     }
 }
 
-void GL2RendererIMP::remove(const Ref<Object> &object) {
-    const list<Ref<Object> > &children = object->getChildren();
+void GL2RendererIMP::remove(const Ref<Object3D> &object) {
+    const list<Ref<Object3D> > &children = object->getChildren();
     for (auto it = children.begin(), _e = children.end(); it != _e ; ++it) {
         remove(*it);
     }
@@ -377,7 +380,7 @@ void GL2RendererIMP::remove(const Ref<Object> &object) {
         }
     }
 }
-void GL2RendererIMP::reload(Object *object, Material *old_mat) {
+void GL2RendererIMP::reload(Object3D *object, Material *old_mat) {
     for (auto it = machines.begin(), _e = machines.end(); it != _e; ++it) {
         ((GL2RendererIMP::GL2VirtualMachine*)*it)->_changeMaterial(object, old_mat);
     }
@@ -391,7 +394,7 @@ struct GL2RendererIMPCompare {
     }
 
     virtual bool operator()(void *o1, void *o2) {
-        return camera->sortCompare((Object*)o1, (Object*)o2);
+        return camera->sortCompare((Object3D*)o1, (Object3D*)o2);
     }
 };
 
@@ -442,7 +445,7 @@ void GL2RendererIMP::GL2VirtualMachine::step() {
             canvas->willRender(camera);
             
             if (!frame_buffer) {
-                HSize size = renderer->getTarget()->getSize();
+                Size size = renderer->getTarget()->getSize();
                 tex->setSize(size);
                 frame_buffer = new GL2FrameBuffer;
                 if (tex->isResized()) {
@@ -454,13 +457,13 @@ void GL2RendererIMP::GL2VirtualMachine::step() {
             renderer->pushFrameBuffer(frame_buffer);
         }
         if (camera->isClean()) {
-            const HColor &color = camera->getCleanColor();
+            const Color &color = camera->getCleanColor();
             glClearColor(color.v[0], color.v[1], color.v[2], color.v[3]);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
     }else return;
-    const HSize &size = renderer->getTarget()->getSize();
-    const HRect &vp = camera->getViewport();
+    const Size &size = renderer->getTarget()->getSize();
+    const Rect &vp = camera->getViewport();
     glViewport((GLint) (size.v[0] * vp.v[0]),
                (GLint) (size.v[1] * vp.v[1]),
                (GLint) (size.v[0] * vp.v[2]),
@@ -468,14 +471,14 @@ void GL2RendererIMP::GL2VirtualMachine::step() {
 
     if (reload.size()) {
         for (auto it = reload.begin(), _e = reload.end(); it != _e; ++it) {
-            Object *obj = (Object*)it->first;
+            Object3D *obj = (Object3D*)it->first;
             reloadDrawItem(it->second, obj);
         }
         reload.clear();
     }
     if (add.size()) {
         for (auto it = add.begin(), _e = add.end(); it != _e; ++it) {
-            Object *obj = **it;
+            Object3D *obj = **it;
             items.push_back(obj);
             addDrawItem(obj);
             renderer->addObject(obj);
@@ -484,7 +487,7 @@ void GL2RendererIMP::GL2VirtualMachine::step() {
     }
     if (remove.size()) {
         for (auto it = remove.begin(), _e = remove.end(); it != _e; ++it) {
-            Object *obj = **it;
+            Object3D *obj = **it;
             items.remove(**it);
             removeDrawItem(obj);
             renderer->removeObject(obj);
@@ -501,7 +504,7 @@ void GL2RendererIMP::GL2VirtualMachine::step() {
         item->mat->setProjection(camera->getProjection());
         item->mat->setView(camera->getGlobalPose().inverse());
         item->mat->process();
-            if (item->array_buffers.size() == 0)
+        if (item->array_buffers.size() == 0)
             item->makeBuffers();
         const pointer_vector &attrs = item->mat->getShader()->getAttributes();
         int count = 0;
@@ -522,7 +525,7 @@ void GL2RendererIMP::GL2VirtualMachine::step() {
             if (obj_count > 1) {
                 glUniformMatrix4fv(mat->getTranslateID(), 1, GL_FALSE, Matrix4::identity().m);
             }else if (obj_count == 1){
-                Object *obj = (Object *)item->objects.front();
+                Object3D *obj = (Object3D *)item->objects.front();
                 glUniformMatrix4fv(mat->getTranslateID(), 1, GL_FALSE, obj->getGlobalPose().m);
             }
         }
@@ -543,7 +546,7 @@ GL2RendererIMP::GL2VirtualMachine::~GL2VirtualMachine() {
 }
 
 
-void GL2RendererIMP::GL2VirtualMachine::addDrawItem(Object *object) {
+void GL2RendererIMP::GL2VirtualMachine::addDrawItem(Object3D *object) {
     if (!object->getMesh() || !object->getMaterial()) return;
     void *key = keyOfObject(object);
     auto it = drawables.find(key);
@@ -571,7 +574,7 @@ void GL2RendererIMP::GL2VirtualMachine::addDrawItem(Object *object) {
     item->index_count += object->getMesh()->getIndexesCount();
     item->dirty = true;
 }
-void GL2RendererIMP::GL2VirtualMachine::removeDrawItemWithKey(void *key, Object *object) {
+void GL2RendererIMP::GL2VirtualMachine::removeDrawItemWithKey(void *key, Object3D *object) {
     auto it = drawables.find(key);
     if (it != drawables.end()) {
         DrawItem *item = (DrawItem*)it->second;
@@ -590,12 +593,12 @@ void GL2RendererIMP::GL2VirtualMachine::removeDrawItemWithKey(void *key, Object 
         item->dirty = true;
     }
 }
-void GL2RendererIMP::GL2VirtualMachine::removeDrawItem(Object *object) {
+void GL2RendererIMP::GL2VirtualMachine::removeDrawItem(Object3D *object) {
     if (!object->getMesh() || !object->getMaterial()) return;
     void *key = keyOfObject(object);
     removeDrawItemWithKey(key, object);
 }
-void GL2RendererIMP::GL2VirtualMachine::reloadDrawItem(void *old_key, Object *object) {
+void GL2RendererIMP::GL2VirtualMachine::reloadDrawItem(void *old_key, Object3D *object) {
     if (!object->getMesh() || !object->getMaterial()) return;
     void *key = keyOfObject(object);
     if (key == old_key) {

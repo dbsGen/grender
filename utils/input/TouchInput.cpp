@@ -12,6 +12,8 @@
 #define EVENT_INCREASE 5
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 TouchInput::TouchInput() {
 }
@@ -70,8 +72,8 @@ void TouchInput::process(EventsItem *ei) {
             Camera *camera = **it;
 
             TouchInput::Event &event = ei->events[0];
-            const HSize &size = getRenderer()->getSize();
-            camera->sendTouchEvent((Object::EventType)event.phase, Vector2f(event.x/size.width(), event.y/size.height()));
+            const Size &size = getRenderer()->getSize();
+            camera->sendTouchEvent((Object3D::EventType)event.phase, Vector2f(event.x/size.width(), event.y/size.height()));
         }
     }
 }

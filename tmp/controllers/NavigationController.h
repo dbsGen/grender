@@ -10,7 +10,7 @@
 #include <render_define.h>
 #include <queue>
 
-using namespace gcore;
+using namespace gc;
 
 namespace gr {
     class Tween;

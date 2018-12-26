@@ -10,6 +10,7 @@
 #include <texture/ColorTexture.h>
 
 using namespace gr;
+using namespace gc;
 
 const StringName ShadowView::ATTR_BLUR("A_BORDER_WIDTH");
 const StringName ShadowView::ATTR_CORNER("A_CORNER");
@@ -21,17 +22,17 @@ ShadowView::ShadowView() {
     if (!shadow_material) {
         shadow_material = new ViewMaterial;
         shadow_material->setShader(new Shader(Shader::SHADER_SHADOW_VERT, Shader::SHADER_SHADOW_FRAG));
-        shadow_material->setTexture(new ColorTexture(HColor(1,1,1,1)), 0);
+        shadow_material->setTexture(new ColorTexture(Color(1,1,1,1)), 0);
     }
     setMaterial(shadow_material);
     
     setCorner(20);
-    setSize(HSize(60, 60));
+    setSize(Size(60, 60));
     setBlur(20);
     setSingle(true);
 }
 
-void ShadowView::setColor(const HColor &color) {
+void ShadowView::setColor(const Color &color) {
     getMesh()->setColor(color);
 }
 
