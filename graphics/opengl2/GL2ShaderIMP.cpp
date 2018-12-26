@@ -9,7 +9,7 @@
 #include "GL2ShaderIMP.h"
 #include <set>
 
-using namespace higraphics;
+using namespace gg;
 using namespace std;
 
 GLuint GL2ShaderIMP::compile(GLenum type, const char *shader) {

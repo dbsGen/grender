@@ -11,6 +11,7 @@
 #include <libxml/HTMLtree.h>
 
 using namespace gr;
+using namespace gc;
 
 void XMLDocument::initialize(const Ref<Data> &data, DocumentType type) {
     switch (type) {
@@ -45,7 +46,7 @@ const Ref<XMLNode> &XMLDocument::getRoot() {
     return root;
 }
 
-Array XMLDocument::xpath(const char *str) {
+RArray XMLDocument::xpath(const char *str) {
     if (!xpath_context) {
         xpath_context = xmlXPathNewContext(c_doc);
     }
@@ -83,9 +84,9 @@ Ref<XMLDocument> XMLDocument::parse(const Ref<Data> &data, DocumentType type, co
     return doc;
 }
 
-Array XMLDocument::xpathNode(const void *ptr, const char *str) {
+RArray XMLDocument::xpathNode(const void *ptr, const char *str) {
     const XMLNode *node = (const XMLNode *)ptr;
-    if (!node->c_node) return Array::null();
+    if (!node->c_node) return RArray::null();
     if (!xpath_context) {
         xpath_context = xmlXPathNewContext(c_doc);
     }

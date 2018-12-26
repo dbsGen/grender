@@ -9,34 +9,32 @@
 #ifndef HI_PHYSICS_RAY_H
 #define HI_PHYSICS_RAY_H
 
-#include <core/math/Type.h>
-#include <object/Object.h>
+#include "../math/Type.h"
+#include <object/Object3D.h>
 #include "physics_define.h"
 
-using namespace gr;
-
-namespace hiphysics {
+namespace gr {
 
     CLASS_BEGIN_0_N(Ray)
 
     private:
-        HPoint original, direction;
+        Point original, direction;
         Mask hitMask;
 
     public:
-        _FORCE_INLINE_ void setOriginal(const HPoint &ori) { original = ori; }
-        _FORCE_INLINE_ const HPoint &getOriginal() const { return original; }
+        _FORCE_INLINE_ void setOriginal(const Point &ori) { original = ori; }
+        _FORCE_INLINE_ const Point &getOriginal() const { return original; }
 
-        _FORCE_INLINE_ void setDirection(const HPoint &dir) { direction = dir.normalize(); }
-        _FORCE_INLINE_ const HPoint &getDirection() const { return direction; }
+        _FORCE_INLINE_ void setDirection(const Point &dir) { direction = dir.normalize(); }
+        _FORCE_INLINE_ const Point &getDirection() const { return direction; }
 
         _FORCE_INLINE_ void setHitMask(Mask hitMask) {this->hitMask = hitMask;}
         _FORCE_INLINE_ Mask getHitMask() { return hitMask; }
 
-        HPoint position(float length) const;
+        Point position(float length) const;
 
         Ray():hitMask(0){}
-        INITIALIZE(Ray, PARAMS(const HPoint &original, const HPoint &direction) ,
+        INITIALIZE(Ray, PARAMS(const Point &original, const Point &direction) ,
                    this->original = original;
                            this->direction = direction.normalize();
         )

@@ -13,6 +13,8 @@
 #include <cstring>
 
 using namespace gr;
+using namespace std;
+using namespace gc;
 
 void SQLQuery::insertAction(const string &name, const Variant &val, const char *action) {
     sql_sentence.push_back(' ');
@@ -20,7 +22,7 @@ void SQLQuery::insertAction(const string &name, const Variant &val, const char *
     sql_sentence.push_back(' ');
     sql_sentence += action;
     sql_sentence.push_back(' ');
-    if (val.getType()->isTypeOf(_String::getClass())) {
+    if (val.getTypeClass()->isTypeOf(_String::getClass())) {
         params.push_back(val);
         sql_sentence += '?';
     }else {
@@ -153,7 +155,7 @@ void SQLQuery::remove() {
         ss += sql_sentence;
     }
     ss.push_back(';');
-    db::database()->queueExce(ss, &params, RefCallback());
+    db::database()->queueExce(ss, &params, RCallback());
 }
 
 void SQLite::begin() {
@@ -168,7 +170,7 @@ void SQLite::begin() {
     }
 }
 
-void SQLite::action(const string &statement, variant_vector *params, const Ref<Callback> &callback) {
+void SQLite::action(const string &statement, variant_vector *params, const RCallback &callback) {
     if (db) {
         sqlite3_stmt *stmt = NULL;
         sqlite3_prepare_v2(db, statement.c_str(), (int)statement.size(), &stmt, NULL);
@@ -177,7 +179,7 @@ void SQLite::action(const string &statement, variant_vector *params, const Ref<C
                 int count = 1;
                 for (auto it = params->begin(), _e = params->end(); it != _e; ++it) {
                     const Variant &variant = *it;
-                    const HClass *type = variant.getType();
+                    const Class *type = variant.getTypeClass();
                     if (type->isTypeOf(Integer::getClass())) {
                         sqlite3_bind_int(stmt, count++, (int)variant);
                     }else if (type->isTypeOf(LongLong::getClass()) ||
@@ -275,7 +277,7 @@ void SQLite::processTable(Table *table) {
     queueExce(ss, NULL, NULL);
 }
 
-void SQLite::update(HObject *model, Table *table) {
+void SQLite::update(Object *model, Table *table) {
     StringName id("identifier");
     int _id = 0;
     Field *id_field = (Field*)table->fields[id];
@@ -407,7 +409,7 @@ void SQLite::update(HObject *model, Table *table) {
     }
 }
 
-void SQLite::remove(HObject *model, Table *table) {
+void SQLite::remove(Object *model, Table *table) {
     StringName id("identifier");
     int _id = 0;
     Field *id_field = (Field*)table->fields[id];

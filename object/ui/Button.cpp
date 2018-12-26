@@ -8,11 +8,13 @@
 #include "Button.h"
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
-bool Button::onMessage(const StringName &key, const Array *vars) {
-    if (key == Object::MESSAGE_TOUCH_EVENT) {
+bool Button::onMessage(const StringName &key, const RArray *vars) {
+    if (key == Object3D::MESSAGE_TOUCH_EVENT) {
         variant_vector &vec = vars->vec();
-        EventType type = (Object::EventType)((int)vec.at(0));
+        EventType type = (Object3D::EventType)((int)vec.at(0));
         Vector2f *point = vec.at(1).get<Vector2f>();
         switch (type){
             case TOUCH_BEGIN:
@@ -114,7 +116,7 @@ Button::Button() : ImageView(),
                    event_pop(false), can_click(true){
     setCollision(true);
 //    setTextColor(HColor(0,0,0,1));
-    setBackground(new ColorTexture(HColor(1,1,1,1)));
+    setBackground(new ColorTexture(Color(1,1,1,1)));
 }
 
 const Ref<Label> &Button::getLabel() {
@@ -141,7 +143,7 @@ void Button::setText(const string &text, Status status) {
         statuses[status].text = text;
         if (status == this->status)
         {
-            setTextColor(HColor(0,0,0,1));
+            setTextColor(Color(0,0,0,1));
             getLabel()->setText(text);
         }
     }
@@ -162,7 +164,7 @@ const Ref<Texture>& Button::getBackground(Status status) {
     return statuses[status].background;
 }
 
-void Button::setTextColor(const HColor color, Status status) {
+void Button::setTextColor(const Color color, Status status) {
     if (status == All) {
         for (int i = 0; i <= StatusEnd; ++i) {
             setTextColor(color, (Status) i);
@@ -174,7 +176,7 @@ void Button::setTextColor(const HColor color, Status status) {
     }
 }
 
-const HColor& Button::getTextColor(Status status) {
+const Color& Button::getTextColor(Status status) {
     return statuses[status].textColor;
 }
 

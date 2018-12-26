@@ -15,8 +15,8 @@
 
 #include <graphics/graphics_define.h>
 
-namespace higraphics {
-    CLASS_BEGIN_N(GL2ShaderIMP, ShaderIMP)
+namespace gg {
+    CLASS_BEGIN_N(GL2ShaderIMP, gr::ShaderIMP)
     
 protected:
     

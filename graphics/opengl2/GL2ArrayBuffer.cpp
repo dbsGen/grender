@@ -7,13 +7,15 @@
 //
 
 #include "GL2ArrayBuffer.h"
-#include <object/Object.h>
-#include <core/math/Math.hpp>
+#include <object/Object3D.h>
+#include "../math/Math.hpp"
 #include "GL2MeshIMP.h"
 #include <thread>
 
 using namespace gr;
-
+using namespace gc;
+using namespace gg;
+using namespace std;
 
 #define SIZE(SIZE, COUNT, TYPE) size_t SIZE = 0; int COUNT = 0; GLenum t_type; \
 switch (TYPE) {\
@@ -49,15 +51,13 @@ default:\
 break;\
 }
 
-using namespace higraphics;
-
 struct GL2BufferData{
     size_t offset_from;
     size_t length;
-    Object *pose_target;
+    Object3D *pose_target;
     GL2AttrVector *attr_vec;
     
-    GL2BufferData(size_t offset_from, size_t length, GL2AttrVector *vec, Object *pose_target = NULL) {
+    GL2BufferData(size_t offset_from, size_t length, GL2AttrVector *vec, Object3D *pose_target = NULL) {
         this->offset_from = offset_from;
         this->length = length;
         this->pose_target = pose_target;
@@ -85,7 +85,7 @@ void GL2ArrayBuffer::poseChanged(void *sender, void *send_data, void *data) {
                         mc->offset_from, mc->length);
 }
 
-void GL2ArrayBuffer::update(higraphics::GL2AttrVector *vec, size_t offset_start, size_t length) {
+void GL2ArrayBuffer::update(gg::GL2AttrVector *vec, size_t offset_start, size_t length) {
     glBindBuffer(GL_ARRAY_BUFFER, glID);
     if (vec->isRepeat() && vec->getSize() > 0) {
         size_t suboff = 0;
@@ -119,10 +119,10 @@ void GL2ArrayBuffer::update(higraphics::GL2AttrVector *vec, size_t offset_start,
     }
 }
 
-void GL2ArrayBuffer::updatePose(higraphics::GL2AttrVector *vec, void *pose_target,
+void GL2ArrayBuffer::updatePose(gg::GL2AttrVector *vec, void *pose_target,
                                 size_t offset_start, size_t length) {
     if (glID) {
-        Object *pt = (Object*)pose_target;
+        Object3D *pt = (Object3D*)pose_target;
         size_t vec_count = pt->getMesh()->getVertexesCount();
         if (single) {
             glBindBuffer(GL_ARRAY_BUFFER, glID);
@@ -157,7 +157,7 @@ void GL2ArrayBuffer::bind(const StringName &prop_name,
         size_t list_count = objects.size();
         single = list_count <= 1;
         for (auto it = objects.begin(), _e = objects.end(); it != _e; ++it) {
-            Object * obj = (Object *)*it;
+            Object3D * obj = (Object3D *)*it;
             GL2AttrVector *attr_vector = (GL2AttrVector *)obj->getMesh()->getAttribute(prop_name);
             size_t vertex_count = obj->getMesh()->getVertexesCount();
             size_t attr_length = vertex_count * unit_size * unit_count;
@@ -229,7 +229,7 @@ void GL2ArrayBuffer::clear() {
         }
         attrs.clear();
         for (auto it = pose_objects.begin(), _e = pose_objects.end(); it != _e; ++it) {
-            GL2BufferData*data = (GL2BufferData*)((Object*)*it)->removePoseCallback(this);
+            GL2BufferData*data = (GL2BufferData*)((Object3D*)*it)->removePoseCallback(this);
             if (data) delete data;
         }
         pose_objects.clear();
@@ -401,7 +401,7 @@ void GL2ArrayBuffer::drawIndexes(const std::list<void *> &objects, size_t count)
         size_t offset = 0;
         size_t vertex_count = 0;
         for (auto it = objects.begin(), _e = objects.end(); it != _e; ++it) {
-            Object * obj = (Object *)*it;
+            Object3D * obj = (Object3D *)*it;
             GL2AttrVector *attr_vector = (GL2AttrVector *)obj->getMesh()->getAttribute(Mesh::INDEX_NAME);
             size_t total = obj->getMesh()->getIndexesCount();
             size_t attr_length = total * sizeof(int);

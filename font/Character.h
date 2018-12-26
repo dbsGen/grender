@@ -12,7 +12,7 @@
 #include <core/core.h>
 #include <texture/Texture.h>
 #include <material/Material.h>
-#include <core/math/Type.h>
+#include "../math/Type.h"
 #include "../render_define.h"
 
 namespace gr {
@@ -28,7 +28,7 @@ namespace gr {
 
         unsigned long chr;
 
-        Ref<Texture> texture;
+        gc::Ref<Texture> texture;
         Font *font;
         bool isRender;
 
@@ -40,7 +40,7 @@ namespace gr {
         _FORCE_INLINE_ unsigned int getHeight() { return height; }
         _FORCE_INLINE_ const Vector2f *getUV() { return uv; }
         _FORCE_INLINE_ const Vector2i &getCorner() { return corner; }
-        _FORCE_INLINE_ const Ref<Texture> &getTexture() { return texture; }
+        _FORCE_INLINE_ const gc::Ref<Texture> &getTexture() { return texture; }
         _FORCE_INLINE_ Font *getFont() {return font;}
 
         _FORCE_INLINE_ Character():isRender(false){}
@@ -53,7 +53,7 @@ namespace gr {
                                  unsigned int texHeight,
                                  unsigned int left,
                                  unsigned int top,
-                                 const Ref<Texture> &texture,
+                                 const gc::Ref<Texture> &texture,
                                  Font *font):Character() {
             this->chr = ch;
             corner = Vector2i(left,top);

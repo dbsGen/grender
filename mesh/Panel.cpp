@@ -9,6 +9,8 @@
 #include "Panel.h"
 
 using namespace gr;
+using namespace std;
+using namespace gc;
 
 Panel::Panel() : Mesh(), anchor(0.5,0.5) {
     size.x(1);
@@ -43,7 +45,7 @@ void Panel::updateVertexes() {
     attr->update();
 }
 
-void Panel::_copy(const HObject *other) {
+void Panel::_copy(const Object *other) {
     Mesh::_copy(other);
     const Panel *om = other->cast_to<Panel>();
     if (om)

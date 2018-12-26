@@ -12,7 +12,7 @@ namespace gr {
 
     class TableView;
 
-    typedef Ref<Object> (*TableViewItemCreator)(TableView *table_view, void *data, int idx);
+    typedef gc::Ref<Object3D> (*TableViewItemCreator)(TableView *table_view, void *data, int idx);
 
     CLASS_BEGIN_N(TableView, ScrollView)
 
@@ -20,17 +20,17 @@ namespace gr {
         int item_count;
         TableViewItemCreator item_creator;
         void *data;
-        list<Ref<Object> > display_items;
-        list<Ref<Object> > cache_items;
-        HRange display_range;
-        HSize item_size;
+        std::list<gc::Ref<Object3D> > display_items;
+        std::list<gc::Ref<Object3D> > cache_items;
+        Range display_range;
+        Size item_size;
         Vector2f item_offset;
 
         _FORCE_INLINE_ int limit(int input) {
-            return max(min(input, item_count - 1), 0);
+            return std::max(std::min(input, item_count - 1), 0);
         }
 
-        HRange calculateRange(const Vector2f &offset);
+        Range calculateRange(const Vector2f &offset);
         Matrix4 positionAt(int idx);
 
     protected:
@@ -45,10 +45,10 @@ namespace gr {
         _FORCE_INLINE_ int getItemCount() {
             return item_count;
         }
-        _FORCE_INLINE_ void setItemSize(const HSize &size) {
+        _FORCE_INLINE_ void setItemSize(const Size &size) {
             item_size = size;
         }
-        _FORCE_INLINE_ const HSize &getItemSize() {
+        _FORCE_INLINE_ const Size &getItemSize() {
             return item_size;
         }
         _FORCE_INLINE_ void setItemOffset(const Vector2f &offset) {
@@ -65,7 +65,7 @@ namespace gr {
         void reload();
         void reloadCount();
     
-        Ref<Object> dequeue();
+        gc::Ref<Object3D> dequeue();
         _FORCE_INLINE_ void setItemCreator(TableViewItemCreator creator, void *data) {
             item_creator = creator;
             this->data = data;

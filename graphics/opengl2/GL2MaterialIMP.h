@@ -15,8 +15,8 @@
 
 #include <graphics/graphics_define.h>
 
-namespace higraphics {
-    CLASS_BEGIN_N(GL2MaterialIMP, MaterialIMP)
+namespace gg {
+    CLASS_BEGIN_N(GL2MaterialIMP, gr::MaterialIMP)
 private:
     GLuint program;
     
@@ -31,19 +31,19 @@ private:
     void bindAttributes();
     void configureUniforms();
     
-    int indexOf(const pointer_vector &arr, const StringName &name);
+    int indexOf(const pointer_vector &arr, const gc::StringName &name);
     
 protected:
     virtual void cleanPosition();
     virtual void cleanTranslate();
     
-    virtual void updateShader(const Shader *shader);
+    virtual void updateShader(const gr::Shader *shader);
     
     virtual void process();
     
 public:
     
-    GLint getAttributeIdx(const StringName &name);
+    GLint getAttributeIdx(const gc::StringName &name);
     
     //GLint getPositionIdx();
     GLuint getTranslateID();

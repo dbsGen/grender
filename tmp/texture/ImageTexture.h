@@ -15,7 +15,7 @@
 #include "../render_define.h"
 
 using namespace std;
-using namespace gcore;
+using namespace gc;
 
 namespace cv {
     class Mat;

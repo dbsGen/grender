@@ -9,6 +9,7 @@
 #include "CharacterMesh.h"
 
 using namespace gr;
+using namespace std;
 
 void CharacterMesh::render() {
 

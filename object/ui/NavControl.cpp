@@ -9,12 +9,14 @@
 #include "NavControl.h"
 #include <texture/ColorTexture.h>
 #include <utils/tween/Properties.h>
-#include <core/math/Math.hpp>
+#include <math/Math.hpp>
 #include <utils/FileSystem.h>
 #include "ShadowView.h"
 #include <Renderer.h>
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 const StringName kNAV_POSITION_X("NAV_POSITION_X");
 const StringName kNAV_POSITION_Y("NAV_POSITION_Y");
@@ -33,18 +35,18 @@ NavControlButton::NavControlButton() {
         Shader::context()->addData(sn, new_t(BufferData, (void*)shader_str, sizeof(shader_str)));
         button_material = new ViewMaterial;
         button_material->setShader(new Shader(Shader::SHADER_SIMPLE_VERT, sn));
-        button_material->setTexture(new ColorTexture(HColor(1,1,1,1)), 0);
+        button_material->setTexture(new ColorTexture(Color(1,1,1,1)), 0);
         button_material->setRenderIndex(99);
     }
     setMaterial(button_material);
     setBorderWidth(5 * Renderer::getScreenScale());
-    setBorderColor(HColor(1,1,1,1));
+    setBorderColor(Color(1,1,1,1));
     setCorner(kWIDTH * Renderer::getScreenScale() / 2);
     
     ShadowView *shadow = new_t(ShadowView);
-    shadow->setColor(HColor(0, 0, 0,1));
+    shadow->setColor(Color(0, 0, 0,1));
     shadow->setAlpha(0.6);
-    HSize size = HSize(kWIDTH + kBLUR, kWIDTH + kBLUR) * Renderer::getScreenScale();
+    Size size = Size(kWIDTH + kBLUR, kWIDTH + kBLUR) * Renderer::getScreenScale();
     shadow->setSize(size);
     shadow->setPosition(Vector3f(-kWIDTH/2 - kBLUR/2, -kWIDTH/2 - kBLUR/2, 0)* Renderer::getScreenScale());
     shadow->setDepth(-1);
@@ -56,7 +58,7 @@ NavControlButton::NavControlButton() {
 
 void NavControlButton::changeSubView(const Ref<View> &sub_view, bool animate, Direction direction) {
     if (sub_view == this->sub_view) return;
-    HSize s = HSize(kWIDTH - 14, kWIDTH - 14) * Renderer::getScreenScale();
+    Size s = Size(kWIDTH - 14, kWIDTH - 14) * Renderer::getScreenScale();
     if (sub_view) {
         sub_view->setSize(s);
         const Ref<Material> &mat = sub_view->getMaterial();
@@ -69,29 +71,29 @@ void NavControlButton::changeSubView(const Ref<View> &sub_view, bool animate, Di
             tween->addProperty(alphaProperty(1, 0));
             switch (direction) {
                 case UpDown:{
-                    tween->addProperty(rotationProperty(HQuaternion::fromEuler(Vector3f(0,0, 0)),
-                                                        HQuaternion::fromEuler(Vector3f(M_PI_2, 0, 0))));
+                    tween->addProperty(rotationProperty(Quaternion::fromEuler(Vector3f(0,0, 0)),
+                                                        Quaternion::fromEuler(Vector3f(M_PI_2, 0, 0))));
                     tween->addProperty(positionProperty(Vector3f(0, 0, 0),
                                                         Vector3f(0, -30, 0)));
                 }
                     break;
                 case DownUp: {
-                    tween->addProperty(rotationProperty(HQuaternion::fromEuler(Vector3f(0,0, 0)),
-                                                        HQuaternion::fromEuler(Vector3f(-M_PI_2, 0, 0))));
+                    tween->addProperty(rotationProperty(Quaternion::fromEuler(Vector3f(0,0, 0)),
+                                                        Quaternion::fromEuler(Vector3f(-M_PI_2, 0, 0))));
                     tween->addProperty(positionProperty(Vector3f(0, 0, 0),
                                                         Vector3f(0, 30, 0)));
                 }
                     break;
                 case LeftRight: {
-                    tween->addProperty(rotationProperty(HQuaternion::fromEuler(Vector3f(0,0, 0)),
-                                                        HQuaternion::fromEuler(Vector3f(0, M_PI_2, 0))));
+                    tween->addProperty(rotationProperty(Quaternion::fromEuler(Vector3f(0,0, 0)),
+                                                        Quaternion::fromEuler(Vector3f(0, M_PI_2, 0))));
                     tween->addProperty(positionProperty(Vector3f(0, 0, 0),
                                                         Vector3f(30, 0, 0)));
                 }
                     break;
                 case RightLeft: {
-                    tween->addProperty(rotationProperty(HQuaternion::fromEuler(Vector3f(0,0, 0)),
-                                                        HQuaternion::fromEuler(Vector3f(0, -M_PI_2, 0))));
+                    tween->addProperty(rotationProperty(Quaternion::fromEuler(Vector3f(0,0, 0)),
+                                                        Quaternion::fromEuler(Vector3f(0, -M_PI_2, 0))));
                     tween->addProperty(positionProperty(Vector3f(0, 0, 0),
                                                         Vector3f(-30, 0, 0)));
                 }
@@ -110,29 +112,29 @@ void NavControlButton::changeSubView(const Ref<View> &sub_view, bool animate, Di
             tween->addProperty(alphaProperty(0, 1));
             switch (direction) {
                 case UpDown:{
-                    tween->addProperty(rotationProperty(HQuaternion::fromEuler(Vector3f(M_PI_2,0, 0)),
-                                                        HQuaternion::fromEuler(Vector3f(0, 0, 0))));
+                    tween->addProperty(rotationProperty(Quaternion::fromEuler(Vector3f(M_PI_2,0, 0)),
+                                                        Quaternion::fromEuler(Vector3f(0, 0, 0))));
                     tween->addProperty(positionProperty(Vector3f(0, 30, 0),
                                                         Vector3f(0, 0, 0)));
                 }
                     break;
                 case DownUp: {
-                    tween->addProperty(rotationProperty(HQuaternion::fromEuler(Vector3f(-M_PI_2,0, 0)),
-                                                        HQuaternion::fromEuler(Vector3f(0, 0, 0))));
+                    tween->addProperty(rotationProperty(Quaternion::fromEuler(Vector3f(-M_PI_2,0, 0)),
+                                                        Quaternion::fromEuler(Vector3f(0, 0, 0))));
                     tween->addProperty(positionProperty(Vector3f(0, -30, 0),
                                                         Vector3f(0, 0, 0)));
                 }
                     break;
                 case LeftRight: {
-                    tween->addProperty(rotationProperty(HQuaternion::fromEuler(Vector3f(0,M_PI_2, 0)),
-                                                        HQuaternion::fromEuler(Vector3f(0, 0, 0))));
+                    tween->addProperty(rotationProperty(Quaternion::fromEuler(Vector3f(0,M_PI_2, 0)),
+                                                        Quaternion::fromEuler(Vector3f(0, 0, 0))));
                     tween->addProperty(positionProperty(Vector3f(-30, 0, 0),
                                                         Vector3f(0, 0, 0)));
                 }
                     break;
                 case RightLeft: {
-                    tween->addProperty(rotationProperty(HQuaternion::fromEuler(Vector3f(0,-M_PI_2, 0)),
-                                                        HQuaternion::fromEuler(Vector3f(0, 0, 0))));
+                    tween->addProperty(rotationProperty(Quaternion::fromEuler(Vector3f(0,-M_PI_2, 0)),
+                                                        Quaternion::fromEuler(Vector3f(0, 0, 0))));
                     tween->addProperty(positionProperty(Vector3f(30, 0, 0),
                                                         Vector3f(0, 0, 0)));
                 }
@@ -165,11 +167,11 @@ NavControl::NavControl() : extend(true) {
     
     setDepth(99);
     status = 0;
-    setSize(HSize(kWIDTH, kWIDTH) * Renderer::getScreenScale());
+    setSize(Size(kWIDTH, kWIDTH) * Renderer::getScreenScale());
     
     main_button = new NavControlButton;
-    main_button->setSize(HSize(kWIDTH, kWIDTH) * Renderer::getScreenScale());
-    main_button->getMesh()->setColor(HColor(0xff9101ff));
+    main_button->setSize(Size(kWIDTH, kWIDTH) * Renderer::getScreenScale());
+    main_button->getMesh()->setColor(Color(0xff9101ff));
     main_button->getPanel()->setAnchor(Vector2f(0.5, 0.5));
     main_button->setOnDrag(&NavControl::dragEvent, this);
     main_button->setOnClick(&NavControl::clickEvent, this);
@@ -196,13 +198,13 @@ NavControl::NavControl() : extend(true) {
     view->setMaterial(new Material(new Shader(Shader::SHADER_SIMPLE_VERT, name)));
     view->getMaterial()->setRenderIndex(100);
     view->getMaterial()->setBlend(true);
-    view->setSize(HSize(7, 14) * Renderer::getScreenScale());
-    view->getMesh()->setColor(HColor(1,1,1,1));
+    view->setSize(Size(7, 14) * Renderer::getScreenScale());
+    view->getMesh()->setColor(Color(1,1,1,1));
     view->getPanel()->setAnchor(Vector2f(0.5, 0.5));
     view->setPosition(Vector3f(-1, 0, 0) * Renderer::getScreenScale());
     arrow = view;
     arrow->getMaterial()->setCullFace(Material::Both);
-    HSize s = HSize(kWIDTH - 14, kWIDTH - 14) * Renderer::getScreenScale();
+    Size s = Size(kWIDTH - 14, kWIDTH - 14) * Renderer::getScreenScale();
     arrow_view->setSize(s);
     arrow_view->getMesh()->cast_to<Panel>()->setAnchor(Vector2f(0.5, 0.5));
     arrow_view->add(view);
@@ -224,7 +226,7 @@ void NavControl::copyObject(Ref<View> &target, const Ref<View> &object) {
 }
 
 void NavControl::checkStatus() {
-    const HSize &size = getRenderer()->getSize();
+    const Size &size = getRenderer()->getSize();
     const Vector3f &pos = getPosition();
     int s = 0;
     if (pos.x() < size.width() / 2) {
@@ -256,13 +258,13 @@ void NavControl::setStatus(int status) {
         if (status & 0x1) {
             Tween::cancel(*arrow);
             Tween *tween = Tween::New<CubicOut>(*arrow, 0.4);
-            tween->addProperty(rotationProperty(arrow->getRotation(), HQuaternion::fromEuler(Vector3f(0, M_PI, 0))));
+            tween->addProperty(rotationProperty(arrow->getRotation(), Quaternion::fromEuler(Vector3f(0, M_PI, 0))));
             tween->addProperty(positionProperty(arrow->getPosition(), Vector3f(-1, 0, 0) * Renderer::getScreenScale()));
             tween->start();
         }else {
             Tween::cancel(*arrow);
             Tween *tween = Tween::New<CubicOut>(*arrow, 0.4);
-            tween->addProperty(rotationProperty(arrow->getRotation(), HQuaternion::fromEuler(Vector3f(0, 0, 0))));
+            tween->addProperty(rotationProperty(arrow->getRotation(), Quaternion::fromEuler(Vector3f(0, 0, 0))));
             tween->addProperty(positionProperty(arrow->getPosition(), Vector3f(1, 0, 0) * Renderer::getScreenScale()));
             tween->start();
         }
@@ -270,7 +272,7 @@ void NavControl::setStatus(int status) {
 }
 
 void NavControl::touchBorder() {
-    const HSize &size = getRenderer()->getSize();
+    const Size &size = getRenderer()->getSize();
     const Vector3f &pos = getPosition();
     Vector3f target;
     if (pos.x() < size.x() / 2) {
@@ -366,7 +368,7 @@ void NavControl::miss() {
                 pro = makeProperty(&Button::setRotation,
                                    &Button::getRotation,
                                    button->getRotation(),
-                                   HQuaternion::fromEuler(Vector3f(M_PI_2, 0, 0)));
+                                   Quaternion::fromEuler(Vector3f(M_PI_2, 0, 0)));
                 tween->addProperty(pro);
                 tween->addProperty(alphaProperty(button->getAlpha(), 0.0));
                 if (count == size - 1) {
@@ -527,8 +529,8 @@ Ref<NavControlButton> NavControl::makeSubButton() {
     Ref<NavControlButton> sub = popSubButton();
     if (!sub) {
         sub = new NavControlButton;
-        sub->setSize(HSize(kWIDTH, kWIDTH) * Renderer::getScreenScale());
-        sub->getMesh()->setColor(HColor(1,0,0,1));
+        sub->setSize(Size(kWIDTH, kWIDTH) * Renderer::getScreenScale());
+        sub->getMesh()->setColor(Color(1,0,0,1));
         sub->getPanel()->setAnchor(Vector2f(0.5, 0.5));
         sub->setOnClick(&NavControl::clickEvent, this);
     }
@@ -603,11 +605,11 @@ void NavControl::mainButtonSwapOver(void *sender, void *send_data, void *data) {
     nav->main_swap = false;
 }
 
-bool NavControl::onMessage(const StringName &key, const Array *vars) {
+bool NavControl::onMessage(const StringName &key, const RArray *vars) {
     if (extend) {
-        if (key == Object::MESSAGE_TOUCH_EVENT) {
+        if (key == Object3D::MESSAGE_TOUCH_EVENT) {
             variant_vector &vec = vars->vec();
-            EventType type = (Object::EventType)((int)vec.at(0));
+            EventType type = (Object3D::EventType)((int)vec.at(0));
             Vector2f *point = vec.at(1).get<Vector2f>();
             switch (type){
                 case TOUCH_BEGIN: {

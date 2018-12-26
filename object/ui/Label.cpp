@@ -11,11 +11,12 @@
 #include <font/FTUnicode.h>
 #include <utils/NotificationCenter.h>
 #include <Renderer.h>
-#include <core/math/Math.hpp>
+#include <math/Math.hpp>
 #include "../../render_define.h"
 
 using namespace gr;
-using namespace gcore;
+using namespace gc;
+using namespace std;
 
 namespace gr {
     CLASS_BEGIN_N(CharacterObject, View)
@@ -34,7 +35,7 @@ namespace gr {
         void setColor(const Vector4f &color);
         const Vector4f getColor() const;
 
-        virtual bool onMessage(const StringName &key, const Array *vars);
+        virtual bool onMessage(const StringName &key, const RArray *vars);
 
         void render();
 
@@ -93,7 +94,7 @@ const Vector4f CharacterObject::getColor() const {
 void CharacterObject::setColor(const Vector4f &color) {
     const Ref<CharacterMesh> &mesh = getCharacterMesh(this);
     if (mesh) {
-        mesh->setColor(HColor(color[0], color[1], color[2], color[3] * getFinalAlpha()));
+        mesh->setColor(Color(color[0], color[1], color[2], color[3] * getFinalAlpha()));
     }
 }
 
@@ -107,7 +108,7 @@ CharacterObject::CharacterObject(const Ref<Character> &ch, const Ref<Material> &
 //    setStatic(true);
 }
 
-bool CharacterObject::onMessage(const StringName &key, const Array *vars) {
+bool CharacterObject::onMessage(const StringName &key, const RArray *vars) {
     if (key == MESSAGE_ALPHA_CHANGED) {
 //        const Ref<Material> &material = getMaterial();
 //        if (material) {
@@ -166,11 +167,11 @@ const string &Label::getText() const {
     return text;
 }
 
-void Label::setSpace(const HSize &space) {
+void Label::setSpace(const Size &space) {
     this->space = space;
     changed = true;
 }
-const HSize &Label::getSpace() {
+const Size &Label::getSpace() {
     return space;
 }
 
@@ -182,14 +183,14 @@ float Label::getMaxWidth() {
     return max_width;
 }
 
-void Label::setColor(const HColor &color) {
+void Label::setColor(const Color &color) {
     this->color = color;
     for (auto it = characters.begin(), _e = characters.end(); it != _e; ++it) {
         CharacterObject *co = (*it)->cast_to<CharacterObject>();
         co->setColor(color);
     }
 }
-const HColor &Label::getColor() {
+const Color &Label::getColor() {
     return color;
 }
 
@@ -206,11 +207,11 @@ const Ref<Font> &Label::getFont() const {
     return font;
 }
 
-bool Label::onMessage(const StringName &key, const Array *vars) {
+bool Label::onMessage(const StringName &key, const RArray *vars) {
     if (key == MESSAGE_MASK_CHANGE) {
-        const list<Ref<Object> > &children = getChildren();
+        const list<Ref<Object3D> > &children = getChildren();
         for (auto it = children.begin(), _e = children.end(); it != _e; ++it) {
-            Object *obj = **it;
+            Object3D *obj = **it;
             if (obj->getClass() == CharacterObject::getClass()) {
                 obj->setMask((Mask) (int)vars->vec().at(1));
             }
@@ -310,7 +311,7 @@ void Label::refresh() {
 
 void Label::makeLine(const pointer_vector *chs, float lineWidth, float totalHeight) {
     float offX, offY;
-    const HSize &size = getSize();
+    const Size &size = getSize();
     switch (h_anchor) {
         case Center:
             offX = (size.x() - lineWidth) / 2;

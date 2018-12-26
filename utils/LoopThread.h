@@ -8,8 +8,8 @@
 #include <thread>
 #include <atomic>
 #include <condition_variable>
-#include "../core/Object.h"
-#include "../core/Action.h"
+#include <core/Object.h>
+#include <core/Action.h>
 
 #include "../render_define.h"
 
@@ -19,10 +19,10 @@ namespace gr {
 
     private:
         bool w;
-        thread *t;
-        ActionItem i;
-        ActionItem on_start;
-        ActionItem on_over;
+        std::thread *t;
+        gc::ActionItem i;
+        gc::ActionItem on_start;
+        gc::ActionItem on_over;
 
         void threadProcess();
 
@@ -31,7 +31,7 @@ namespace gr {
 
     public:
         _FORCE_INLINE_ LoopThread() : w(false) {}
-        LoopThread(ActionCallback callback, void *data);
+        LoopThread(gc::ActionCallback callback, void *data);
         ~LoopThread();
         _FORCE_INLINE_ bool running() {
             return !!t;
@@ -40,11 +40,11 @@ namespace gr {
         void start();
         void cancel();
 
-        void setOnStart(ActionCallback callback, void *data) {
+        void setOnStart(gc::ActionCallback callback, void *data) {
             on_start.callback = callback;
             on_start.data = data;
         }
-        void setOnOver(ActionCallback callback, void *data) {
+        void setOnOver(gc::ActionCallback callback, void *data) {
             on_over.callback = callback;
             on_over.data = data;
         }
@@ -52,10 +52,10 @@ namespace gr {
 
     CLASS_BEGIN_N(NotifyThread, LoopThread)
 
-        atomic<bool> notified;
-        condition_variable queue_check;
-        mutex mtx;
-        ActionItem i;
+        std::atomic<bool> notified;
+        std::condition_variable queue_check;
+        std::mutex mtx;
+        gc::ActionItem i;
 
         static void handleNotify(void *sender, void *send_data, void *data);
 
@@ -64,7 +64,7 @@ namespace gr {
 
     public:
         NotifyThread(){notified = false;}
-        NotifyThread(ActionCallback callback, void *data);
+        NotifyThread(gc::ActionCallback callback, void *data);
         ~NotifyThread();
 
         void notify();

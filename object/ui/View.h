@@ -6,7 +6,7 @@
 #define HI_RENDER_PROJECT_ANDROID_VIEW_H
 
 #include <mesh/Panel.h>
-#include "../Object.h"
+#include "../Object3D.h"
 #include "../../render_define.h"
 
 #define VIEW_LAYER_GAP 0.15f
@@ -18,13 +18,13 @@ namespace gr {
         ViewMaterial();
 
     CLASS_END
-    CLASS_BEGIN_N(View, Object)
+    CLASS_BEGIN_N(View, Object3D)
 
     private:
         float       border_width;
         float       corner;
-        HSize       size;
-        HColor      border_color;
+        Size        size;
+        Color       border_color;
         bool        depth_dirty;
         double      final_depth;
         int         depth;
@@ -34,17 +34,17 @@ namespace gr {
         float       final_alpha;
 
     protected:
-        virtual bool onMessage(const StringName &key, const Array *vars);
+        virtual bool onMessage(const gc::StringName &key, const gc::RArray *vars);
         _FORCE_INLINE_ virtual void updateSize(const Vector2f &originalSize, const Vector2f &size) {};
 
     public:
-        static const StringName MESSAGE_ALPHA_CHANGED;
-        static const StringName MESSAGE_DEPTH_CHANGED;
+        static const gc::StringName MESSAGE_ALPHA_CHANGED;
+        static const gc::StringName MESSAGE_DEPTH_CHANGED;
 
-        _FORCE_INLINE_ Ref<Panel> getPanel() { return Ref<Panel>(getMesh()); }
+        _FORCE_INLINE_ gc::Ref<Panel> getPanel() { return gc::Ref<Panel>(getMesh()); }
 
-        METHOD _FORCE_INLINE_ const HSize &getSize() {return size;}
-        METHOD void setSize(const HSize &size);
+        METHOD _FORCE_INLINE_ const Size &getSize() {return size;}
+        METHOD void setSize(const Size &size);
     
         METHOD _FORCE_INLINE_ float getBorderWidth() { return border_width; }
         METHOD void setBorderWidth(float borderWidth);
@@ -52,8 +52,8 @@ namespace gr {
         METHOD _FORCE_INLINE_ float getCorner() { return corner; }
         METHOD void setCorner(float corner);
     
-        METHOD _FORCE_INLINE_ const HColor &getBorderColor() {return border_color;}
-        METHOD void setBorderColor(const HColor &color);
+        METHOD _FORCE_INLINE_ const Color &getBorderColor() {return border_color;}
+        METHOD void setBorderColor(const Color &color);
 
         METHOD _FORCE_INLINE_ int getDepth() {return depth;}
         METHOD void setDepth(int depth);
@@ -64,7 +64,7 @@ namespace gr {
 
         double getFinalDepth();
     
-        virtual void setMaterial(const Ref<Material> &material);
+        virtual void setMaterial(const gc::Ref<Material> &material);
 
         View();
 

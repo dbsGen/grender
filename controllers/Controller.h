@@ -5,37 +5,35 @@
 #ifndef VOIPPROJECT_CONTROLLER_H
 #define VOIPPROJECT_CONTROLLER_H
 
-#include <object/Object.h>
+#include <object/Object3D.h>
 #include <object/ui/View.h>
 #include <object/Camera.h>
 #include <render_define.h>
-
-using namespace gcore;
 
 namespace gr {
     class Renderer;
     class NavigationController;
 
-    CLASS_BEGIN_N(Controller, RefObject)
+    CLASS_BEGIN_N(Controller, gc::RefObject)
 
     private:
         Renderer *renderer;
-        Ref<Object> main_object;
-        Ref<Camera> solid_camera;
-        Ref<Camera> ui_camera;
-        Ref<View>   icon;
+        gc::Ref<Object3D> main_object;
+        gc::Ref<Camera> solid_camera;
+        gc::Ref<Camera> ui_camera;
+        gc::Ref<View>   icon;
         Controller *parent;
 
-        void setCameraSize(const HSize &size);
+        void setCameraSize(const Size &size);
 
         friend class Renderer;
 
     protected:
 
-        virtual void onLoad(const Ref<Object> &object);
-        virtual void onUnload(const Ref<Object> &object);
-        EVENT(void, _onLoad, const Ref<Object> &object)
-        EVENT(void, _onUnload, const Ref<Object> &object)
+        virtual void onLoad(const gc::Ref<Object3D> &object);
+        virtual void onUnload(const gc::Ref<Object3D> &object);
+        EVENT(void, _onLoad, const gc::Ref<Object3D> &object)
+        EVENT(void, _onUnload, const gc::Ref<Object3D> &object)
 
         /**
          * Called when attach or disattach to the renderer
@@ -55,15 +53,15 @@ namespace gr {
         EVENT(void, _appearProcess, float percent)
         EVENT(void, _disappearProcess, float percent)
     
-        virtual void onResize(const HSize &size);
+        virtual void onResize(const Size &size);
 
     public:
         void enableSolidCamera();
-        _FORCE_INLINE_ const Ref<Camera> &getSolidCamera() {
+        _FORCE_INLINE_ const gc::Ref<Camera> &getSolidCamera() {
             return solid_camera;
         }
         void enableUICamera();
-        _FORCE_INLINE_ const Ref<Camera> &getUICamera() {
+        _FORCE_INLINE_ const gc::Ref<Camera> &getUICamera() {
             return ui_camera;
         }
 
@@ -85,7 +83,7 @@ namespace gr {
         long appearDuring();
         long disappearDuring();
     
-        METHOD _FORCE_INLINE_ void setParent(const Ref<Controller> &parent) {this->parent = *parent;}
+        METHOD _FORCE_INLINE_ void setParent(const gc::Ref<Controller> &parent) {this->parent = *parent;}
         /**
          * The process of appear called during animation
          * @param percent from 0 to 1
@@ -99,19 +97,19 @@ namespace gr {
         virtual void attach(Renderer *renderer);
         virtual void disattach(Renderer *renderer);
 
-        METHOD const Ref<Object> &getMainObject();
+        METHOD const gc::Ref<Object3D> &getMainObject();
         METHOD _FORCE_INLINE_ Renderer *getRenderer() {return renderer;}
-        METHOD _FORCE_INLINE_ Ref<Controller> getParent() {return parent;}
+        METHOD _FORCE_INLINE_ gc::Ref<Controller> getParent() {return parent;}
         PROPERTY(parent, getParent, setParent)
     
-        _FORCE_INLINE_ void setIcon(const Ref<View> &icon) {
+        _FORCE_INLINE_ void setIcon(const gc::Ref<View> &icon) {
             this->icon = icon;
         }
-        METHOD _FORCE_INLINE_ const Ref<View> &getIcon() {
+        METHOD _FORCE_INLINE_ const gc::Ref<View> &getIcon() {
             return icon;
         }
 
-        METHOD Reference getNav();
+        METHOD gc::Reference getNav();
         _FORCE_INLINE_ bool isLoaded() {
             return main_object != nullptr;
         }

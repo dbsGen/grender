@@ -3,12 +3,13 @@
 //
 
 #include <object/ui/View.h>
-#include <core/math/Math.hpp>
+#include <math/Math.hpp>
 #include <physics/PhysicsServer.h>
 #include "Camera.h"
 
 using namespace gr;
-using namespace hiphysics;
+using namespace gc;
+using namespace std;
 
 const Matrix4 &Camera::getProjection() {
     if (dirty_projection) {
@@ -24,7 +25,7 @@ const Matrix4 &Camera::getProjection() {
             }
                 break;
             case Type::Perspective: {
-                HRect tr = rect * (fov / 111.88614049404633);
+                Rect tr = rect * (fov / 111.88614049404633);
                 float offx = (tr.v[2]) * (1-viewport.z())/2;
                 float offy = (tr.v[3]) * (1-viewport.w())/2;
                 projection = Matrix4::perspective(tr.v[0] + offx,
@@ -40,18 +41,18 @@ const Matrix4 &Camera::getProjection() {
     return projection;
 }
 
-HPoint Camera::screenToWorld(const HPoint &screen_point) {
-    return HPoint(2*screen_point.x()-1, 1-2*screen_point.y(), screen_point.z()) * getProjection().inverse();
+Point Camera::screenToWorld(const Point &screen_point) {
+    return Point(2*screen_point.x()-1, 1-2*screen_point.y(), screen_point.z()) * getProjection().inverse();
 }
 
-HPoint Camera::worldToScreen(const HPoint &world_point) {
+Point Camera::worldToScreen(const Point &world_point) {
     Vector4f v4(world_point.x(), world_point.y(), world_point.z(), 1);
     Vector4f point = v4 * (getProjection() * getGlobalPose().inverse());
     point *= 1/point.w();
     return Vector3f((point.x() + 1) / 2, (1 - point.y()) / 2, point.z());
 }
 
-bool Camera::sortCompare(Object *o1, Object *o2) {
+bool Camera::sortCompare(Object3D *o1, Object3D *o2) {
     const Class *c1 = o1->getInstanceClass();
     const Class *c2 = o2->getInstanceClass();
     const Class *vc = View::getClass();
@@ -79,8 +80,8 @@ bool Camera::sortCompare(Object *o1, Object *o2) {
     }
 }
 
-void Camera::copyParameters(const Ref<Object> &other) {
-    Object::copyParameters(other);
+void Camera::copyParameters(const Ref<Object3D> &other) {
+    Object3D::copyParameters(other);
     Camera *camera = other->cast_to<Camera>();
     if (camera) {
         setDepth(camera->getDepth());
@@ -94,11 +95,11 @@ void Camera::copyParameters(const Ref<Object> &other) {
     }
 }
 
-bool Camera::onMessage(const StringName &key, const Array *vars) {
-    return Object::onMessage(key, vars);
+bool Camera::onMessage(const StringName &key, const RArray *vars) {
+    return Object3D::onMessage(key, vars);
 }
 
-void Camera::sendTouchEvent(Object::EventType event, const Vector2f &point) {
+void Camera::sendTouchEvent(Object3D::EventType event, const Vector2f &point) {
     if (!viewport.contain(point)) {
         if (current_touch_object) {
 //                if (focus)
@@ -111,7 +112,7 @@ void Camera::sendTouchEvent(Object::EventType event, const Vector2f &point) {
     Ray ray = rayFromScreenPoint(point);
     ray.setHitMask(getHitMask());
     switch (event) {
-        case Object::TOUCH_BEGIN: {
+        case Object3D::TOUCH_BEGIN: {
             Result result;
             if (PhysicsServer::getInstance()->cast(ray, result)) {
                 current_touch_object = result.getTarget();
@@ -120,7 +121,7 @@ void Camera::sendTouchEvent(Object::EventType event, const Vector2f &point) {
             }
             break;
         }
-        case Object::TOUCH_MOVE: {
+        case Object3D::TOUCH_MOVE: {
             if (current_touch_object) {
                 Result result;
                 if (PhysicsServer::getInstance()->cast(ray, result)) {
@@ -142,7 +143,7 @@ void Camera::sendTouchEvent(Object::EventType event, const Vector2f &point) {
             }
             break;
         }
-        case Object::TOUCH_END: {
+        case Object3D::TOUCH_END: {
             if (current_touch_object) {
 //                if (focus)
                     current_touch_object->_touchEnd(this, point);
@@ -151,7 +152,7 @@ void Camera::sendTouchEvent(Object::EventType event, const Vector2f &point) {
             focus = false;
             break;
         }
-        case Object::TOUCH_CANCEL: {
+        case Object3D::TOUCH_CANCEL: {
             if (current_touch_object) {
 //                if (focus)
                     current_touch_object->_touchCancel(this, point);
@@ -165,16 +166,16 @@ void Camera::sendTouchEvent(Object::EventType event, const Vector2f &point) {
     }
 }
 
-hiphysics::Ray Camera::rayFromScreenPoint(const Vector2f &point) {
-    HPoint p((point.x() - viewport.left()) / viewport.width(), (point.y() - viewport.top()) / viewport.height(), 0);
+Ray Camera::rayFromScreenPoint(const Vector2f &point) {
+    Point p((point.x() - viewport.left()) / viewport.width(), (point.y() - viewport.top()) / viewport.height(), 0);
     if (type == Type::Perspective) {
-        HPoint po = HPoint() * getGlobalPose();
-        HPoint pe = screenToWorld(p) * getGlobalPose();
+        Point po = Point() * getGlobalPose();
+        Point pe = screenToWorld(p) * getGlobalPose();
         return Ray(po, pe - po);
     }else {
-        HPoint po = screenToWorld(p) * getGlobalPose();
+        Point po = screenToWorld(p) * getGlobalPose();
         p.z(getNear());
-        HPoint pe = screenToWorld(p) * getGlobalPose();
+        Point pe = screenToWorld(p) * getGlobalPose();
         return Ray(po, pe - po);
     }
 }

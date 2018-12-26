@@ -23,7 +23,7 @@ typedef struct _xmlXPathContext xmlXPathContext;
 typedef xmlXPathContext *xmlXPathContextPtr;
 
 namespace gr {
-    CLASS_BEGIN_N(XMLDocument, RefObject)
+    CLASS_BEGIN_N(XMLDocument, gc::RefObject)
 
     public:
         typedef int DocumentType;
@@ -34,9 +34,9 @@ namespace gr {
 
         xmlDocPtr c_doc;
         xmlXPathContextPtr xpath_context;
-        Ref<XMLNode> root;
+        gc::Ref<XMLNode> root;
         pointer_vector xpath_objects;
-        Array xpathNode(const void *node, const char *str);
+        gc::RArray xpathNode(const void *node, const char *str);
 
         friend class XMLNode;
 
@@ -45,12 +45,12 @@ namespace gr {
         }
         ~XMLDocument();
 
-        void initialize(const Ref<Data> &data, DocumentType type = XML);
+        void initialize(const gc::Ref<gc::Data> &data, DocumentType type = XML);
 
-        METHOD const Ref<XMLNode> &getRoot();
+        METHOD const gc::Ref<XMLNode> &getRoot();
 
-        METHOD Array xpath(const char *str);
-        METHOD static Ref<XMLDocument> parse(const Ref<Data> &data, DocumentType type = XML, const char *coding = NULL);
+        METHOD gc::RArray xpath(const char *str);
+        METHOD static gc::Ref<XMLDocument> parse(const gc::Ref<gc::Data> &data, DocumentType type = XML, const char *coding = NULL);
 
     protected:
         ON_LOADED_BEGIN(cls, RefObject)

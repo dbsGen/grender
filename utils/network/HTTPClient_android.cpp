@@ -74,7 +74,7 @@ void HTTPClient::_finalize() {
     }
 }
 
-void HTTPClient::event(const gcore::StringName &name, void *data) {
+void HTTPClient::event(const gc::StringName &name, void *data) {
     if (name == event_complete) {
         path = (const char *)data;
         error.clear();

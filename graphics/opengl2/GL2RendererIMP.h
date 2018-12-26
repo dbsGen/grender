@@ -15,29 +15,29 @@
 
 #include <graphics/graphics_define.h>
 
-namespace higraphics {
+namespace gg {
     class GL2FrameBuffer;
     
-    CLASS_BEGIN_N(GL2RendererIMP, RendererIMP)
+    CLASS_BEGIN_N(GL2RendererIMP, gr::RendererIMP)
 
     private:
         CLASS_BEGIN_0_N(GL2VirtualMachine)
         private:
             struct Compare {
-                Camera *camera;
+                gr::Camera *camera;
                 _FORCE_INLINE_ bool operator() (void *o1, void *o2) const {
-                    return camera->sortCompare((Object*)o1, (Object*)o2);
+                    return camera->sortCompare((gr::Object3D*)o1, (gr::Object3D*)o2);
                 }
-                _FORCE_INLINE_ Compare(Camera *camera) {
+                _FORCE_INLINE_ Compare(gr::Camera *camera) {
                     this->camera = camera;
                 }
             };
     
-            Camera *camera;
-            Canvas *canvas;
+            gr::Camera *camera;
+            gr::Canvas *canvas;
             pointer_map reload;
-            list<Ref<Object> > add;
-            list<Ref<Object> > remove;
+            std::list<gc::Ref<gr::Object3D> > add;
+            std::list<gc::Ref<gr::Object3D> > remove;
     
             pointer_list sub_machines;
 
@@ -45,29 +45,29 @@ namespace higraphics {
             GL2RendererIMP *renderer;
             GL2FrameBuffer *frame_buffer;
 
-            void addToSubMachine(const Ref<Object> &object, Canvas *canvas);
+            void addToSubMachine(const gc::Ref<gr::Object3D> &object, gr::Canvas *canvas);
             void _clear();
-            void _changeMaterial(Object *object, Material *old_mat);
-            void _add(const Ref<Object> &object, Canvas *canvas);
-            void _remove(const Ref<Object> &object);
-            void addObjects(const list<Ref<Object> > &objects, Canvas *canvas);
+            void _changeMaterial(gr::Object3D *object, gr::Material *old_mat);
+            void _add(const gc::Ref<gr::Object3D> &object, gr::Canvas *canvas);
+            void _remove(const gc::Ref<gr::Object3D> &object);
+            void addObjects(const std::list<gc::Ref<gr::Object3D> > &objects, gr::Canvas *canvas);
     
             pointer_map     drawables;
             pointer_list    drawables_list;
             bool drawables_updated;
-            void addDrawItem(Object *object);
-            void removeDrawItem(Object *object);
-            void reloadDrawItem(void *old_key, Object *object);
-            void removeDrawItemWithKey(void *key, Object *object);
-            void *keyOfObject(Object *object);
+            void addDrawItem(gr::Object3D *object);
+            void removeDrawItem(gr::Object3D *object);
+            void reloadDrawItem(void *old_key, gr::Object3D *object);
+            void removeDrawItemWithKey(void *key, gr::Object3D *object);
+            void *keyOfObject(gr::Object3D *object);
     
             friend class GL2RendererIMP;
 
         public:
-            void reset(const list<Ref<Object> > &objects);
+            void reset(const std::list<gc::Ref<gr::Object3D> > &objects);
             void step();
     
-            GL2VirtualMachine *findSubMachine(Canvas *canvas);
+            GL2VirtualMachine *findSubMachine(gr::Canvas *canvas);
     
             _FORCE_INLINE_ GL2VirtualMachine() : frame_buffer(NULL), camera(NULL), canvas(NULL), drawables_updated(false) {}
             ~GL2VirtualMachine();
@@ -81,8 +81,8 @@ namespace higraphics {
             }
         };
     
-        void pushCamera(Camera *camera);
-        void removeCamera(Camera *camera);
+        void pushCamera(gr::Camera *camera);
+        void removeCamera(gr::Camera *camera);
         pointer_list machines;
     
         void pushFrameBuffer(GL2FrameBuffer *frame_buffer);
@@ -94,20 +94,20 @@ namespace higraphics {
 
         bool initialized;
         GLuint default_frame_buffer;
-        void addWithList(const Ref<Object> &object, Canvas *canvas, bool top);
+        void addWithList(const gc::Ref<gr::Object3D> &object, gr::Canvas *canvas, bool top);
 
     protected:
 
         virtual void prepare();
-        virtual void add(const Ref<Object> &object);
-        virtual void remove(const Ref<Object> &object);
-        virtual void reload(Object *object, Material *old_mat);
-        virtual void maskChanged(const Ref<Object> &object, Mask from, Mask to);
-        virtual void hitMaskChanged(const Ref<Object> &object, Mask from, Mask to);
+        virtual void add(const gc::Ref<gr::Object3D> &object);
+        virtual void remove(const gc::Ref<gr::Object3D> &object);
+        virtual void reload(gr::Object3D *object, gr::Material *old_mat);
+        virtual void maskChanged(const gc::Ref<gr::Object3D> &object, gr::Mask from, gr::Mask to);
+        virtual void hitMaskChanged(const gc::Ref<gr::Object3D> &object, gr::Mask from, gr::Mask to);
 
         virtual void reload();
         virtual void render();
-        virtual void updateSize(const HSize &size);
+    virtual void updateSize(const gr::Size &size);
         friend class GL2VirtualMachine;
 
     public:

@@ -52,10 +52,10 @@ namespace gr {
     private:
         void *current_item;
         pointer_vector items;
-        list<Ref<Camera> > cameras;
-        mutex mtx;
+        std::list<gc::Ref<Camera> > cameras;
+        std::mutex mtx;
 
-        ActionManager manager;
+        gc::ActionManager manager;
 
         void process(EventsItem *ei);
 
@@ -68,8 +68,8 @@ namespace gr {
         virtual void fixedStep(Renderer *renderer, Time delta);
         virtual void step(Renderer *renderer, Time delta);
 
-        void addListener(ActionCallback callback, void *data);
-        void addCamera(const Ref<Camera> &camera);
+        void addListener(gc::ActionCallback callback, void *data);
+        void addCamera(const gc::Ref<Camera> &camera);
         void clear();
 
     CLASS_END

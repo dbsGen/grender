@@ -4,13 +4,13 @@
 
 #include <utils/tween/Tween.h>
 #include "NavigationController.h"
-#include <core/math/Math.hpp>
+#include <math/Math.hpp>
 #include <Renderer.h>
 #include <utils/input/TouchInput.h>
 
 
 using namespace gr;
-
+using namespace gc;
 
 const Ref<Controller> &NavigationControllerItem::getCurrentController() {
     if (index == -1) {
@@ -131,7 +131,7 @@ const Ref<Controller> &NavigationController::getCurrentController() {
     return Ref<Controller>::null();
 }
 
-void NavigationController::onLoad(const Ref<Object> &object) {
+void NavigationController::onLoad(const Ref<Object3D> &object) {
     const Ref<NavigationControllerItem> &item = items.back();
     for (auto it = item->controllers.begin(), _e = item->controllers.end(); it != _e; ++it) {
         (*it)->setParent(this);
@@ -145,13 +145,13 @@ void NavigationController::onLoad(const Ref<Object> &object) {
     object->add(nav_control);
 }
 
-void NavigationController::onUnload(const Ref<Object> &object) {
+void NavigationController::onUnload(const Ref<Object3D> &object) {
     nav_control = nullptr;
 }
 
 void NavigationController::onAttach(Renderer *renderer) {
     enableUICamera();
-    getUICamera()->setCleanColor(HColor(1,1,1,1));
+    getUICamera()->setCleanColor(Color(1,1,1,1));
     const Ref<Plugin> &tp = renderer->plugin(TouchInput::getClass()->getFullname());
     TouchInput *touch = (*tp)->cast_to<TouchInput>();
     touch->addCamera(getUICamera());

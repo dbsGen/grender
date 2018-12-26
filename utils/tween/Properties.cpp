@@ -5,12 +5,13 @@
 #include "Properties.h"
 
 using namespace gr;
+using namespace gc;
 
 TweenPProperty::TweenPProperty(const StringName &name) : property(NULL)  {
     property_name = name;
 }
 
-const Property* TweenPProperty::getProperty(HObject *object) {
+const Property* TweenPProperty::getProperty(Object *object) {
     if (!property) {
         property = object->getInstanceClass()->getProperty(property_name);
         if (!property) {
@@ -20,7 +21,7 @@ const Property* TweenPProperty::getProperty(HObject *object) {
     return property;
 }
 
-const Variant &TweenPProperty::getFrom(HObject *target) {
+const Variant &TweenPProperty::getFrom(Object *target) {
     if (!from) {
         from = getProperty(target)->get(target);
     }
@@ -37,7 +38,7 @@ Matrix4PProperty::Matrix4PProperty(const StringName &name, const Matrix4 &from, 
     setTo(to);
 }
 
-void Matrix4PProperty::process(HObject *target, double p) {
+void Matrix4PProperty::process(Object *target, double p) {
     Matrix4 *from = getFrom(target).get<Matrix4>();
     Matrix4 *to = getTo().get<Matrix4>();
     getProperty(target)->set(target, Matrix4::lerp(*from, *to, (float)p));

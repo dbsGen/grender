@@ -93,7 +93,7 @@ namespace gr {
     
         struct Token {
             TokenType type;
-            gcore::StringName value;
+            gc::StringName value;
             std::string str;
             int line;
             union {

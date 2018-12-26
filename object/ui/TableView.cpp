@@ -5,6 +5,7 @@
 #include "TableView.h"
 
 using namespace gr;
+using namespace gc;
 
 TableView::TableView() : item_creator(NULL),
                          data(NULL),
@@ -23,7 +24,7 @@ Matrix4 TableView::positionAt(int idx) {
 
 void TableView::reload() {
     for (auto it = display_items.begin(), _e = display_items.end(); it != _e; ++it) {
-        const Ref<Object> &obj = *it;
+        const Ref<Object3D> &obj = *it;
         cache_items.push_back(obj);
     }
     display_items.clear();
@@ -35,28 +36,28 @@ void TableView::reload() {
         display_range.loc(from);
         display_range.len(to - from + 1);
         for (int i = 0, t = display_range.len(); i < t; ++i) {
-            Ref<Object> obj = item_creator(this, data, i);
+            Ref<Object3D> obj = item_creator(this, data, i);
             getContainer()->add(obj);
             obj->setPose(positionAt(i));
             display_items.push_back(obj);
         }
         if (is_vertical)
-            setContentSize(HSize(item_size.width(), item_size.height() * (item_count + 0.5)));
+            setContentSize(Size(item_size.width(), item_size.height() * (item_count + 0.5)));
         else
-            setContentSize(HSize(item_size.width() * item_count, item_size.height()));
+            setContentSize(Size(item_size.width() * item_count, item_size.height()));
     }
 }
 
 void TableView::reloadCount() {
     if (item_count > 0 && item_creator) {
         if (is_vertical)
-            setContentSize(HSize(item_size.width(), item_size.height() * (item_count + 0.5)));
+            setContentSize(Size(item_size.width(), item_size.height() * (item_count + 0.5)));
         else
-            setContentSize(HSize(item_size.width() * item_count, item_size.height()));
+            setContentSize(Size(item_size.width() * item_count, item_size.height()));
     }
 }
 
-Ref<Object> TableView::dequeue() {
+Ref<Object3D> TableView::dequeue() {
     if (cache_items.size() > 0) {
         Reference ref = cache_items.back();
         cache_items.pop_back();
@@ -66,21 +67,21 @@ Ref<Object> TableView::dequeue() {
     }
 }
 
-HRange TableView::calculateRange(const Vector2f &offset) {
+Range TableView::calculateRange(const Vector2f &offset) {
     if (is_vertical) {
         int count = (int)(getSize().height() / item_size.height()) + 1;
         int from = limit((int)(offset.y()/item_size.height())), to = limit(display_range.loc() + count);
-        return HRange(from, to - from + 1);
+        return Range(from, to - from + 1);
     }else {
         int count = (int)(getSize().width() / item_size.width()) + 1;
         int from = limit((int)(offset.x()/item_size.width())), to = limit(display_range.loc() + count);
-        return HRange(from, to - from + 1);
+        return Range(from, to - from + 1);
     }
 }
 
 void TableView::onScroll() {
     const Vector2f &offset = getOffset();
-    HRange range = calculateRange(offset);
+    Range range = calculateRange(offset);
     if (range.loc() > display_range.end() || range.end() < display_range.loc()) {
         for (auto it = display_items.begin(), _e = display_items.end(); it != _e; ++it) {
             const Ref<Object> &obj = *it;
@@ -91,7 +92,7 @@ void TableView::onScroll() {
         display_range = range;
         if (item_count > 0 && item_creator) {
             for (int i = display_range.loc(), t = display_range.len(); i < t; ++i) {
-                Ref<Object> obj = item_creator(this, data, i);
+                Ref<Object3D> obj = item_creator(this, data, i);
                 getContainer()->add(obj);
                 obj->setPose(positionAt(i));
                 display_items.push_back(obj);
@@ -127,7 +128,7 @@ void TableView::onScroll() {
             if (item_creator) {
                 if (range.loc() < display_range.loc()) {
                     for (int i = display_range.loc() - 1; i >= range.loc(); --i) {
-                        Ref<Object> obj = item_creator(this, data, i);
+                        Ref<Object3D> obj = item_creator(this, data, i);
                         getContainer()->add(obj);
                         obj->setPose(positionAt(i));
                         display_items.push_front(obj);
@@ -137,7 +138,7 @@ void TableView::onScroll() {
                 }
                 if (range.end() > display_range.end()) {
                     for (int i = display_range.end() + 1; i <= range.end(); ++i) {
-                        Ref<Object> obj = item_creator(this, data, i);
+                        Ref<Object3D> obj = item_creator(this, data, i);
                         getContainer()->add(obj);
                         obj->setPose(positionAt(i));
                         display_items.push_back(obj);

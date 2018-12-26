@@ -4,10 +4,12 @@
 
 #include "ScrollView.h"
 #include <Renderer.h>
-#include <core/math/Math.hpp>
+#include <math/Math.hpp>
 #include <utils/tween/all.h>
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 ScrollView::ScrollView() : enable_horizontal(true),
                            enable_vertical(true) {
@@ -25,10 +27,10 @@ Vector2f vector2f_lerp(const Vector2f &v1, const Vector2f &v2, float p) {
     return lerp(v1, v2, p);
 }
 
-bool ScrollView::onMessage(const StringName &key, const Array *vars) {
-    if (key == Object::MESSAGE_TOUCH_EVENT) {
+bool ScrollView::onMessage(const StringName &key, const RArray *vars) {
+    if (key == Object3D::MESSAGE_TOUCH_EVENT) {
         variant_vector &vec = vars->vec();
-        EventType type = (Object::EventType)((int)vec.at(0));
+        EventType type = (Object3D::EventType)((int)vec.at(0));
         Vector2f *point = vec.at(1).get<Vector2f>();
         switch (type){
             case TOUCH_BEGIN: {
@@ -43,10 +45,10 @@ bool ScrollView::onMessage(const StringName &key, const Array *vars) {
             }
                 break;
             case TOUCH_MOVE: {
-                const HSize &size = Renderer::sharedInstance()->getSize();
+                const Size &size = Renderer::sharedInstance()->getSize();
                 Vector2f off = (*point - old_pos);
-                const HSize &ss = getSize();
-                const HSize &cs = getContentSize();
+                const Size &ss = getSize();
+                const Size &cs = getContentSize();
                 float max_x = cs.width() - ss.width();
                 float max_y = cs.height() - ss.height();
                 Vector2f speed = Vector2f(0, 0);
@@ -102,8 +104,8 @@ void ScrollView::setPadding(const Vector4f &padding) {
 }
 
 void ScrollView::checkBorder() {
-    const HSize &ss = getSize();
-    const HSize &cs = getContentSize();
+    const Size &ss = getSize();
+    const Size &cs = getContentSize();
     float max_x = cs.width() - ss.width();
     float max_y = cs.height() - ss.height();
     Vector2f t = offset;

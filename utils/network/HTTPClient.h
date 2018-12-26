@@ -18,12 +18,12 @@
 #include "../../render_define.h"
 
 namespace gr {
-    CLASS_BEGIN_N(HTTPClient, RefObject)
+    CLASS_BEGIN_N(HTTPClient, gc::RefObject)
 
-        string url;
-        string path;
-        StringName method;
-        string error;
+        std::string url;
+        std::string path;
+        gc::StringName method;
+        std::string error;
         pointer_map properties;
         float percent;
         bool read_cache;
@@ -31,36 +31,36 @@ namespace gr {
         int retry_count;
         int retry_num;
         Time timeout;
-        map<string, string> headers;
-        map<string, Variant> parameters;
-        Map response_headers;
+        std::map<std::string, std::string> headers;
+        std::map<std::string, gc::Variant> parameters;
+        gc::Map response_headers;
 
-        RefCallback on_complete;
-        RefCallback on_progress;
-        Ref<Data> body;
+        gc::RCallback on_complete;
+        gc::RCallback on_progress;
+        gc::Ref<gc::Data> body;
 
         void _initialize();
         void _finalize();
 
     public:
-        static const StringName METHOD_GET;
-        static const StringName METHOD_POST;
-        static const StringName METHOD_PUT;
-        static const StringName METHOD_DELETE;
+        static const gc::StringName METHOD_GET;
+        static const gc::StringName METHOD_POST;
+        static const gc::StringName METHOD_PUT;
+        static const gc::StringName METHOD_DELETE;
 
-        void event(const StringName &name, void *data);
+        void event(const gc::StringName &name, void *data);
 
         HTTPClient();
         ~HTTPClient();
 
-        METHOD _FORCE_INLINE_ void initialize(const string &url) {
+        METHOD _FORCE_INLINE_ void initialize(const std::string &url) {
             this->url = url;
             _initialize();
         }
-        METHOD _FORCE_INLINE_ const string &getUrl() {
+        METHOD _FORCE_INLINE_ const std::string &getUrl() {
             return url;
         }
-        METHOD _FORCE_INLINE_ const string &getError() {
+        METHOD _FORCE_INLINE_ const std::string &getError() {
             return error;
         }
 
@@ -72,21 +72,21 @@ namespace gr {
          * @params (HTTPClient *c, const string &path)  
          * @return NULL;
          */
-        METHOD _FORCE_INLINE_ void setOnComplete(const RefCallback &callback) {
+        METHOD _FORCE_INLINE_ void setOnComplete(const gc::RCallback &callback) {
             on_complete = callback;
         }
-        METHOD _FORCE_INLINE_ const RefCallback &getOnComplete() const {
+        METHOD _FORCE_INLINE_ const gc::RCallback &getOnComplete() const {
             return on_complete;
         }
         PROPERTY(on_complete, getOnComplete, setOnComplete);
-        METHOD _FORCE_INLINE_ void setOnProgress(const RefCallback &callback) {
+        METHOD _FORCE_INLINE_ void setOnProgress(const gc::RCallback &callback) {
             on_progress = callback;
         }
-        METHOD _FORCE_INLINE_ const RefCallback &getOnProgress() const {
+        METHOD _FORCE_INLINE_ const gc::RCallback &getOnProgress() const {
             return on_progress;
         }
         PROPERTY(on_progress, getOnProgress, setOnProgress)
-        METHOD _FORCE_INLINE_ const string &getPath() const {
+        METHOD _FORCE_INLINE_ const std::string &getPath() const {
             return path;
         }
         PROPERTY(path, getPath, NULL);
@@ -113,32 +113,32 @@ namespace gr {
         }
         PROPERTY(retry_count, getRetryCount, setRetryCount);
 
-        METHOD _FORCE_INLINE_ void setMethod(const StringName &method) {
+        METHOD _FORCE_INLINE_ void setMethod(const gc::StringName &method) {
             this->method = method;
         }
-        METHOD _FORCE_INLINE_ const StringName &getMethod() const {
+        METHOD _FORCE_INLINE_ const gc::StringName &getMethod() const {
             return method;
         }
         PROPERTY(method, getMethod, setMethod);
 
-        METHOD _FORCE_INLINE_ void addHeader(const string &name, const string &val) {
+        METHOD _FORCE_INLINE_ void addHeader(const std::string &name, const std::string &val) {
             headers[name] = val;
         }
-        METHOD _FORCE_INLINE_ void removeHeader(const string &name) {
+        METHOD _FORCE_INLINE_ void removeHeader(const std::string &name) {
             headers.erase(name);
         }
 
-        METHOD _FORCE_INLINE_ void addParameter(const string &name, const Variant &val) {
+        METHOD _FORCE_INLINE_ void addParameter(const std::string &name, const gc::Variant &val) {
             parameters[name] = val;
         }
-        METHOD _FORCE_INLINE_ void removeParameter(const string &name) {
+        METHOD _FORCE_INLINE_ void removeParameter(const std::string &name) {
             parameters.erase(name);
         }
 
-        METHOD _FORCE_INLINE_ const Map &getResponseHeaders() {
+        METHOD _FORCE_INLINE_ const gc::Map &getResponseHeaders() {
             return response_headers;
         }
-        METHOD _FORCE_INLINE_ void setResponseHeaders(const Map &headers) {
+        METHOD _FORCE_INLINE_ void setResponseHeaders(const gc::Map &headers) {
             response_headers = headers;
         }
         PROPERTY(response_headers, getResponseHeaders, setResponseHeaders);
@@ -151,10 +151,10 @@ namespace gr {
         }
         PROPERTY(timeout, setTimeout, getTimeout);
 
-        METHOD _FORCE_INLINE_ const Ref<Data> &getBody() const {
+        METHOD _FORCE_INLINE_ const gc::Ref<gc::Data> &getBody() const {
             return body;
         }
-        METHOD _FORCE_INLINE_ void setBody(const Ref<Data> &body) {
+        METHOD _FORCE_INLINE_ void setBody(const gc::Ref<gc::Data> &body) {
             this->body = body;
         }
         PROPERTY(body, setBody, getBody);

@@ -10,6 +10,7 @@
 #include "Camera.h"
 
 using namespace gr;
+using namespace gc;
 
 Canvas::Canvas() {
     texture = new RenderTexture;
@@ -43,7 +44,7 @@ void Canvas::onPoseChanged() {
 
 void Canvas::setMesh(const Ref<gr::Mesh> &mesh) {
     processMesh(mesh);
-    Object::setMesh(mesh);
+    Object3D::setMesh(mesh);
     vertexChanged();
 }
 

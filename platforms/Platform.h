@@ -12,9 +12,6 @@
 #include <core/Ref.h>
 #include "../render_define.h"
 
-using namespace std;
-using namespace gcore;
-
 namespace gr {
     CLASS_BEGIN_0_N(Platform)
     
@@ -28,16 +25,16 @@ public:
     ~Platform();
     
     //Callback for function<void(int, const string &)>
-    METHOD void startInput(const string &text, const string &placeholder, const Ref<Callback> &callback);
+    METHOD void startInput(const std::string &text, const std::string &placeholder, const gc::RCallback &callback);
     METHOD void endInput();
     
-    METHOD string persistencePath();
+    METHOD std::string persistencePath();
     
-    METHOD Ref<Data> getFontData();
-    METHOD void setFontData(const Ref<Data> &data);
+    METHOD gc::Ref<gc::Data> getFontData();
+    METHOD void setFontData(const gc::Ref<gc::Data> &data);
     
     //Callback for function<void(int, const string &)>
-    EVENT(void, _startInput, const string &text, const string &placeholder, const Ref<Callback> &block);
+    EVENT(void, _startInput, const string &text, const string &placeholder, const gc::RCallback &block);
     EVENT(void, _endInput);
     
     EVENT(const string &, _persistencePath);

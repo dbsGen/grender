@@ -40,7 +40,7 @@ void AppleFont::calculateTextureSize(unsigned int &width, unsigned int &height) 
     width = height = 2048;
 }
 
-void AppleFont::drawCharacter(unsigned int ch, const Vector2i &off, const Ref<Texture> &tex, int &width, int &height, Vector2i &corner) {
+void AppleFont::drawCharacter(unsigned int ch, const Vector2i &off, const gc::Ref<Texture> &tex, int &width, int &height, Vector2i &corner) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     if (!context) {
         float s = getHeight();

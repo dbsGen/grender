@@ -14,6 +14,8 @@
 #include <cstring>
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 long XMLNode::getChildrenCount() const {
     if (c_node)
@@ -21,7 +23,7 @@ long XMLNode::getChildrenCount() const {
     return 0;
 }
 
-const Array &XMLNode::getChildren() {
+const RArray &XMLNode::getChildren() {
     if (children.size() == 0 && c_node) {
         xmlNodePtr child = xmlFirstElementChild(c_node);
         variant_vector vs;
@@ -48,7 +50,7 @@ XMLNode::~XMLNode() {
 }
 
 Ref<XMLNode> XMLNode::findChild(const char *name, const char *value) {
-    const Array &cs = getChildren();
+    const RArray &cs = getChildren();
     for (int i = 0, t = (int)cs.size(); i < t; ++i) {
         XMLNode *node = cs.at(i).get<XMLNode>();
         if (value) {
@@ -106,7 +108,7 @@ const char *XMLNode::getName() const {
     return NULL;
 }
 
-Array XMLNode::xpath(const char *str) const {
+RArray XMLNode::xpath(const char *str) const {
     if (c_node) return doc->xpathNode(this, str);
-    return Array::null();
+    return RArray::null();
 }

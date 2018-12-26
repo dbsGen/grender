@@ -11,6 +11,8 @@
 #define RENDER_PADDING 3
 
 using namespace gr;
+using namespace std;
+using namespace gc;
 
 #define Check(ERR) if (ERR) {LOG(e, "Error in font.");return;}
 
@@ -136,7 +138,7 @@ bool Font::hasFont(const StringName &name) {
 }
 
 Vector2f Font::offset(unsigned int chLeft, unsigned int chRight) {
-    return gcore::Vector2f();
+    return Vector2f();
 }
 
 

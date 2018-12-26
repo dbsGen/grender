@@ -18,7 +18,7 @@ namespace gr {
     class Material;
 }
 
-namespace higraphics {
+namespace gg {
     class GL2AttrVector;
     CLASS_BEGIN_0_N(GL2ArrayBuffer)
     
@@ -40,7 +40,7 @@ public:
     _FORCE_INLINE_ GL2ArrayBuffer() : glID(0), size(0), totle_size(0) {}
     ~GL2ArrayBuffer();
     
-    void bind(const StringName &prop_name,
+    void bind(const gc::StringName &prop_name,
               gr::Shader::Type prop_type,
               const pointer_list &objects,
               size_t count, GLuint index);

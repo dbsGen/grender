@@ -12,6 +12,7 @@
 #include <utils/FileSystem.h>
 
 using namespace gr;
+using namespace gc;
 
 namespace gr {
     namespace db {

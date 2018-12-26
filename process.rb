@@ -499,10 +499,10 @@ end
 LOAD_CLASSES_TEMPLATE = %q[
 {{header}}
 
-using namespace gcore;
+using namespace gc;
 
 void ClassDB::loadClasses() {
-    class_loaders[h("gcore::HObject")] = (void*)&HObject::getClass;
+    class_loaders[h("gc::HObject")] = (void*)&HObject::getClass;
 {{loaders}}
 }
 ]

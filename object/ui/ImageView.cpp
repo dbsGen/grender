@@ -5,6 +5,7 @@
 #include "ImageView.h"
 
 using namespace gr;
+using namespace gc;
 
 ImageView::ImageView() : View() {
     setSize(Vector2f(10, 10));

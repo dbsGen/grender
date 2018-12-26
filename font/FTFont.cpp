@@ -7,7 +7,7 @@
 //
 
 #include "FTFont.h"
-#include <core/math/Math.hpp>
+#include <math/Math.hpp>
 #include <ft2build.h>
 #include <freetype/freetype.h>
 #include <freetype/ftoutln.h>
@@ -16,7 +16,9 @@
 
 #define Check(ERR) if (ERR) {LOG(e, "Error in font.");return;}
 
+using namespace gc;
 using namespace gr;
+using namespace std;
 
 static FT_Library Font_library = NULL;
 

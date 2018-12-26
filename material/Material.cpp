@@ -8,7 +8,8 @@
 #include <texture/ColorTexture.h>
 
 using namespace gr;
-using namespace higraphics;
+using namespace gg;
+using namespace gc;
 
 const StringName Material::DEFAULT_PROJECTION("PROJECTION");
 const StringName Material::DEFAULT_VIEW("VIEW");
@@ -24,7 +25,7 @@ Ref<Material> Material::view_material;
 const Ref<Material> &Material::colorMaterial() {
     if (!color_material) {
         color_material = new Material(Shader::defaultShader());
-        color_material->setTexture(new ColorTexture(HColor(1,1,1,1)), 0);
+        color_material->setTexture(new ColorTexture(Color(1,1,1,1)), 0);
     }
     return color_material;
 }
@@ -32,7 +33,7 @@ const Ref<Material> &Material::colorMaterial() {
 const Ref<Material> &Material::viewMaterial() {
     if (!color_material) {
         color_material = new ViewMaterial;
-        color_material->setTexture(new ColorTexture(HColor(1,1,1,1)), 0);
+        color_material->setTexture(new ColorTexture(Color(1,1,1,1)), 0);
     }
     return color_material;
 }
@@ -126,7 +127,7 @@ void Material::setShader(const Ref<Shader> &s) {
     }
 }
 
-void Material::_copy(const HObject *other) {
+void Material::_copy(const Object *other) {
     const Material *mat = other->cast_to<Material>();
     if (mat) {
         setShader(mat->shader);

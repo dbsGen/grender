@@ -11,8 +11,8 @@
 using namespace gr;
 
 
-const gcore::StringName main_key("main");
-const gcore::StringName key_words[]{
+const gc::StringName main_key("main");
+const gc::StringName key_words[]{
         "include",
         "extend"
 };

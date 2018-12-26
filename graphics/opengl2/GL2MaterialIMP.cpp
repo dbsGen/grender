@@ -8,12 +8,13 @@
 
 #include "GL2MaterialIMP.h"
 #include "GL2ShaderIMP.h"
-#include <core/math/Type.h>
+#include "../math/Type.h"
 #include <texture/Texture.h>
 #include "GL2TextureIMP.h"
 
-using namespace higraphics;
+using namespace gg;
 using namespace gr;
+using namespace gc;
 
 GLuint GL2MaterialIMP::getTranslateID() {
     if (!translate_id && getTarget()->getTranslateUniform()) {

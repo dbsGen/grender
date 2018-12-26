@@ -10,6 +10,8 @@
 #include "TextInput.h"
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 const StringName TextInput::NOTIFICATION_FOCUS_CHANGE("NOTIFICATION_TEXT_INPUT_FOCUS_CHANGE");
 TextInput *TextInput::focusdTextInput = NULL;
@@ -22,7 +24,7 @@ TextInput::TextInput() : View(),
     background->setOnClick([](void* bg, void* send_data, void *data){
         ((TextInput*)data)->focus();
     }, this);
-    background->setTexture(new ColorTexture(HColor(1,1,1,1)));
+    background->setTexture(new ColorTexture(Color(1,1,1,1)));
     add(background);
 
     notificationKey = NotificationCenter::keyFromObject(this);
@@ -37,14 +39,14 @@ TextInput::TextInput() : View(),
                                               [](void *name, void *params, void* data){
                                                   TextInput *ti = (TextInput*)data;
                                                   vector<Variant> *vs = (vector<Variant> *)params;
-                                                  EventType type = (Object::EventType) ((int)vs->at(0));
+                                                  EventType type = (Object3D::EventType) ((int)vs->at(0));
                                                   if (type == TOUCH_BEGIN) {
                                                       if (focusdTextInput == ti) {
                                                           ti->blur();
                                                       }
                                                   }
                                               }, notificationKey, this);
-    padding = HSize(5, 5);
+    padding = Size(5, 5);
 }
 
 TextInput::~TextInput() {
@@ -71,7 +73,7 @@ void TextInput::checkText() {
 const Ref<Label> &TextInput::getTextLabel() {
     if (!textLabel) {
         textLabel = new Label;
-        textLabel->setColor(HColor(0,0,0,1));
+        textLabel->setColor(Color(0,0,0,1));
         textLabel->setFont(Font::defaultFont());
         textLabel->translate(Vector3f(0,0,-VIEW_LAYER_GAP));
         textLabel->setHAnchor(hAnchor);
@@ -85,7 +87,7 @@ const Ref<Label> &TextInput::getTextLabel() {
 const Ref<Label> &TextInput::getPlaceholderLabel() {
     if (!placeholder) {
         placeholder = new Label;
-        placeholder->setColor(HColor(0,0,0,0.2));
+        placeholder->setColor(Color(0,0,0,0.2));
         placeholder->setFont(Font::defaultFont());
         placeholder->translate(Vector3f(0,0,-VIEW_LAYER_GAP));
         placeholder->setHAnchor(hAnchor);
@@ -132,7 +134,7 @@ void TextInput::focus() {
         struct _Callback : public Callback {
             TextInput *input;
             _Callback (TextInput *i) {input = i;}
-            Variant invoke(const Array &params) {
+            Variant invoke(const RArray &params) {
                 int type = params.at(0);
                 switch (type) {
                     case 0:
@@ -164,18 +166,18 @@ void TextInput::updateSize(const Vector2f &originalSize, const Vector2f &size) {
     setLabelsSize();
 }
 
-void TextInput::setPadding(const HSize &padding) {
+void TextInput::setPadding(const Size &padding) {
     this->padding = padding;
     setLabelsSize();
 }
 
-const HSize &TextInput::getPadding() {
+const Size &TextInput::getPadding() {
     return padding;
 }
 
 void TextInput::setLabelsSize() {
     Matrix4 pose = Matrix4::identity() + Vector3f(padding.x(), padding.y(), -VIEW_LAYER_GAP);
-    HSize fs = getSize() - padding.scale(2);
+    Size fs = getSize() - padding.scale(2);
     if (textLabel) {
         textLabel->setPose(pose);
         textLabel->setSize(fs);

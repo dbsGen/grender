@@ -1,0 +1,3 @@
+[submodule "gcore"]
+	path = gcore
+	url = https://github.com/dbsGen/gcore.git

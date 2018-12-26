@@ -7,18 +7,16 @@
 
 #include "Shader.h"
 #include <IMP.h>
-#include <core/math/Type.h>
+#include "../math/Type.h"
 #include <texture/Texture.h>
 #include <render_define.h>
-
-using namespace gcore;
 
 namespace gr {
     class Renderer;
     class MaterialIMP;
     class Mesh;
 
-    CLASS_BEGIN_N(Material, RefObject)
+    CLASS_BEGIN_N(Material, gc::RefObject)
     public:
         enum _CullFace {
             Front   = 0,
@@ -36,7 +34,7 @@ namespace gr {
         friend class Renderer;
         friend class Mesh;
 
-        Ref<Shader>     shader;
+        gc::Ref<Shader>     shader;
 
         const Shader::Property *position_attribute;
         const Shader::Property *projection_uniform;
@@ -49,21 +47,21 @@ namespace gr {
         Matrix4     projection;
         Matrix4     view;
         int         render_index;
-        static Ref<Material> color_material;
-        static Ref<Material> view_material;
+        static gc::Ref<Material> color_material;
+        static gc::Ref<Material> view_material;
 
     protected:
         _FORCE_INLINE_ virtual void preProcess() {}
-        virtual void _copy(const HObject *other);
+        virtual void _copy(const Object *other);
 
     public:
-        static const StringName DEFAULT_PROJECTION;
-        static const StringName DEFAULT_TRANSLATE;
-        static const StringName DEFAULT_TEXTURE;
-        static const StringName DEFAULT_POSITION;
-        static const StringName DEFAULT_VIEW;
-        static const StringName DEFAULT_COLOR;
-        static const StringName DEFAULT_UV;
+        static const gc::StringName DEFAULT_PROJECTION;
+        static const gc::StringName DEFAULT_TRANSLATE;
+        static const gc::StringName DEFAULT_TEXTURE;
+        static const gc::StringName DEFAULT_POSITION;
+        static const gc::StringName DEFAULT_VIEW;
+        static const gc::StringName DEFAULT_COLOR;
+        static const gc::StringName DEFAULT_UV;
 
         MaterialIMP *getIMP() {return imp;}
 
@@ -77,39 +75,40 @@ namespace gr {
         _FORCE_INLINE_ CullFace getCullFace() {return cull_face;}
         _FORCE_INLINE_ void setCullFace(CullFace cull_face) {this->cull_face = cull_face;}
 
-        static const Ref<Material> &colorMaterial();
-        static const Ref<Material> &viewMaterial();
+        static const gc::Ref<Material> &colorMaterial();
+        static const gc::Ref<Material> &viewMaterial();
         Material();
 
-        INITIALIZE(Material, const Ref<Shader> &shader,
+        INITIALIZE(Material, const gc::Ref<Shader> &shader,
                    setShader(shader);
         );
         ~Material();
 
-        const Ref<Shader> &getShader();
-        void setShader(const Ref<Shader> &shader);
+        const gc::Ref<Shader> &getShader();
+        void setShader(const gc::Ref<Shader> &shader);
 
         _FORCE_INLINE_ const variant_map &getUniformValues() {return uniform_values;}
-        void setUniform(const StringName &name, const Variant &obj);
-        void setUniform(const Shader::Property *property, const Variant &obj);
-        _FORCE_INLINE_ Variant *getUniform(const StringName &name) {
+        void setUniform(const gc::StringName &name, const gc::Variant &obj);
+        void setUniform(const Shader::Property *property, const gc::Variant &obj);
+        _FORCE_INLINE_ gc::Variant *getUniform(const gc::StringName &name) {
             auto ite = uniform_values.find((void*)name);
             return ite == uniform_values.end() ? NULL : &(*ite).second;
         }
-        _FORCE_INLINE_ const Variant *getUniform(const StringName &name) const {return getUniform(name);}
+        _FORCE_INLINE_ const gc::Variant *getUniform(const gc::StringName &name) const {return getUniform(name);}
 
-        void setCompileValue(const StringName &name, const Variant &var);
+        void setCompileValue(const gc::StringName &name, const gc::Variant &var);
     
+    // Nessory?
+//        template <class T>
+//        _FORCE_INLINE_ T *getUniform(const StringName &name) {
+//            Variant *v = getUniform(name);
+//            return (v && (v->getType()->isTypeOf(T::getClass()))) ? v->get<T>() : NULL;
+//        }
         template <class T>
-        _FORCE_INLINE_ T *getUniform(const StringName &name) {
-            Variant *v = getUniform(name);
-            return (v && (v->getType()->isTypeOf(T::getClass()))) ? v->get<T>() : NULL;
-        }
-        template <class T>
-        _FORCE_INLINE_ Ref<T> getUniformRef(const StringName &name) {
-            Variant *v = getUniform(name);
+        _FORCE_INLINE_ gc::Ref<T> getUniformRef(const gc::StringName &name) {
+            gc::Variant *v = getUniform(name);
 
-            if (v->isRef() && (v->getType()->isTypeOf(T::getClass()))) {
+            if (v->isRef() && v->getTypeClass()->isTypeOf(T::getClass())) {
                 return v->ref();
             }
             return NULL;
@@ -133,8 +132,8 @@ namespace gr {
             return view;
         }
 
-        void setTexture(const Ref<Texture> &tex, int index);
-        const Ref<Texture> getTexture(int index);
+        void setTexture(const gc::Ref<Texture> &tex, int index);
+        const gc::Ref<Texture> getTexture(int index);
 
         _FORCE_INLINE_ int getRenderIndex() {
             return render_index;
