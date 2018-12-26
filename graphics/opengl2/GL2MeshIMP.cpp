@@ -44,7 +44,7 @@ default:\
 break;\
 }
 
-using namespace higraphics;
+using namespace gg;
 using namespace gr;
 
 AttrVector *GL2MeshIMP::newAttribute() {

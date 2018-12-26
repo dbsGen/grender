@@ -45,10 +45,10 @@ public:
         };
     private:
         struct StatusInfo {
-            string          text;
-            Ref<Texture>    background;
-            HColor          textColor;
-            Vector3f        scale;
+            std::string         text;
+            gc::Ref<Texture>    background;
+            Color               textColor;
+            Vector3f            scale;
         };
 
         bool            touch_begin;
@@ -58,21 +58,21 @@ public:
         bool            set_hover_scale;
         bool            event_pop;
         bool            can_click;
-        ActionItem      on_click;
-        ActionItem      on_drag;
-        Ref<Label>      label;
+        gc::ActionItem  on_click;
+        gc::ActionItem  on_drag;
+        gc::Ref<Label>  label;
         StatusInfo      statuses[StatusEnd+1];
-        HSize           padding;
+        Size            padding;
         Status          status;
-        HSize           render_size;
+        Size            render_size;
         Vector2f        old_pos;
         int             id;
-        string          voice_command;
+        std::string     voice_command;
 
         void setStatus(Status status);
 
     protected:
-        virtual bool onMessage(const StringName &key, const Array *vars);
+        virtual bool onMessage(const gc::StringName &key, const gc::RArray *vars);
         virtual void updateSize(const Vector2f &originalSize, const Vector2f &size);
         virtual void _setStatus(Status status){};
         virtual void onHover(){};
@@ -83,7 +83,7 @@ public:
         /**
          * send_data: ButtonEvent*
          */
-        _FORCE_INLINE_ void setOnClick(ActionCallback callback, void *data = NULL) {
+        _FORCE_INLINE_ void setOnClick(gc::ActionCallback callback, void *data = NULL) {
             on_click.callback = callback;
             on_click.data = data;
         }
@@ -95,7 +95,7 @@ public:
         /**
          * send_data: ButtonEvent*
          */
-        _FORCE_INLINE_ void setOnDrag(ActionCallback callback, void *data = NULL) {
+        _FORCE_INLINE_ void setOnDrag(gc::ActionCallback callback, void *data = NULL) {
             on_drag.callback = callback;
             on_drag.data = data;
         }
@@ -114,32 +114,32 @@ public:
             return event_pop;
         }
 
-        _FORCE_INLINE_ void setPadding(const HSize &padding) {this->padding = padding;}
-        _FORCE_INLINE_ const HSize &getPadding() {return padding;}
+        _FORCE_INLINE_ void setPadding(const Size &padding) {this->padding = padding;}
+        _FORCE_INLINE_ const Size &getPadding() {return padding;}
 
         _FORCE_INLINE_ Status getStatus() {return status;}
 
         _FORCE_INLINE_ void setCanClick(bool can_click){this->can_click = can_click;}
 
-        void setText(const string &text, Status status = All);
-        const string *getText(Status status = Normal);
+        void setText(const std::string &text, Status status = All);
+        const std::string *getText(Status status = Normal);
 
-        const string *getVoiceCommand(Status status = Normal);
+        const std::string *getVoiceCommand(Status status = Normal);
 
         void setId(int id){this->id = id;}
         int getId(){ return id;}
 
-        void setBackground(const Ref<Texture> &texture, Status status = All);
-        const Ref<Texture> &getBackground(Status status = Normal);
+        void setBackground(const gc::Ref<Texture> &texture, Status status = All);
+        const gc::Ref<Texture> &getBackground(Status status = Normal);
 
         void setHoverScale(const Vector3f &scale,Status status=All);
 
 //        void setHoverListener(ActionCallback hover_callback,void *data=NULL);
 
-        void setTextColor(const HColor color, Status status = All);
-        const HColor &getTextColor(Status status = All);
+        void setTextColor(const Color color, Status status = All);
+        const Color &getTextColor(Status status = All);
 
-        const Ref<Label> &getLabel();
+        const gc::Ref<Label> &getLabel();
 
         Button();
         ~Button();

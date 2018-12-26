@@ -5,7 +5,7 @@
 #include "Renderer.h"
 #include <utils/NotificationCenter.h>
 #include <physics/PhysicsServer.h>
-#include <core/math/Math.hpp>
+#include <math/Math.hpp>
 #include <sys/time.h>
 #include "platforms/Platform.h"
 #include "object/ui/ImageView.h"
@@ -13,7 +13,8 @@
 #include <script/java/JScript.h>
 
 using namespace gr;
-using namespace hiphysics;
+using namespace gc;
+using namespace std;
 
 const StringName Renderer::NOTIFICATION_PREV_FRAME("NOTIFICATION_RENDER_PREV_FRAME");
 const StringName Renderer::NOTIFICATION_POST_FRAME("NOTIFICATION_RENDER_POST_FRAME");
@@ -31,16 +32,16 @@ namespace gr {
     };
 }
 
-bool Renderer::RenderRoot::travCheck(Object *tar, void *data) {
+bool Renderer::RenderRoot::travCheck(Object3D *tar, void *data) {
     return tar->getInstanceClass()->isTypeOf(Camera::getClass());
 }
 
-void Renderer::RenderRoot::travAddDo(Object *tar, void *data) {
+void Renderer::RenderRoot::travAddDo(Object3D *tar, void *data) {
     Renderer *renderer = (Renderer*)data;
     renderer->cameras.push_back(tar->cast_to<Camera>());
 }
 
-void Renderer::RenderRoot::travRemoveDo(Object *tar, void *data) {
+void Renderer::RenderRoot::travRemoveDo(Object3D *tar, void *data) {
     Renderer *renderer = (Renderer*)data;
 
     Camera *c = tar->cast_to<Camera>();
@@ -68,23 +69,23 @@ Renderer::ThreadState Renderer::currentThread() {
     return s;
 }
 
-bool Renderer::RenderRoot::onMessage(const StringName &key, const Array *vars) {
-    if (key == Object::MESSAGE_ADD_CHILD) {
+bool Renderer::RenderRoot::onMessage(const StringName &key, const RArray *vars) {
+    if (key == Object3D::MESSAGE_ADD_CHILD) {
         variant_vector &vec = vars->vec();
-        Ref<Object> child = vec.front().ref();
+        Ref<Object3D> child = vec.front().ref();
 //        if (child->getInstanceClass()->isTypeOf(View::getClass()))
 //            renderer->getUICamera();
         child->traversal(Renderer::RenderRoot::travCheck, Renderer::RenderRoot::travAddDo, renderer);
         renderer->imp->add(child);
         child->change();
-    }else if (key == Object::MESSAGE_REMOVE_CHILD) {
+    }else if (key == Object3D::MESSAGE_REMOVE_CHILD) {
         variant_vector &vec = vars->vec();
-        Ref<Object> child = vec.front().ref();
+        Ref<Object3D> child = vec.front().ref();
         child->traversal(Renderer::RenderRoot::travCheck, Renderer::RenderRoot::travRemoveDo, renderer);
         renderer->imp->remove(child);
         child->change();
-    }else if (key == Object::MESSAGE_ENABLE_CHANGE) {
-        Object *child = vars->at(0).get<Object>();
+    }else if (key == Object3D::MESSAGE_ENABLE_CHANGE) {
+        Object3D *child = vars->at(0).get<Object3D>();
         bool old = vars->at(1);
         bool n = vars->at(2);
         if (old && !n) {
@@ -94,28 +95,28 @@ bool Renderer::RenderRoot::onMessage(const StringName &key, const Array *vars) {
             child->traversal(Renderer::RenderRoot::travCheck, Renderer::RenderRoot::travAddDo, renderer);
             renderer->imp->add(child);
         }
-    } else if (key == Object::MESSAGE_CHANGE_MATERIAL) {
+    } else if (key == Object3D::MESSAGE_CHANGE_MATERIAL) {
         variant_vector &vec = vars->vec();
-        Object *object = vec.at(0).get<Object>();
+        Object3D *object = vec.at(0).get<Object3D>();
         Material *mat = vec.at(1).get<Material>();
         renderer->imp->reload(object, mat);
-    }else if (key == Object::MESSAGE_MASK_CHANGE) {
+    }else if (key == Object3D::MESSAGE_MASK_CHANGE) {
         variant_vector &vec = vars->vec();
-        Ref<Object> self((Object*)(void*)vec.at(0));
+        Ref<Object3D> self((Object3D*)(void*)vec.at(0));
         Mask from = (Mask)(int)vec.at(1);
         Mask to = (Mask)(int)vec.at(2);
         renderer->imp->maskChanged(self, from, to);
-    }else if (key == Object::MESSAGE_HIT_MASK_CHANGE) {
+    }else if (key == Object3D::MESSAGE_HIT_MASK_CHANGE) {
         variant_vector &vec = vars->vec();
-        Object *obj = vec.at(0).get<Object>();
-        Ref<Object> self(obj);
+        Object3D *obj = vec.at(0).get<Object3D>();
+        Ref<Object3D> self(obj);
         Mask from = (Mask)(int)vec.at(1);
         Mask to = (Mask)(int)vec.at(2);
         renderer->imp->hitMaskChanged(self, from, to);
-    }else if (key == Object::MESSAGE_DISPLAY_CHANGED) {
+    }else if (key == Object3D::MESSAGE_DISPLAY_CHANGED) {
         changed();
     }
-    return Object::onMessage(key, vars);
+    return Object3D::onMessage(key, vars);
 }
 
 void Renderer::RenderRoot::changed() {
@@ -129,13 +130,13 @@ void Renderer::RenderRoot::changed() {
     else renderer->callRender();
 }
 
-void Renderer::add(const Ref<Object> &object) {
+void Renderer::add(const Ref<Object3D> &object) {
     mtx.lock();
     root.add(object);
     mtx.unlock();
 }
 
-void Renderer::remove(const Ref<Object> &object)  {
+void Renderer::remove(const Ref<Object3D> &object)  {
     mtx.lock();
     root.remove(object);
     mtx.unlock();
@@ -156,7 +157,7 @@ void Renderer::render() {
         delete item;
     }
     variant_vector vs1 {this};
-    Array arr(vs1);
+    RArray arr(vs1);
     for (auto it = will_callback.begin(), _e = will_callback.end(); it != _e; ++it) {
         (*it)->invoke(arr);
     }
@@ -265,7 +266,7 @@ Renderer::Renderer() : size(2,2),
                        required_reset_count(0) {
     required_rendering = false;
     setFixedRate(60);
-    imp = (RendererIMP *)higraphics::Factory::getInstance()->create(RendererIMP::getClass());
+    imp = (RendererIMP *)gg::Factory::getInstance()->create(RendererIMP::getClass());
     imp->_setTarget(this);
     root.renderer = this;
     last_frame = time();
@@ -338,7 +339,7 @@ void *Renderer::cancelDoOnMainThread(void *target) {
     return NULL;
 }
 
-void Renderer::setSize(const HSize &size) {
+void Renderer::setSize(const Size &size) {
     this->size = size;
     imp->updateSize(size);
     if (main_controller) {
@@ -494,14 +495,14 @@ Time Renderer::time() {
     return tp.tv_sec + tp.tv_usec * 1.0E-6;
 }
 
-void Renderer::reload(Object *object) {
+void Renderer::reload(Object3D *object) {
     imp->reload(object, NULL);
 }
 
-void Renderer::maskChange(Object *object, Mask from, Mask to) {
+void Renderer::maskChange(Object3D *object, Mask from, Mask to) {
     imp->maskChanged(object, from, to);
 }
 
-void Renderer::hitMaskChange(Object *object, Mask from, Mask to) {
+void Renderer::hitMaskChange(Object3D *object, Mask from, Mask to) {
     imp->hitMaskChanged(object, from, to);
 }

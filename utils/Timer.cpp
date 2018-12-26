@@ -5,6 +5,8 @@
 #include "Timer.h"
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 TimerManager *TimerManager::instance(NULL);
 mutex TimerManager::mtx;
@@ -61,7 +63,7 @@ void TimerManager::fixedStep(Renderer *renderer, Time delta) {
     auto cp = timers;
     auto it = cp.begin();
     while (it != cp.end()) {
-        if (((Timer*)**it)->step(delta)) {
+        if (((Timer*)(*it).get())->step(delta)) {
             timers.remove(*it);
         }
         ++it;

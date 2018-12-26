@@ -5,7 +5,7 @@
 #include "Mesh.h"
 #include <graphics/Factory.h>
 #include <set>
-#include <object/Object.h>
+#include <object/Object3D.h>
 #include <Renderer.h>
 
 #define SIZE(SIZE, COUNT, TYPE) size_t SIZE = 0; int COUNT = 0; \
@@ -38,8 +38,9 @@ break;\
 }
 
 using namespace gr;
-using namespace higraphics;
-
+using namespace gg;
+using namespace gc;
+using namespace std;
 
 void AttrVector::setVector2f(const Vector2f &v, int idx) {
     setFloat(v.x(), idx * 2);
@@ -182,7 +183,7 @@ Mesh::~Mesh()  {
     delete imp;
 }
 
-void Mesh::setColor(const HColor &color, const StringName &name) {
+void Mesh::setColor(const Color &color, const StringName &name) {
     AttrVector *ca = getAttribute(name);
     if (ca) {
         ca->setRepeat(true);
@@ -191,12 +192,12 @@ void Mesh::setColor(const HColor &color, const StringName &name) {
     }
 }
 
-HColor Mesh::getColor(const StringName &name) {
+Color Mesh::getColor(const StringName &name) {
     AttrVector *ca = getAttribute(name);
     if (ca) {
         return ca->getVector4f(0);
     }
-    return HColor();
+    return Color();
 }
 
 AttrVector *Mesh::getIndexesAttr() {
@@ -262,7 +263,7 @@ void Mesh::commit(const vector<int> &indexes) {
     attr->copyBuffer(indexes.data(), indexes.size() * sizeof(int));
 }
 
-void Mesh::_copy(const HObject *other) {
+void Mesh::_copy(const Object *other) {
     const Mesh *om = (const Mesh*)other;
     vertex_name = om->vertex_name;
     vertex_length = om->vertex_length;

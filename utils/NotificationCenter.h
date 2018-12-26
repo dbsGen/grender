@@ -16,22 +16,22 @@
 #define IMPLEMENT_NOTIFICATION(CLASS, KEY) const StringName CLASS::KEY(#CLASS #KEY)
 
 namespace gr {
-    CLASS_BEGIN_TN(NotificationCenter, Singleton, 1, NotificationCenter)
+    CLASS_BEGIN_TN(NotificationCenter, gc::Singleton, 1, NotificationCenter)
 
     private:
         struct NotificationItem {
-            StringName key;
-            ActionCallback listener;
-            RefCallback callback;
+            gc::StringName key;
+            gc::ActionCallback listener;
+            gc::RCallback callback;
             void *data;
 
-            NotificationItem(const StringName &key,
-                             ActionCallback listener, void* data) {
+            NotificationItem(const gc::StringName &key,
+                             gc::ActionCallback listener, void* data) {
                 this->key = key;
                 this->listener = listener;
                 this->data = data;
             }
-            NotificationItem(const RefCallback &callback) {
+            NotificationItem(const gc::RCallback &callback) {
                 listener = NULL;
                 data = NULL;
                 this->callback = callback;
@@ -52,7 +52,7 @@ namespace gr {
         };
 
         pointer_map listeners;
-        mutex mtx;
+        std::mutex mtx;
 
     public:
         NotificationCenter(){}
@@ -61,19 +61,19 @@ namespace gr {
         /**
          * @params function((StringName*)key, (vector<Variant>*)params, customor_data)
          */
-        void listen(const StringName &name,
-                    ActionCallback function,
-                    const StringName &key, void *data = NULL);
-        METHOD void listen(const StringName &name, const RefCallback &callback);
-        void trigger(const StringName &name, vector<Variant> *params = NULL);
-        void remove(const StringName &name, const StringName &key);
-        METHOD void remove(const StringName &name, const RefCallback &callback);
-        static StringName keyFromObject(HObject *object);
+        void listen(const gc::StringName &name,
+                    gc::ActionCallback function,
+                    const gc::StringName &key, void *data = NULL);
+        METHOD void listen(const gc::StringName &name, const gc::RCallback &callback);
+        void trigger(const gc::StringName &name, variant_vector *params = NULL);
+        void remove(const gc::StringName &name, const gc::StringName &key);
+        METHOD void remove(const gc::StringName &name, const gc::RCallback &callback);
+        static gc::StringName keyFromObject(gc::Object *object);
 
     protected:
         ON_LOADED_BEGIN(cls, Singleton<NotificationCenter>)
-            ADD_METHOD_E(cls, NotificationCenter, void(NotificationCenter::*)(const StringName &name, const RefCallback &callback), listen);
-            ADD_METHOD_E(cls, NotificationCenter, void(NotificationCenter::*)(const StringName &name, const RefCallback &callback), remove);
+            ADD_METHOD_E(cls, NotificationCenter, void(NotificationCenter::*)(const gc::StringName &name, const gc::RCallback &callback), listen);
+            ADD_METHOD_E(cls, NotificationCenter, void(NotificationCenter::*)(const gc::StringName &name, const gc::RCallback &callback), remove);
         ON_LOADED_END
     CLASS_END
 }

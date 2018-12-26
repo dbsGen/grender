@@ -8,8 +8,8 @@
 
 #include "Ray.h"
 
-using namespace hiphysics;
+using namespace gr;
 
-HPoint Ray::position(float length) const {
+Point Ray::position(float length) const {
     return original + direction.normalize().scale(length);
 }

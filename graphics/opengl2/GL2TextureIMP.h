@@ -14,8 +14,8 @@
 #include <texture/Texture.h>
 #include <graphics/graphics_define.h>
 
-namespace higraphics {
-    CLASS_BEGIN_N(GL2TextureIMP, TextureIMP)
+namespace gg {
+    CLASS_BEGIN_N(GL2TextureIMP, gr::TextureIMP)
 
     private:
         GLuint ID;
@@ -43,7 +43,7 @@ namespace higraphics {
         virtual void display();
         virtual bool isLoaded();
 
-        virtual void _setTarget(Texture *tar);
+        virtual void _setTarget(gr::Texture *tar);
         GLuint getID();
 
         _FORCE_INLINE_ GLint getGLInternalFormat() {

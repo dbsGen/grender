@@ -9,13 +9,11 @@
 #include <core/Action.h>
 #include <render_define.h>
 
-using namespace gcore;
-
 namespace gr {
     class TextureIMP;
     class Linker;
 
-    CLASS_BEGIN_NV(Texture, RefObject)
+    CLASS_BEGIN_NV(Texture, gc::RefObject)
 public:
     enum _Channel {
         DEFAULT,
@@ -34,7 +32,7 @@ public:
         bool loaded;
         bool loading;
         TextureIMP  *imp;
-        ActionItem  onDraw;
+        gc::ActionItem  onDraw;
 
         void _onDraw() {
             onDraw(this);
@@ -64,7 +62,7 @@ public:
         _FORCE_INLINE_ METHOD Channel getChannel() {
             return channel;
         }
-        _FORCE_INLINE_ void setOnDraw(ActionCallback callback, void *data = NULL) {
+        _FORCE_INLINE_ void setOnDraw(gc::ActionCallback callback, void *data = NULL) {
             onDraw.callback = callback;
             onDraw.data = data;
         }

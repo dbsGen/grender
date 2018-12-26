@@ -16,7 +16,7 @@ namespace gr {
     private:
         float r;
         float h;
-        VSize size;
+        Size3D size;
         void updateVertexes();
         void createVertexes();
 
@@ -29,8 +29,8 @@ namespace gr {
                    this->r = r;
                            updateVertexes();
         )
-        _FORCE_INLINE_ const VSize &getSize(){ return size;};
-        void setSize(VSize size);
+        _FORCE_INLINE_ const Size3D &getSize(){ return size;};
+        void setSize(Size3D size);
 //        _FORCE_INLINE_ float getHeight(){ return h;}
 //        _FORCE_INLINE_ void setHeight(float h);
 

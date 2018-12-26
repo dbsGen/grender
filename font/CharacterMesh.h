@@ -18,7 +18,7 @@ namespace gr {
     CLASS_BEGIN_N(CharacterMesh, Mesh)
     
 private:
-    Ref<Character> character;
+    gc::Ref<Character> character;
     Vector4f color;
     
 public:
@@ -26,10 +26,10 @@ public:
         color = Vector4f(1, 1, 1, 1);
     }
     
-    _FORCE_INLINE_ const Ref<Character> &getCharacter(){
+    _FORCE_INLINE_ const gc::Ref<Character> &getCharacter(){
         return character;
     }
-    _FORCE_INLINE_ void setCharacter(const Ref<Character> &ch) {
+    _FORCE_INLINE_ void setCharacter(const gc::Ref<Character> &ch) {
         character = ch;
     }
     

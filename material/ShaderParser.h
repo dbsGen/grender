@@ -88,9 +88,9 @@ namespace gr {
             AttributeType   attr_type;
             VariantType     var_type;
             Prefix          prefix;
-            gcore::StringName name;
+            gc::StringName name;
             Item            *def_value;
-            gcore::StringName  var_string;
+            gc::StringName  var_string;
 
             _FORCE_INLINE_ AttributeItem() : prefix(None), def_value(NULL) {
                 type = ItemType::Attribute;attr_type=Normal;
@@ -144,10 +144,10 @@ namespace gr {
         };
     
         struct WordItem : public Item {
-            gcore::StringName value;
+            gc::StringName value;
         
             _FORCE_INLINE_ WordItem() {type = Word;}
-            _FORCE_INLINE_ WordItem(const gcore::StringName &value) : WordItem() {this->value = value;}
+            _FORCE_INLINE_ WordItem(const gc::StringName &value) : WordItem() {this->value = value;}
             _FORCE_INLINE_ ~WordItem() {}
         };
     
@@ -218,7 +218,7 @@ namespace gr {
             //AttributeItem*
             pointer_vector argvs;
             BlockItem *block;
-            gcore::StringName name;
+            gc::StringName name;
             
             void clear();
             _FORCE_INLINE_ FunctionItem() : block(NULL), ret_type(Void) {
@@ -241,7 +241,7 @@ namespace gr {
         };
 
         struct CallItem : public Item {
-            gcore::StringName name;
+            gc::StringName name;
             pointer_vector  argvs;
         
             void clear();

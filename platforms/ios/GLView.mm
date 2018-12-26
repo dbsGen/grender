@@ -40,9 +40,9 @@ assert(__gl_error_code == GL_NO_ERROR); \
 @synthesize context;
 
 + (void)load {
-    FileSystem::getInstance()->setResourcePath([[NSBundle mainBundle] resourcePath].UTF8String);
+    gr::FileSystem::getInstance()->setResourcePath([[NSBundle mainBundle] resourcePath].UTF8String);
     NSArray *arr = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask,YES);
-    FileSystem::getInstance()->setStoragePath([arr.firstObject UTF8String]);
+    gr::FileSystem::getInstance()->setStoragePath([arr.firstObject UTF8String]);
 }
 
 + (Class) layerClass
@@ -152,6 +152,9 @@ assert(__gl_error_code == GL_NO_ERROR); \
 
 - (BOOL)createFramebuffer
 {
+    if (!_renderer) {
+        return NO;
+    }
     // iOS Requires all content go to a rendering buffer then it is swapped into the windows rendering surface
     assert(defaultFramebuffer == 0);
     
@@ -165,7 +168,8 @@ assert(__gl_error_code == GL_NO_ERROR); \
     
     // Associate render buffer storage with CAEAGLLauyer so that the rendered content is display on our UI layer.
     [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
-    higraphics::GL2RendererIMP *rimp = ((Renderer*)_renderer)->getIMP()->cast_to<higraphics::GL2RendererIMP>();
+    
+    gg::GL2RendererIMP *rimp = ((gr::Renderer*)_renderer)->getIMP()->cast_to<gg::GL2RendererIMP>();
     if (rimp)
         rimp->setDefaultFrameBuffer(defaultFramebuffer);
     
@@ -379,7 +383,7 @@ assert(__gl_error_code == GL_NO_ERROR); \
     [super setFrame:frame];
     CGFloat scale = [UIScreen mainScreen].scale;
     if (_renderer)
-        ((Renderer*)_renderer)->setSize(HSize(frame.size.width*scale, frame.size.height*scale));
+        ((gr::Renderer*)_renderer)->setSize(gr::Size(frame.size.width*scale, frame.size.height*scale));
     updateFramebuffer = YES;
     [self display];
 }

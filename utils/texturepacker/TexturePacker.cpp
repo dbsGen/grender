@@ -8,16 +8,19 @@
 #include "TexturePacker.h"
 
 using namespace gr;
+using namespace gc;
+using namespace gg;
+using namespace std;
 
 namespace gr {
     struct SpriteInfo {
         StringName  filename;
-        HRect   frame;
+        Rect    frame;
         bool    rotated;
         bool    trimmed;
-        HRect   sprite_source_size;
-        HSize   source_size;
-        HPoint  pivot;
+        Rect    sprite_source_size;
+        Size    source_size;
+        Point   pivot;
         Ref<Panel>   panel;
 
         SpriteInfo(JSONNODE *node) {
@@ -144,7 +147,7 @@ Ref<Panel> TexturePacker::makePanel(const StringName &name) {
     return Ref<Mesh>::null();
 }
 
-HRect TexturePacker::getUV(const StringName &name) const {
+Rect TexturePacker::getUV(const StringName &name) const {
     auto it = tex_frams.find((void*)name);
     if (it != tex_frams.end()) {
         SpriteInfo *si = (SpriteInfo*)it->second;
@@ -152,16 +155,16 @@ HRect TexturePacker::getUV(const StringName &name) const {
                 t = si->frame.y() / size.height(),
                 w = si->frame.width() / size.width(),
                 h = si->frame.height() / size.height();
-        return HRect(l, t, w, h);
+        return Rect(l, t, w, h);
     }
-    return HRect(0,0,0,0);
+    return Rect(0,0,0,0);
 }
 
-const HSize &TexturePacker::getSize(const StringName &name) const {
+const Size &TexturePacker::getSize(const StringName &name) const {
     auto it = tex_frams.find((void*)name);
     if (it != tex_frams.end()) {
         SpriteInfo *si = (SpriteInfo*)it->second;
         return si->source_size;
     }
-    return HSize::zero();
+    return Size(0,0);
 }

@@ -10,9 +10,9 @@
 #import "HTTPClient.h"
 #import "DIManager.h"
 
-const StringName event_complete("COMPLETE");
-const StringName event_failed("FAILED");
-const StringName event_process("PROCESS");
+const gc::StringName event_complete("COMPLETE");
+const gc::StringName event_failed("FAILED");
+const gc::StringName event_process("PROCESS");
 
 @interface HTTPClientObject : NSObject <DIItemDelegate> {
 @public
@@ -77,9 +77,9 @@ const StringName event_process("PROCESS");
 
 using namespace gr;
 
-const StringName ObjcTarget("OBJECT_C_OBJECT");
+const gc::StringName ObjcTarget("OBJECT_C_OBJECT");
 
-void HTTPClient::event(const gcore::StringName &name, void *data) {
+void HTTPClient::event(const gc::StringName &name, void *data) {
     if (name == event_complete) {
         path = (const char *)data;
         error.clear();

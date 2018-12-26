@@ -5,6 +5,7 @@
 #include "Plugin.h"
 
 using namespace gr;
+using namespace gc;
 
 const StringName &Plugin::getName() {
     if (name.empty()) {

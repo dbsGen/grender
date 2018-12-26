@@ -8,7 +8,7 @@
 #include <object/Object.h>
 #include <render_define.h>
 
-using namespace gcore;
+using namespace gc;
 
 namespace gr {
     class Renderer;

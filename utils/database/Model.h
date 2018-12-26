@@ -17,7 +17,7 @@
 
 namespace gr {
     struct Table {
-        const Class *cls;
+        const gc::Class *cls;
         pointer_map fields;
         float version;
         bool is_init;
@@ -65,8 +65,8 @@ namespace gr {
             None
         };
 
-        StringName name;
-        string limit;
+        gc::StringName name;
+        std::string limit;
         bool index;
         bool primary;
         bool nullable;
@@ -85,10 +85,10 @@ namespace gr {
         Getter getter;
 
         void get(void *model, void *val) {
-            *(typename remove_const<typename remove_reference<I>::type>::type*)val = ((*(T*)model).*getter)();
+            *(typename std::remove_const<typename std::remove_reference<I>::type>::type*)val = ((*(T*)model).*getter)();
         }
         void set(void *model, void *val) {
-            ((*(T*)model).*setter)(*(typename remove_const<typename remove_reference<I>::type>::type*)val);
+            ((*(T*)model).*setter)(*(typename std::remove_const<typename std::remove_reference<I>::type>::type*)val);
         }
 
         FieldImp(Setter s, Getter g) : setter(s), getter(g) {
@@ -110,14 +110,14 @@ namespace gr {
         static const Field::Type type = Field::Real;
     };
     template<class T>
-    struct type_det<const string &, T> {
+    struct type_det<const std::string &, T> {
         static const Field::Type type = Field::Text;
     };
 
     template<class T, typename I>
     Field *makeField(void(T::*setter)(I),
                      I(T::*getter)() const,
-                     const StringName &name,
+                     const gc::StringName &name,
                      bool index,
                      bool primary = false,
                      bool nullable = true) {
@@ -130,7 +130,7 @@ namespace gr {
         return field;
     }
 
-    CLASS_BEGIN_NV(Query, RefObject)
+    CLASS_BEGIN_NV(Query, gc::RefObject)
 
         bool changed;
         bool sort_asc;
@@ -149,19 +149,19 @@ namespace gr {
         Query(const Table *table) : table(table), changed(true), _limit(0), _offset(-1) {
         }
         const ref_vector &res();
-        METHOD Array results();
+        METHOD gc::RArray results();
         METHOD virtual void remove() = 0;
-        METHOD virtual Ref<Query> equal(const string &name, const Variant &val) = 0;
-        METHOD virtual Ref<Query> greater(const string &name, const Variant &val) = 0;
-        METHOD virtual Ref<Query> less(const string &name, const Variant &val) = 0;
-        METHOD virtual Ref<Query> andQ() = 0;
-        METHOD virtual Ref<Query> sortBy(const string &name) = 0;
-        METHOD virtual Ref<Query> like(const string &name, const Variant &val) = 0;
-        METHOD _FORCE_INLINE_ Ref<Query> limit(int l) {
+        METHOD virtual gc::Ref<Query> equal(const std::string &name, const gc::Variant &val) = 0;
+        METHOD virtual gc::Ref<Query> greater(const std::string &name, const gc::Variant &val) = 0;
+        METHOD virtual gc::Ref<Query> less(const std::string &name, const gc::Variant &val) = 0;
+        METHOD virtual gc::Ref<Query> andQ() = 0;
+        METHOD virtual gc::Ref<Query> sortBy(const std::string &name) = 0;
+        METHOD virtual gc::Ref<Query> like(const std::string &name, const gc::Variant &val) = 0;
+        METHOD _FORCE_INLINE_ gc::Ref<Query> limit(int l) {
             _limit = l;
             return this;
         }
-        METHOD _FORCE_INLINE_ Ref<Query> offset(int o) {
+        METHOD _FORCE_INLINE_ gc::Ref<Query> offset(int o) {
             _offset = o;
             return this;
         }
@@ -195,36 +195,38 @@ namespace gr {
     protected:
         pointer_vector queue;
         struct QueueItem {
-            string statement;
+            std::string statement;
             variant_vector params;
-            Ref<Callback> callback;
+            gc::RCallback callback;
 
-            QueueItem(const string &statement, variant_vector *params, const Ref<Callback> &callback) : statement(statement), callback(callback) {
+            QueueItem(const std::string &statement,
+                      variant_vector *params,
+                      const gc::RCallback &callback) : statement(statement), callback(callback) {
                 if (params) this->params = *params;
             }
         };
-        mutex mtx;
+        std::mutex mtx;
 
         virtual void begin() = 0;
-        virtual void action(const string &statement, variant_vector *params, const Ref<Callback> &callback) = 0;
+        virtual void action(const std::string &statement, variant_vector *params, const gc::RCallback &callback) = 0;
         virtual void end() = 0;
 
     public:
         virtual void fixedStep(Renderer *renderer, Time delta);
 
-        virtual Ref<Query> query(Table *table) const = 0;
-        virtual void exce(const string &statement, variant_vector *params, const Ref<Callback> &callback);
-        virtual void queueExce(const string &statement, variant_vector *params, const Ref<Callback> &callback);
+        virtual gc::Ref<Query> query(Table *table) const = 0;
+        virtual void exce(const std::string &statement, variant_vector *params, const gc::RCallback &callback);
+        virtual void queueExce(const std::string &statement, variant_vector *params, const gc::RCallback &callback);
 
         virtual void processTable(Table *table) = 0;
-        virtual void update(HObject *model, Table *table) = 0;
-        virtual void remove(HObject *model, Table *table) = 0;
+        virtual void update(Object *model, Table *table) = 0;
+        virtual void remove(Object *model, Table *table) = 0;
 
         ~Database();
 
     CLASS_END
 
-    CLASS_BEGIN_N(BaseModel, RefObject)
+    CLASS_BEGIN_N(BaseModel, gc::RefObject)
 
     protected:
         bool changed;
@@ -276,7 +278,7 @@ public: \
         static float version() {
             return 0;
         }
-#define ADD_FILED(CLASS, PROPERTY, CAPITALIZE, ...) {StringName name(#PROPERTY);fields()->operator[]((void*)name) = makeField(&CLASS::set##CAPITALIZE, &CLASS::get##CAPITALIZE, name, __VA_ARGS__);}
+#define ADD_FILED(CLASS, PROPERTY, CAPITALIZE, ...) {gc::StringName name(#PROPERTY);fields()->operator[]((void*)name) = makeField(&CLASS::set##CAPITALIZE, &CLASS::get##CAPITALIZE, name, __VA_ARGS__);}
         static void registerFields() {
             if (!TableContainer<T>::table) {
                 Table *table = new Table;
@@ -298,18 +300,18 @@ public: \
     public:
         Model() : identifier(-1) {
         }
-        METHOD _FORCE_INLINE_ static Ref<Query> query() {
+        METHOD _FORCE_INLINE_ static gc::Ref<Query> query() {
             checkTable();
             return db::database()->query(TableContainer<T>::table);
         }
 
-        METHOD static Ref<T> find(int identifier) {
-            Ref<Query> q = query();
+        METHOD static gc::Ref<T> find(int identifier) {
+            gc::Ref<Query> q = query();
             const ref_vector &results = q->equal("identifier", identifier)->limit(1)->res();
             if (results.size()) {
                 return results.front();
             }else {
-                return Ref<T>::null();
+                return gc::Ref<T>::null();
             }
         }
 

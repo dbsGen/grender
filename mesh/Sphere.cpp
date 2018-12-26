@@ -5,6 +5,7 @@
 #include "Sphere.h"
 
 using namespace gr;
+using namespace std;
 
 Sphere::Sphere(): Mesh(), radius(1), uvType(UV_NORMAL), angleSpan(10.0f){
     createVertexes();

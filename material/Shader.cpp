@@ -7,7 +7,9 @@
 #include "ShaderParser.h"
 
 using namespace gr;
-using namespace higraphics;
+using namespace gg;
+using namespace gc;
+using namespace std;
 
 namespace gr {
     typedef int VariantType;
@@ -181,7 +183,7 @@ const Shader::Property *Shader::uniform(Type type, int index) const {
     return NULL;
 }
 
-const Shader::Property *Shader::compileProperty(const gcore::StringName &name) const {
+const Shader::Property *Shader::compileProperty(const gc::StringName &name) const {
     auto ite = compiles_index.find(name);
     if (ite != compiles_index.end()) return (const Property *)compiles[(long)(*ite).second];
     return NULL;

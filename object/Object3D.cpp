@@ -8,7 +8,8 @@
 #include <physics/PhysicsServer.h>
 
 using namespace gr;
-using namespace hiphysics;
+using namespace gc;
+using namespace std;
 
 class ObjectNotifications {
 public:
@@ -16,19 +17,19 @@ public:
 };
 
 const StringName ObjectNotifications::_MESSAGE_ENABLE_CHANGE("M_OBJECT_EG");
-const StringName Object::MESSAGE_ENABLE_CHANGE("M_OBJECT_ENABLE_CHANGE");
+const StringName Object3D::MESSAGE_ENABLE_CHANGE("M_OBJECT_ENABLE_CHANGE");
 
-const StringName Object::MESSAGE_DISPLAY_CHANGED("M_OBJECT_DISPLAY_CHANGED");
+const StringName Object3D::MESSAGE_DISPLAY_CHANGED("M_OBJECT_DISPLAY_CHANGED");
 
-const StringName Object::MESSAGE_MASK_CHANGE("M_OBJECT_MASK_CHANGE");
-const StringName Object::MESSAGE_HIT_MASK_CHANGE("M_OBJECT_HIT_MASK_CHANGE");
-const StringName Object::MESSAGE_ADD_CHILD("M_OBJECT_ADD_CHILD");
-const StringName Object::MESSAGE_REMOVE_CHILD("M_OBJECT_REMOVE_CHILD");
-const StringName Object::MESSAGE_CHANGE_MATERIAL("M_OBJECT_CHANGE_MATERIAL");
-const StringName Object::MESSAGE_UPDATE_POSE("M_OBJECT_UPDATE_POSE");
-const StringName Object::MESSAGE_TOUCH_EVENT("M_OBJECT_TOUCH_EVENT");
+const StringName Object3D::MESSAGE_MASK_CHANGE("M_OBJECT_MASK_CHANGE");
+const StringName Object3D::MESSAGE_HIT_MASK_CHANGE("M_OBJECT_HIT_MASK_CHANGE");
+const StringName Object3D::MESSAGE_ADD_CHILD("M_OBJECT_ADD_CHILD");
+const StringName Object3D::MESSAGE_REMOVE_CHILD("M_OBJECT_REMOVE_CHILD");
+const StringName Object3D::MESSAGE_CHANGE_MATERIAL("M_OBJECT_CHANGE_MATERIAL");
+const StringName Object3D::MESSAGE_UPDATE_POSE("M_OBJECT_UPDATE_POSE");
+const StringName Object3D::MESSAGE_TOUCH_EVENT("M_OBJECT_TOUCH_EVENT");
 
-Object::Object() : pose(Matrix4::identity()),
+Object3D::Object3D() : pose(Matrix4::identity()),
                    awake_count(0),
                    collision(false),
                    dirty_global_pose(true),
@@ -46,7 +47,7 @@ Object::Object() : pose(Matrix4::identity()),
                        _scale = Vector3f::one();
 }
 
-Object::~Object() {
+Object3D::~Object3D() {
     if (renderer) {
         renderer->cancelDoOnMainThread(this);
         renderer = nullptr;
@@ -59,17 +60,17 @@ Object::~Object() {
     setStepEnable(false);
 }
 
-void Object::add(const Ref<Object> &object) {
+void Object3D::add(const Ref<Object3D> &object) {
     if (*object == this) {
         LOG(e, "Can not add child with self");
         return;
     }
-    Object *obj = *object;
+    Object3D *obj = *object;
     if (!obj) {
         LOG(e, "Object is null.");
         return;
     }
-    Object *parent = obj->getParent();
+    Object3D *parent = obj->getParent();
     if (parent != this) {
         if (parent) {
             parent->remove(object);
@@ -83,8 +84,8 @@ void Object::add(const Ref<Object> &object) {
     }
 }
 
-void Object::remove(const Ref<Object> &object) {
-    Object *parent = object->getParent();
+void Object3D::remove(const Ref<Object3D> &object) {
+    Object3D *parent = object->getParent();
     if (parent == this) {
         children.remove(object);
         object->parent = NULL;
@@ -92,64 +93,64 @@ void Object::remove(const Ref<Object> &object) {
     }
 }
 
-void Object::_addChild(const Ref<Object> &child, Object *parent) {
+void Object3D::_addChild(const Ref<Object3D> &child, Object3D *parent) {
     vector<Variant> vs{Variant(child), Variant(parent)};
-    Array arr(vs);
+    RArray arr(vs);
     sendMessage(MESSAGE_ADD_CHILD, UP, &arr);
 }
 
-void Object::_removeChild(const Ref<Object> &child, Object *parent) {
+void Object3D::_removeChild(const Ref<Object3D> &child, Object3D *parent) {
     vector<Variant> vs{Variant(child), Variant(parent)};
-    Array arr(vs);
+    RArray arr(vs);
     sendMessage(MESSAGE_REMOVE_CHILD, UP, &arr);
 }
 
-void Object::_changeMaterial(Object *object, Material *mat) {
+void Object3D::_changeMaterial(Object3D *object, Material *mat) {
     vector<Variant> vs{Variant(object), Variant(mat)};
-    Array arr(vs);
+    RArray arr(vs);
     sendMessage(MESSAGE_CHANGE_MATERIAL, UP, &arr);
     change();
 }
 
-void Object::_updatePose() {
+void Object3D::_updatePose() {
     vector<Variant> vs{Variant(this)};
-    Array arr(vs);
+    RArray arr(vs);
     sendMessage(MESSAGE_UPDATE_POSE, DOWN, &arr);
     onPoseChanged();
     change();
 }
 
-void Object::updateTRS() {
+void Object3D::updateTRS() {
     position = pose.position();
     rotation = pose.rotation();
     _scale = pose.scale();
 }
 
-void Object::setPose(const Matrix4 &pose) {
+void Object3D::setPose(const Matrix4 &pose) {
     this->pose = pose;
     updateTRS();
     _updatePose();
 }
 
-void Object::rotate(float radias, const Vector3f &axis)  {
+void Object3D::rotate(float radias, const Vector3f &axis)  {
     pose = pose.rotate(radias, axis);
     updateTRS();
     _updatePose();
 }
 
-void Object::translate(const Vector3f &trans) {
+void Object3D::translate(const Vector3f &trans) {
     pose = pose + trans;
     updateTRS();
     _updatePose();
 }
 
-void Object::scale(const Vector3f &scale) {
+void Object3D::scale(const Vector3f &scale) {
     pose = pose * scale;
     updateTRS();
     _updatePose();
 }
 
-void Object::setPosition(const Vector3f &pos) {
+void Object3D::setPosition(const Vector3f &pos) {
     if (position != pos) {
         position = pos;
         pose = Matrix4::TRS(position, rotation, _scale);
@@ -157,7 +158,7 @@ void Object::setPosition(const Vector3f &pos) {
     }
 }
 
-void Object::setRotation(const HQuaternion &rot) {
+void Object3D::setRotation(const Quaternion &rot) {
     if (rotation != rot) {
         rotation = rot;
         pose = Matrix4::TRS(position, rotation, _scale);
@@ -165,7 +166,7 @@ void Object::setRotation(const HQuaternion &rot) {
     }
 }
 
-void Object::setScale(const Vector3f &scale) {
+void Object3D::setScale(const Vector3f &scale) {
     if (_scale != scale) {
         _scale = scale;
         pose = Matrix4::TRS(position, rotation, _scale);
@@ -173,7 +174,7 @@ void Object::setScale(const Vector3f &scale) {
     }
 }
 
-void Object::_added(Renderer *renderer) {
+void Object3D::_added(Renderer *renderer) {
     this->renderer = renderer;
     if (awake_count == 0) {
         awake(renderer);
@@ -184,7 +185,7 @@ void Object::_added(Renderer *renderer) {
     ++awake_count;
 }
 
-void Object::_removed(Renderer *renderer) {
+void Object3D::_removed(Renderer *renderer) {
     if (awake_count > 0) {
         --awake_count;
         if (awake_count == 0) {
@@ -199,76 +200,76 @@ void Object::_removed(Renderer *renderer) {
     }
 }
 
-void Object::_touchBegin(Camera *renderer, const Vector2f &screenPoint) {
+void Object3D::_touchBegin(Camera *renderer, const Vector2f &screenPoint) {
     vector<Variant> vs{
         (int)TOUCH_BEGIN,
         screenPoint
     };
-    Array arr(vs);
+    RArray arr(vs);
     sendMessage(MESSAGE_TOUCH_EVENT,
                 UP,
                 &arr);
 }
-void Object::_touchMove(Camera *renderer, bool inside, const Vector2f &screenPoint) {
+void Object3D::_touchMove(Camera *renderer, bool inside, const Vector2f &screenPoint) {
     vector<Variant> vs{
         (int)TOUCH_MOVE,
         screenPoint
     };
-    Array arr(vs);
+    RArray arr(vs);
     sendMessage(MESSAGE_TOUCH_EVENT,
                 UP,
                 &arr);
 }
-void Object::_touchEnd(Camera *renderer, const Vector2f &screenPoint) {
+void Object3D::_touchEnd(Camera *renderer, const Vector2f &screenPoint) {
     vector<Variant> vs{
         (int)TOUCH_END,
         screenPoint
     };
-    Array arr(vs);
+    RArray arr(vs);
     sendMessage(MESSAGE_TOUCH_EVENT,
                 UP,
                 &arr);
 }
 
-void Object::_touchCancel(Camera *renderer, const Vector2f &screenPoint) {
+void Object3D::_touchCancel(Camera *renderer, const Vector2f &screenPoint) {
     vector<Variant> vs{
         (int)TOUCH_CANCEL,
         screenPoint
     };
-    Array arr(vs);
+    RArray arr(vs);
     sendMessage(MESSAGE_TOUCH_EVENT,
                 UP,
                 &arr);
 }
-void Object::_touchMoveIn(Camera *renderer, const Vector2f &screenPoint) {
+void Object3D::_touchMoveIn(Camera *renderer, const Vector2f &screenPoint) {
     vector<Variant> vs{
         (int)TOUCH_MOVE_IN,
         screenPoint
     };
-    Array arr(vs);
+    RArray arr(vs);
     sendMessage(MESSAGE_TOUCH_EVENT,
                 UP,
                 &arr);
 }
-void Object::_touchMoveOut(Camera *renderer, const Vector2f &screenPoint) {
+void Object3D::_touchMoveOut(Camera *renderer, const Vector2f &screenPoint) {
     vector<Variant> vs{
         (int)TOUCH_MOVE_OUT,
         screenPoint
     };
-    Array arr(vs);
+    RArray arr(vs);
     sendMessage(MESSAGE_TOUCH_EVENT,
                 UP,
                 &arr);
 }
 
-bool Object::onMessage(const StringName &key, const Array *vars) {
+bool Object3D::onMessage(const StringName &key, const RArray *vars) {
     if (key == MESSAGE_UPDATE_POSE) {
         dirty_global_pose = true;
         if (Renderer::currentThread() == Renderer::MainThread)
             poseUpdateInv();
         else {
             if (renderer) {
-                renderer->doOnMainThread(this, Object::mainThreadPoseUpdateInv);
+                renderer->doOnMainThread(this, Object3D::mainThreadPoseUpdateInv);
             }
         }
     }else if (key == ObjectNotifications::_MESSAGE_ENABLE_CHANGE) {
@@ -282,12 +283,12 @@ bool Object::onMessage(const StringName &key, const Array *vars) {
     return true;
 }
 
-void Object::mainThreadPoseUpdateInv(void *renderer, void *object, void *data) {
-    Object *obj = (Object*)object;
+void Object3D::mainThreadPoseUpdateInv(void *renderer, void *object, void *data) {
+    Object3D *obj = (Object3D*)object;
     obj->poseUpdateInv();
 }
 
-void Object::poseUpdateInv() {
+void Object3D::poseUpdateInv() {
     for (auto it = pose_update_callbacks.begin(), _e = pose_update_callbacks.end();
          it != _e; ++it) {
         ActionItem *ai = (ActionItem *)it->second;
@@ -295,20 +296,20 @@ void Object::poseUpdateInv() {
     }
 }
 
-void Object::mainTreadEnableChangedInv(void *renderer, void *object, void *data) {
-    Object *obj = (Object*)object;
+void Object3D::mainTreadEnableChangedInv(void *renderer, void *object, void *data) {
+    Object3D *obj = (Object3D*)object;
     obj->enableChangedInv();
 }
 
-void Object::enableChangedInv() {
+void Object3D::enableChangedInv() {
 
 }
 
-void Object::addPoseCallback(void *target, ActionCallback callback, void *data) {
+void Object3D::addPoseCallback(void *target, ActionCallback callback, void *data) {
     ActionItem *ai = new ActionItem(callback, data);
     pose_update_callbacks[target] = ai;
 }
-void *Object::removePoseCallback(void *target) {
+void *Object3D::removePoseCallback(void *target) {
     auto it = pose_update_callbacks.find(target);
     if (it != pose_update_callbacks.end()) {
         ActionItem *ai = (ActionItem*)it->second;
@@ -320,18 +321,18 @@ void *Object::removePoseCallback(void *target) {
     return NULL;
 }
 
-void Object::_message(const StringName &key, NotifyDirection direction, const Array *vars) {
+void Object3D::_message(const StringName &key, NotifyDirection direction, const RArray *vars) {
     if (!onMessage(key, vars)) return;
     switch (direction) {
         case UP:
         {
-            Object *p = getParent();
+            Object3D *p = getParent();
             if (p) p->_message(key, direction, vars);
         }
             break;
         case DOWN:
         {
-            const list<Ref<Object> > &children = getChildren();
+            const list<Ref<Object3D> > &children = getChildren();
             for (auto it = children.begin(), _e = children.end(); it != _e; ++it) {
                 (*it)->_message(key, direction, vars);
             }
@@ -343,15 +344,15 @@ void Object::_message(const StringName &key, NotifyDirection direction, const Ar
     }
 }
 
-void Object::sendMessage(const StringName &key,
+void Object3D::sendMessage(const StringName &key,
                          NotifyDirection direction,
-                         const Array *vars) {
+                         const RArray *vars) {
     switch (direction) {
         case BOTH: {
             _message(key, NONE, vars);
-            Object *p = getParent();
+            Object3D *p = getParent();
             if (p) p->_message(key, UP, vars);
-            const list<Ref<Object> > &children = getChildren();
+            const list<Ref<Object3D> > &children = getChildren();
             for (auto it = children.begin(), _e = children.end(); it != _e; ++it) {
                 (*it)->_message(key, DOWN, vars);
             }
@@ -364,18 +365,18 @@ void Object::sendMessage(const StringName &key,
     }
 }
 
-const Matrix4 &Object::getGlobalPose() const {
+const Matrix4 &Object3D::getGlobalPose() const {
     if (dirty_global_pose) {
-        Object *that = const_cast<Object*>(this);
+        Object3D *that = const_cast<Object3D*>(this);
         that->global_pose = getPose();
-        const Object *p = getParent();
+        const Object3D *p = getParent();
         if (p) that->global_pose = p->getGlobalPose() * that->global_pose;
         that->dirty_global_pose = false;
     }
     return global_pose;
 }
 
-void Object::setCollision(bool collision) {
+void Object3D::setCollision(bool collision) {
     if (this->collision != collision) {
         this->collision = collision;
         if (getParent()) {
@@ -388,11 +389,11 @@ void Object::setCollision(bool collision) {
     }
 }
 
-const Ref<Mesh> &Object::getCollider() const {
+const Ref<Mesh> &Object3D::getCollider() const {
     return collider ? collider : mesh;
 }
 
-void Object::setEnable(bool enable) {
+void Object3D::setEnable(bool enable) {
     if (this->enable != enable) {
         bool old = isFinalEnable();
         this->enable = enable;
@@ -400,7 +401,7 @@ void Object::setEnable(bool enable) {
         bool n = isFinalEnable();
         if (old != n) {
             variant_vector vs{this, old, n};
-            Array arr(vs);
+            RArray arr(vs);
             sendMessage(ObjectNotifications::_MESSAGE_ENABLE_CHANGE, DOWN, &arr);
             sendMessage(MESSAGE_ENABLE_CHANGE, UP, &arr);
             change();
@@ -413,7 +414,7 @@ void Object::setEnable(bool enable) {
     }
 }
 
-bool Object::isFinalEnable() {
+bool Object3D::isFinalEnable() {
     if (dirty_enable) {
         dirty_enable = false;
         auto p = getParent();
@@ -422,8 +423,8 @@ bool Object::isFinalEnable() {
     return final_enable;
 }
 
-void Object::onEnable() {
-    const list<Ref<Object> > &children = getChildren();
+void Object3D::onEnable() {
+    const list<Ref<Object3D> > &children = getChildren();
     for (auto it = children.begin(), _e = children.end(); it != _e; ++it) {
         if ((*it)->getEnable()) {
             (*it)->onEnable();
@@ -431,8 +432,8 @@ void Object::onEnable() {
     }
 }
 
-void Object::onDisable() {
-    const list<Ref<Object> > &children = getChildren();
+void Object3D::onDisable() {
+    const list<Ref<Object3D> > &children = getChildren();
     for (auto it = children.begin(), _e = children.end(); it != _e; ++it) {
         if (!(*it)->getEnable()) {
             (*it)->onDisable();
@@ -440,7 +441,7 @@ void Object::onDisable() {
     }
 }
 
-void Object::traversal(TraversalChecker checker, TraversalHandle dofun, void *data) {
+void Object3D::traversal(TraversalChecker checker, TraversalHandle dofun, void *data) {
     if (checker(this, data)) {
         dofun(this, data);
     }
@@ -449,7 +450,7 @@ void Object::traversal(TraversalChecker checker, TraversalHandle dofun, void *da
     }
 }
 
-void Object::copyParameters(const Ref<Object> &other) {
+void Object3D::copyParameters(const Ref<Object3D> &other) {
     setEnable(other->getEnable());
     setCollider(other->getCollider());
     setCollision(other->getCollition());
@@ -459,25 +460,25 @@ void Object::copyParameters(const Ref<Object> &other) {
     setMaterial(other->getMaterial());
 }
 
-void Object::setMask(Mask mask) {
+void Object3D::setMask(Mask mask) {
     int old = this->mask;
     this->mask = mask;
     vector<Variant> vs{this, old, (int)mask};
-    Array arr(vs);
+    RArray arr(vs);
     sendMessage(MESSAGE_MASK_CHANGE, UP, &arr);
 }
 
-void Object::setHitMask(Mask mask) {
+void Object3D::setHitMask(Mask mask) {
     int old = hitMask;
     hitMask = mask;
     vector<Variant> vs{this, old, (int)mask};
-    Array arr(vs);
+    RArray arr(vs);
     sendMessage(MESSAGE_HIT_MASK_CHANGE, UP, &arr);
 }
 
-void Object::updateCallback(void *key, void *params, void *data) {
+void Object3D::updateCallback(void *key, void *params, void *data) {
     variant_vector *ps = (variant_vector*)params;
-    Object *target = (Object *)data;
+    Object3D *target = (Object3D *)data;
     Variant &delta = ps->operator[](0);
     target->update(delta);
     const Variant *vs[1];
@@ -493,9 +494,9 @@ void Object::updateCallback(void *key, void *params, void *data) {
 //    }
 }
 
-void Object::stepCallback(void *key, void *params, void *data) {
+void Object3D::stepCallback(void *key, void *params, void *data) {
     variant_vector *ps = (variant_vector*)params;
-    Object *target = (Object *)data;
+    Object3D *target = (Object3D *)data;
     Variant &delta = ps->operator[](0);
     target->step(delta);
     const Variant *vs[1];
@@ -503,7 +504,7 @@ void Object::stepCallback(void *key, void *params, void *data) {
     target->apply("_step", NULL, vs, 1);
 }
 
-void Object::setUpdateEnable(bool enable) {
+void Object3D::setUpdateEnable(bool enable) {
     if (!update_enable && enable) {
         if (update_enable == 0 || update_enable == 2) update_type = 1;
         update_enable = enable;
@@ -517,7 +518,7 @@ void Object::setUpdateEnable(bool enable) {
     }
 }
 
-void Object::setStepEnable(bool enable) {
+void Object3D::setStepEnable(bool enable) {
     if (!step_enable && enable) {
         step_enable = enable;
         if (notification_key.empty()) notification_key = NotificationCenter::keyFromObject(this);
@@ -529,7 +530,7 @@ void Object::setStepEnable(bool enable) {
     }
 }
 
-void Object::change() {
+void Object3D::change() {
     sendMessage(MESSAGE_DISPLAY_CHANGED, UP);
 }
 

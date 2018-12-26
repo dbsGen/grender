@@ -149,14 +149,14 @@ namespace gr {
 
     class Tween;
 
-    CLASS_BEGIN_0_NV(TweenProperty)
+    CLASS_BEGIN_NV(TweenProperty, gc::RefObject)
 
     public:
-        virtual void process(HObject *target, double p) = 0;
+        virtual void process(gc::Object *target, double p) = 0;
 
     CLASS_END
 
-    CLASS_BEGIN_N(Tween, RefObject)
+    CLASS_BEGIN_N(Tween, gc::RefObject)
 
     public:
         enum Status {
@@ -174,9 +174,9 @@ namespace gr {
         };
 
     private:
-        ActionManager events;
-        HObject *object;
-        ActionManager blocks;
+        gc::ActionManager events;
+        gc::Object *object;
+        gc::ActionManager blocks;
         ref_vector properties;
         Ease *ease;
 
@@ -189,17 +189,17 @@ namespace gr {
         bool over;
         Status status;
 
-        ActionItem on_update;
-        ActionItem on_complete;
-        ActionItem on_loop;
+        gc::ActionItem on_update;
+        gc::ActionItem on_complete;
+        gc::ActionItem on_loop;
         static void objectDestroy(void *sender, void *send_data, void *data);
 
-        Tween(HObject *target, Time duration, Ease *ease);
+        Tween(gc::Object *target, Time duration, Ease *ease);
 
         friend class TweenManager;
 
     public:
-        _FORCE_INLINE_ const HObject *getTarget() {return object;}
+        _FORCE_INLINE_ const gc::Object *getTarget() {return object;}
         _FORCE_INLINE_ float getCurrentPercent() {return (time_left - delay)/(float)duration;}
         _FORCE_INLINE_ bool isOver() {return over;}
         _FORCE_INLINE_ const Ease *getEase() { return ease; }
@@ -210,15 +210,15 @@ namespace gr {
         _FORCE_INLINE_ bool isLoop() {return loop; }
         _FORCE_INLINE_ void setLoop(bool loop) {this->loop = loop;}
 
-        _FORCE_INLINE_ void setOnUpdate(ActionCallback callback, void *data = NULL) {
+        _FORCE_INLINE_ void setOnUpdate(gc::ActionCallback callback, void *data = NULL) {
             on_update.callback = callback;
             on_update.data = data;
         }
-        _FORCE_INLINE_ void setOnComplete(ActionCallback callback, void *data = NULL) {
+        _FORCE_INLINE_ void setOnComplete(gc::ActionCallback callback, void *data = NULL) {
             on_complete.callback = callback;
             on_complete.data = data;
         }
-        _FORCE_INLINE_ void setOnLoop(ActionCallback callback, void *data = NULL) {
+        _FORCE_INLINE_ void setOnLoop(gc::ActionCallback callback, void *data = NULL) {
             on_loop.callback = callback;
             on_loop.data = data;
         }
@@ -227,25 +227,25 @@ namespace gr {
 
         void start();
         void pause();
-        static void cancel(HObject *target);
+        static void cancel(gc::Object *target);
         void stop();
         void reset();
         void backword();
 
-        void add(ActionCallback handle, void *data = NULL);
+        void add(gc::ActionCallback handle, void *data = NULL);
         void clear();
 
-        void addProperty(const Ref<TweenProperty> &property);
+        void addProperty(const gc::Ref<TweenProperty> &property);
         void clearProperties();
 
-        void addListener(Time time, ActionCallback handle);
+        void addListener(Time time, gc::ActionCallback handle);
         void clearListener();
 
         virtual void initializeTween(bool forword) {}
 
         Tween();
         template <class T=Ease>
-        _FORCE_INLINE_ static Tween *New(HObject *target, Time duration) {
+        _FORCE_INLINE_ static Tween *New(gc::Object *target, Time duration) {
             return new Tween(target, duration, new T());
         }
 
@@ -256,17 +256,17 @@ namespace gr {
     CLASS_BEGIN_N(TweenManager, Plugin)
 
     private:
-        static const StringName NOTIFICATION_KEY;
+        static const gc::StringName NOTIFICATION_KEY;
 
-        list<Ref<Tween> > tweens;
+        std::list<gc::Ref<Tween> > tweens;
         static TweenManager *instance;
-        static mutex share_mtx;
-        mutex mtx;
+        static std::mutex share_mtx;
+        std::mutex mtx;
 
         friend class Tween;
 
     public:
-        const list<Ref<Tween> > &getTweens() {return tweens;}
+        const std::list<gc::Ref<Tween> > &getTweens() {return tweens;}
 
         TweenManager();
         ~TweenManager();
@@ -276,7 +276,7 @@ namespace gr {
         virtual void step(Renderer *renderer, Time delta);
         virtual void fixedStep(Renderer *renderer, Time delta);
 
-        void add(const Ref<Tween> &tween);
+        void add(const gc::Ref<Tween> &tween);
         void clear();
         void remove(Tween *tween) {
             for (auto it = tweens.begin(), _e = tweens.end(); it != _e ; ++it) {

@@ -38,7 +38,7 @@ namespace gr {
 
     private:
 
-        vector<Ref<FontTexture> > textures;
+        std::vector<gc::Ref<FontTexture> > textures;
         ref_map materials;
         void clear();
 
@@ -47,18 +47,18 @@ namespace gr {
         int padding;
         int height;
 
-        map<unsigned int, Ref<Character> > characters;
+        std::map<unsigned int, gc::Ref<Character> > characters;
 
-        static const Ref<Shader> &textShader();
+        static const gc::Ref<Shader> &textShader();
 
-        Ref<FontTexture> createTexture();
+        gc::Ref<FontTexture> createTexture();
         void createCharacter(unsigned int ch);
 
-        static map<StringName, Ref<Font> > register_fonts;
+        static std::map<gc::StringName, gc::Ref<Font> > register_fonts;
     protected:
         virtual void calculateTextureSize(unsigned int &width,
                                           unsigned int &height) = 0;
-        virtual void drawCharacter(unsigned int ch, const Vector2i &off, const Ref<Texture> &tex, int &width, int &height, Vector2i &corner) = 0;
+        virtual void drawCharacter(unsigned int ch, const Vector2i &off, const gc::Ref<Texture> &tex, int &width, int &height, Vector2i &corner) = 0;
         _FORCE_INLINE_ void setHeight(int height) {this->height = height;}
 
     public:
@@ -77,20 +77,20 @@ namespace gr {
             this->padding = padding;
         }
     
-        Ref<Material> getMaterial(const Ref<Texture> &tex);
-        Ref<Material> createMaterial(const Ref<Texture> &tex);
-        const Ref<Character> &character(unsigned int ch);
+        gc::Ref<Material> getMaterial(const gc::Ref<Texture> &tex);
+        gc::Ref<Material> createMaterial(const gc::Ref<Texture> &tex);
+        const gc::Ref<Character> &character(unsigned int ch);
 
         Font(int size);
         ~Font();
 
         _FORCE_INLINE_ virtual void initialize() {}
 
-        static bool hasFont(const StringName &name);
-        static void registerFont(const StringName &name, const Ref<Font> &font);
-        static void unregisterFont(const StringName &name);
-        static Ref<Font> getFont(const StringName &name);
-        static Ref<Font> defaultFont();
+        static bool hasFont(const gc::StringName &name);
+        static void registerFont(const gc::StringName &name, const gc::Ref<Font> &font);
+        static void unregisterFont(const gc::StringName &name);
+        static gc::Ref<Font> getFont(const gc::StringName &name);
+        static gc::Ref<Font> defaultFont();
     
     CLASS_END
 }

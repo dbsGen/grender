@@ -22,11 +22,11 @@ namespace gr {
     
     typedef int XMLType;
     
-    CLASS_BEGIN_N(XMLNode, RefObject)
+    CLASS_BEGIN_N(XMLNode, gc::RefObject)
     
     xmlNodePtr c_node;
     XMLDocument *doc;
-    Array children;
+    gc::RArray children;
     
     friend class XMLDocument;
     
@@ -39,18 +39,18 @@ public:
         return doc;
     }
     METHOD long getChildrenCount() const;
-    METHOD const Array &getChildren();
-    METHOD Ref<XMLNode> getChild(int i);
-    METHOD Ref<XMLNode> findChild(const char *name, const char *value = NULL);
+    METHOD const gc::RArray &getChildren();
+    METHOD gc::Ref<XMLNode> getChild(int i);
+    METHOD gc::Ref<XMLNode> findChild(const char *name, const char *value = NULL);
     
-    METHOD string getAttribute(const char *name) const;
+    METHOD std::string getAttribute(const char *name) const;
     METHOD void setAttribute(const char *name, const char *value) const;
     METHOD bool hasAttribute(const char *name) const;
     
     METHOD const char *getName() const;
     
-    METHOD string getContent();
-    METHOD Array xpath(const char *str) const;
+    METHOD std::string getContent();
+    METHOD gc::RArray xpath(const char *str) const;
     METHOD XMLType getType() const;
     
     protected:

@@ -5,9 +5,11 @@
 #include <Renderer.h>
 #include "Tween.h"
 #include "utils/NotificationCenter.h"
-#include <core/math/Math.hpp>
+#include <math/Math.hpp>
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 const StringName TweenManager::NOTIFICATION_KEY("TweenManager_FrameStep");
 
@@ -55,7 +57,7 @@ Tween::ProcessResult Tween::update(double delta) {
         blocks(this, &p);
         
         for (auto it = properties.begin(), _e = properties.end(); it != _e; ++it) {
-            ((TweenProperty*)(**it))->process(object, p);
+            ((TweenProperty*)(*it).get())->process(object, p);
         }
         on_update(this);
         if (loop) {
@@ -72,14 +74,14 @@ Tween::ProcessResult Tween::update(double delta) {
         double p = ease->interpolation(hi_max((time_left - delay)/(double)duration, (double)0));
         blocks(this, &p);
         for (auto it = properties.begin(), _e = properties.end(); it != _e; ++it) {
-            ((TweenProperty*)(**it))->process(object, p);
+            ((TweenProperty*)(*it).get())->process(object, p);
         }
         on_update(this, object);
         return Delay;
     }
 }
 
-Tween::Tween(HObject *target, Time duration, Ease *ease) : Tween() {
+Tween::Tween(Object *target, Time duration, Ease *ease) : Tween() {
     object = target;
     if (target) {
         target->pushOnDestroy(&Tween::objectDestroy, this);
@@ -152,7 +154,7 @@ void Tween::backword() {
     }
 }
 
-void Tween::cancel(HObject *target) {
+void Tween::cancel(Object *target) {
     TweenManager *manager = TweenManager::sharedInstance();
     if (manager) {
         const list<Ref<Tween> > &tweens = manager->getTweens();

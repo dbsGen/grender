@@ -21,8 +21,8 @@ namespace gr {
     ShaderContext *context;
     
 public:
-    void setMainName(const gcore::StringName &name);
-    const gcore::StringName &getMainName();
+    void setMainName(const gc::StringName &name);
+    const gc::StringName &getMainName();
     
     void compile(const pointer_vector &items, const variant_map &compile_argvs, string &shader);
     
@@ -34,7 +34,7 @@ public:
     CLASS_BEGIN_TNV(ShaderCompilerIMP, Imp, 1, ShaderCompiler)
     
 protected:
-        gcore::StringName main_name;
+        gc::StringName main_name;
     
     virtual void compile(const pointer_vector &items, const variant_map &compile_argvs, string &shader) = 0;
     

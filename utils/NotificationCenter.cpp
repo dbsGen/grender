@@ -7,6 +7,8 @@
 #include "NotificationCenter.h"
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 void NotificationCenter::listen(const StringName &name,
                                 ActionCallback function,
@@ -23,7 +25,7 @@ void NotificationCenter::listen(const StringName &name,
     mtx.unlock();
 }
 
-void NotificationCenter::listen(const StringName &name, const RefCallback &callback) {
+void NotificationCenter::listen(const StringName &name, const RCallback &callback) {
     mtx.lock();
     NotificationItem *item = new NotificationItem(callback);
     auto items = listeners.find(name);
@@ -72,7 +74,7 @@ void NotificationCenter::remove(const StringName &name,
     mtx.unlock();
 }
 
-void NotificationCenter::remove(const StringName &name, const RefCallback &callback) {
+void NotificationCenter::remove(const StringName &name, const RCallback &callback) {
     mtx.lock();
     auto items = listeners.find(name);
     if (items != listeners.end()) {
@@ -90,7 +92,7 @@ void NotificationCenter::remove(const StringName &name, const RefCallback &callb
     mtx.unlock();
 }
 
-StringName NotificationCenter::keyFromObject(HObject *object) {
+StringName NotificationCenter::keyFromObject(Object *object) {
     stringstream ss;
     ss << '[' << object->getInstanceClass()->getFullname() << ": " << (long)object << ']';
     return StringName(ss.str().c_str());

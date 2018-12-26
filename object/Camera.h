@@ -5,12 +5,12 @@
 #ifndef HI_RENDER_PROJECT_ANDROID_CAMERA_H
 #define HI_RENDER_PROJECT_ANDROID_CAMERA_H
 
-#include "Object.h"
+#include "Object3D.h"
 #include <physics/Ray.h>
 #include "../render_define.h"
 
 namespace gr {
-    CLASS_BEGIN_N(Camera, Object)
+    CLASS_BEGIN_N(Camera, Object3D)
 
     public:
         enum Type {
@@ -22,23 +22,23 @@ namespace gr {
         Matrix4     projection;
         bool        dirty_projection;
         Type        type;
-        HRect       rect;
-        HRect       viewport;
+        Rect        rect;
+        Rect        viewport;
         float       near,
                     far;
         float       fov;
         int         depth;
 
-        Ref<Object> current_touch_object;
+        gc::Ref<Object3D> current_touch_object;
         bool        focus;
     
         bool        clean;
-        HColor      clean_color;
+        Color       clean_color;
     
-        Reference   output_target;
+        gc::Reference   output_target;
 
     protected:
-        virtual bool onMessage(const StringName &key, const Array *vars);
+        virtual bool onMessage(const gc::StringName &key, const gc::RArray *vars);
 
     public:
         const Matrix4 &getProjection();
@@ -55,19 +55,19 @@ namespace gr {
                 dirty_projection = true;
             }
         }
-        _FORCE_INLINE_ const HRect &getRect() const {
+        _FORCE_INLINE_ const Rect &getRect() const {
             return rect;
         }
-        _FORCE_INLINE_ void setRect(const HRect &rect) {
+        _FORCE_INLINE_ void setRect(const Rect &rect) {
             if (this->rect != rect) {
                 this->rect = rect;
                 dirty_projection = true;
             }
         }
-        _FORCE_INLINE_ const HRect &getViewport() const {
+        _FORCE_INLINE_ const Rect &getViewport() const {
             return viewport;
         }
-        _FORCE_INLINE_ void setViewport(const HRect &vp) {
+        _FORCE_INLINE_ void setViewport(const Rect &vp) {
             if (viewport != vp) {
                 viewport = vp;
                 dirty_projection = true;
@@ -107,19 +107,19 @@ namespace gr {
             this->depth = depth;
         }
 
-        HPoint screenToWorld(const HPoint &screen_point);
-        HPoint worldToScreen(const HPoint &screen_point);
+        Point screenToWorld(const Point &screen_point);
+        Point worldToScreen(const Point &screen_point);
 
-        virtual bool sortCompare(Object *o1, Object *o2);
-        virtual void copyParameters(const Ref<Object> &other);
-        void sendTouchEvent(Object::EventType event, const Vector2f &point);
-        hiphysics::Ray rayFromScreenPoint(const Vector2f &point);
+        virtual bool sortCompare(Object3D *o1, Object3D *o2);
+        virtual void copyParameters(const gc::Ref<Object3D> &other);
+        void sendTouchEvent(Object3D::EventType event, const Vector2f &point);
+        Ray rayFromScreenPoint(const Vector2f &point);
     
-        _FORCE_INLINE_ const Reference &getOuputTarget() {
+        _FORCE_INLINE_ const gc::Reference &getOuputTarget() {
             return output_target;
         }
     
-        _FORCE_INLINE_ void setOutputTarget(const Reference &output) {
+        _FORCE_INLINE_ void setOutputTarget(const gc::Reference &output) {
             output_target = output;
         }
     
@@ -130,15 +130,15 @@ namespace gr {
             this->clean = clean;
         }
     
-        const HColor &getCleanColor() {
+        const Color &getCleanColor() {
             return clean_color;
         }
     
-        void setCleanColor(const HColor &color) {
+        void setCleanColor(const Color &color) {
             clean_color = color;
         }
 
-        Camera() : Object(),
+        Camera() : Object3D(),
                    type(Orthographic),
                    near(1), far(5000),
                    projection(Matrix4::identity()),

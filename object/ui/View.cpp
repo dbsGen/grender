@@ -6,6 +6,8 @@
 #include <Renderer.h>
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 const StringName View::MESSAGE_ALPHA_CHANGED("MESSAGE_VIEW_ALPHA_CHANGED");
 const StringName View::MESSAGE_DEPTH_CHANGED("MESSAGE_VIEW_DEPTH_CHANGED");
@@ -21,7 +23,7 @@ ViewMaterial::ViewMaterial() : Material(Shader::uiShader()) {
     setCullFace(Material::Front);
 }
 
-View::View() : Object(), depth(0), alpha(1), alpha_changed(true) {
+View::View() : Object3D(), depth(0), alpha(1), alpha_changed(true) {
     border_width = 0;
     corner = 0;
     depth_dirty = true;
@@ -31,8 +33,8 @@ View::View() : Object(), depth(0), alpha(1), alpha_changed(true) {
     setMask(UIMask);
 }
 
-void View::setSize(const HSize &size) {
-    HSize original = this->size;
+void View::setSize(const Size &size) {
+    Size original = this->size;
     this->size = size;
     const Ref<Panel> &panel = getPanel();
 //    panel->setSize(size);
@@ -69,7 +71,7 @@ void View::setCorner(float corner) {
     }
 }
 
-void View::setBorderColor(const HColor &color) {
+void View::setBorderColor(const Color &color) {
     this->border_color = color;
     const Ref<Material> &material = getMaterial();
     if (material && material->instanceOf(ViewMaterial::getClass())) {
@@ -88,7 +90,7 @@ void View::setMaterial(const Ref<gr::Material> &material) {
         material->setBlend(true);
         material->setUniform(kALPHA, getFinalAlpha());
     }
-    Object::setMaterial(material);
+    Object3D::setMaterial(material);
 }
 
 double View::getFinalDepth() {
@@ -123,12 +125,12 @@ void View::setAlpha(float alpha) {
     }
 }
 
-bool View::onMessage(const StringName &key, const Array *vars) {
+bool View::onMessage(const StringName &key, const RArray *vars) {
     if (key == MESSAGE_ALPHA_CHANGED) {
         alpha_changed = true;
         const Ref<Mesh> &mesh = getMesh();
         if (mesh) {
-            HColor color = mesh->getColor();
+            Color color = mesh->getColor();
             color.w(getFinalAlpha());
             mesh->setColor(color);
         }
@@ -139,5 +141,5 @@ bool View::onMessage(const StringName &key, const Array *vars) {
                 getRenderer()->reload(this);
         }
     }
-    return Object::onMessage(key, vars);
+    return Object3D::onMessage(key, vars);
 }

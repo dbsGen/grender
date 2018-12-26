@@ -22,7 +22,7 @@ private:
     void createVertexes();
     
 protected:
-    virtual void _copy(const HObject *other);
+    virtual void _copy(const Object *other);
     
 public:
     

@@ -9,30 +9,30 @@
 #ifndef Canvas_hpp
 #define Canvas_hpp
 
-#include "Object.h"
+#include "Object3D.h"
 #include "../texture/RenderTexture.h"
 #include "../render_define.h"
 
 namespace gr {
     class RenderTexture;
-    CLASS_BEGIN_N(Canvas, Object)
+    CLASS_BEGIN_N(Canvas, Object3D)
     
-    Ref<RenderTexture> texture;
+    gc::Ref<RenderTexture> texture;
     pointer_map change_flags;
     
     static void vertexUpdate(void *sender, void *send_data, void *data);
-    void processMesh(const Ref<Mesh> &mesh);
+    void processMesh(const gc::Ref<Mesh> &mesh);
     void vertexChanged();
     
 public:
     Canvas();
     
     virtual void onPoseChanged();
-    virtual void setMesh(const Ref<Mesh> &mesh);
+    virtual void setMesh(const gc::Ref<Mesh> &mesh);
     
     void willRender(Camera *camera);
     
-    _FORCE_INLINE_ const Ref<RenderTexture> &getTexture() {
+    _FORCE_INLINE_ const gc::Ref<RenderTexture> &getTexture() {
         return texture;
     }
     

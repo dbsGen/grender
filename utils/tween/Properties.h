@@ -6,9 +6,9 @@
 #define VOIPPROJECT_PROPERTIES_H
 
 
-#include <core/math/Type.h>
-#include <core/math/Math.hpp>
-#include <object/Object.h>
+#include <math/Type.h>
+#include <math/Math.hpp>
+#include <object/Object3D.h>
 #include <object/ui/View.h>
 
 #include "Tween.h"
@@ -16,25 +16,25 @@
 namespace gr {
     CLASS_BEGIN_NV(TweenPProperty, TweenProperty)
 
-        Variant from, to;
-        StringName property_name;
-        const Property *property;
+        gc::Variant from, to;
+        gc::StringName property_name;
+        const gc::Property *property;
 
         friend class Tween;
 
     protected:
-        const Property *getProperty(HObject *object);
-        const Variant &getFrom(HObject *target);
-        _FORCE_INLINE_ const Variant &getTo() const {
+        const gc::Property *getProperty(gc::Object *object);
+        const gc::Variant &getFrom(gc::Object *target);
+        _FORCE_INLINE_ const gc::Variant &getTo() const {
             return to;
         }
-        _FORCE_INLINE_ void setFrom(const Variant &from) {
+        _FORCE_INLINE_ void setFrom(const gc::Variant &from) {
             this->from = from;
         }
-        _FORCE_INLINE_ void setTo(const Variant &to) {
+        _FORCE_INLINE_ void setTo(const gc::Variant &to) {
             this->to = to;
         }
-        TweenPProperty(const StringName &property_name);
+        TweenPProperty(const gc::StringName &property_name);
 
     CLASS_END
 
@@ -59,7 +59,7 @@ namespace gr {
             this->to = to;
             this->setter = setter;
             this->getter = getter;
-            V (*lm)(const V &from, const V &to, float p) = gcore::lerp;
+            V (*lm)(const V &from, const V &to, float p) = lerp;
             lerp = lm;
         }
         TweenSProperty(SETTER setter, GETTER getter, V from, V to) {
@@ -68,7 +68,7 @@ namespace gr {
             this->to = to;
             this->setter = setter;
             this->getter = getter;
-            V (*lm)(const V &from, const V &to, float p) = gcore::lerp;
+            V (*lm)(const V &from, const V &to, float p) = lerp;
             lerp = lm;
         }
         TweenSProperty(SETTER setter, GETTER getter, V from, V to, lerp_method lerp) {
@@ -80,7 +80,7 @@ namespace gr {
             this->lerp = lerp;
         }
 
-        virtual void process(HObject *target, double p) {
+        virtual void process(Object *target, double p) {
             if (!set_from) {
                 from = (*target->cast_to<T>().*getter)();
                 set_from = true;
@@ -111,7 +111,7 @@ namespace gr {
             this->to = to;
             this->setter = setter;
             this->getter = getter;
-            V (*lm)(const V &from, const V &to, float p) = gcore::lerp;
+            V (*lm)(const V &from, const V &to, float p) = lerp;
             lerp = lm;
         }
         TweenDynamicProperty(SETTER setter, GETTER getter, V from, TO_M to) {
@@ -120,7 +120,7 @@ namespace gr {
             this->to = to;
             this->setter = setter;
             this->getter = getter;
-            V (*lm)(const V &from, const V &to, float p) = gcore::lerp;
+            V (*lm)(const V &from, const V &to, float p) = lerp;
             lerp = lm;
         }
         TweenDynamicProperty(SETTER setter, GETTER getter, V from, TO_M to, lerp_method lerp) {
@@ -132,7 +132,7 @@ namespace gr {
             this->lerp = lerp;
         }
 
-        virtual void process(HObject *target, double p) {
+        virtual void process(Object *target, double p) {
             if (!set_from) {
                 from = (*target->cast_to<T>().*getter)();
                 set_from = true;
@@ -177,16 +177,16 @@ namespace gr {
     };
     
     _FORCE_INLINE_ TweenProperty *poseProperty(const Matrix4 &from, const Matrix4 &to) {
-        return makeProperty(&Object::setPose, &Object::getPose, from, to, &Matrix4::lerp);
+        return makeProperty(&Object3D::setPose, &Object3D::getPose, from, to, &Matrix4::lerp);
     }
     _FORCE_INLINE_ TweenProperty *positionProperty(const Vector3f &from, const Vector3f &to) {
-        return makeProperty(&Object::setPosition, &Object::getPosition, from, to);
+        return makeProperty(&Object3D::setPosition, &Object3D::getPosition, from, to);
     }
     _FORCE_INLINE_ TweenProperty *rotationProperty(const Vector4f &from, const Vector4f &to) {
-        return makeProperty(&Object::setRotation, &Object::getRotation, from, to);
+        return makeProperty(&Object3D::setRotation, &Object3D::getRotation, from, to);
     }
     _FORCE_INLINE_ TweenProperty *scaleProperty(const Vector3f &from, const Vector3f &to) {
-        return makeProperty(&Object::setScale, &Object::getScale, from, to);
+        return makeProperty(&Object3D::setScale, &Object3D::getScale, from, to);
     }
     _FORCE_INLINE_ TweenProperty *alphaProperty(float from, float to) {
         return makeProperty(&View::setAlpha, &View::getAlpha, from, to);
@@ -196,10 +196,10 @@ namespace gr {
 
     public:
         _FORCE_INLINE_ Matrix4PProperty() : TweenPProperty("") {}
-        Matrix4PProperty(const StringName &name, const Matrix4 &to);
-        Matrix4PProperty(const StringName &name, const Matrix4 &from, const Matrix4 &to);
+        Matrix4PProperty(const gc::StringName &name, const Matrix4 &to);
+        Matrix4PProperty(const gc::StringName &name, const Matrix4 &from, const Matrix4 &to);
 
-        virtual void process(HObject *target, double p);
+        virtual void process(gc::Object *target, double p);
 
     CLASS_END
 }

@@ -9,6 +9,8 @@
 #include "Model.h"
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 const ref_vector &Query::res() {
     if (changed) {
@@ -18,7 +20,7 @@ const ref_vector &Query::res() {
     return _results;
 }
 
-Array Query::results() {
+RArray Query::results() {
     const ref_vector &r = res();
     variant_vector vs;
     for (auto it = r.begin(), _e = r.end(); it != _e; ++it) {
@@ -34,14 +36,14 @@ void Database::fixedStep(Renderer *renderer, Time delta) {
     mtx.unlock();
 }
 
-void Database::exce(const string &statement, variant_vector *params, const Ref<Callback> &callback) {
+void Database::exce(const string &statement, variant_vector *params, const RCallback &callback) {
     mtx.lock();
     queue.push_back(new QueueItem(statement, params, callback));
     checkQueue();
     mtx.unlock();
 }
 
-void Database::queueExce(const string &statement, variant_vector *params, const Ref<Callback> &callback) {
+void Database::queueExce(const string &statement, variant_vector *params, const RCallback &callback) {
     mtx.lock();
     queue.push_back(new QueueItem(statement, params, callback));
     mtx.unlock();

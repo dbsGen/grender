@@ -11,13 +11,11 @@
 #include "ShaderContext.h"
 #include <render_define.h>
 
-using namespace gcore;
-
 namespace gr {
     class Material;
     class ShaderIMP;
 
-    CLASS_BEGIN_0_N(Shader)
+    CLASS_BEGIN_N(Shader, gc::RefObject)
 
     public:
         enum Type {
@@ -41,9 +39,9 @@ namespace gr {
         struct Property {
             Type type;
             int size;
-            StringName name;
+            gc::StringName name;
 
-            _FORCE_INLINE_ Property(Type type, int size, const StringName &name):
+            _FORCE_INLINE_ Property(Type type, int size, const gc::StringName &name):
                     type(type), name(name), size(size) {}
             
             _FORCE_INLINE_ bool operator==(const Property &other) const {
@@ -62,37 +60,37 @@ namespace gr {
         pointer_vector      compiles;
         pointer_map         compiles_index;
     
-        static mutex        mtx;
-        static Ref<Shader>  __default_shader;
-        static Ref<Shader>  __ui_shader;
-        static Ref<Shader>  __model_shader;
+        static std::mutex   mtx;
+        static gc::Ref<Shader>  __default_shader;
+        static gc::Ref<Shader>  __ui_shader;
+        static gc::Ref<Shader>  __model_shader;
     
-        static Ref<ShaderContext> shader_context;
+        static gc::Ref<ShaderContext> shader_context;
     
         void clear();
         void addAttribute(const Property &property);
         void addUniform(const Property &property);
         void addCompile(const Property &property);
     
-        StringName vert_name;
-        StringName frag_name;
-        string treated_vert;
-        string treated_frag;
+        gc::StringName vert_name;
+        gc::StringName frag_name;
+        std::string treated_vert;
+        std::string treated_frag;
     
-        void process(const StringName &vertex, const StringName &fragment);
+        void process(const gc::StringName &vertex, const gc::StringName &fragment);
 
     public:
     
-        static const StringName SHADER_TEXT_VERT;
-        static const StringName SHADER_TEXT_FRAG;
-        static const StringName SHADER_UI_FRAG;
-        static const StringName SHADER_SIMPLE_VERT;
-        static const StringName SHADER_SIMPLE_FRAG;
-        static const StringName SHADER_IMAGE_FRAG;
-        static const StringName SHADER_MODEL_VERT;
-        static const StringName SHADER_MODEL_FRAG;
-        static const StringName SHADER_SHADOW_FRAG;
-        static const StringName SHADER_SHADOW_VERT;
+        static const gc::StringName SHADER_TEXT_VERT;
+        static const gc::StringName SHADER_TEXT_FRAG;
+        static const gc::StringName SHADER_UI_FRAG;
+        static const gc::StringName SHADER_SIMPLE_VERT;
+        static const gc::StringName SHADER_SIMPLE_FRAG;
+        static const gc::StringName SHADER_IMAGE_FRAG;
+        static const gc::StringName SHADER_MODEL_VERT;
+        static const gc::StringName SHADER_MODEL_FRAG;
+        static const gc::StringName SHADER_SHADOW_FRAG;
+        static const gc::StringName SHADER_SHADOW_VERT;
     
         _FORCE_INLINE_ const pointer_vector &getAttributes() const {
             return attributes;
@@ -106,30 +104,30 @@ namespace gr {
             return compiles;
         }
 
-        const Property *attribute(const StringName &name) const;
+        const Property *attribute(const gc::StringName &name) const;
         const Property *attribute(Type type, int index) const;
 
-        const Property *uniform(const StringName &name) const;
+        const Property *uniform(const gc::StringName &name) const;
         const Property *uniform(Type type, int index) const;
     
-        const Property *compileProperty(const StringName &name) const;
+        const Property *compileProperty(const gc::StringName &name) const;
     
-        const string &getTreatedVertex() const;
-        const string &getTreatedFragment() const;
+        const std::string &getTreatedVertex() const;
+        const std::string &getTreatedFragment() const;
         _FORCE_INLINE_ ShaderIMP *getIMP() const {return imp;}
 
-        _FORCE_INLINE_ Shader(const StringName &vertex, const StringName &fragment) : Shader(){
+        _FORCE_INLINE_ Shader(const gc::StringName &vertex, const gc::StringName &fragment) : Shader(){
             initialize(vertex, fragment);
         }
         Shader();
-        virtual void initialize(const StringName &vertex, const StringName &fragment);
+        virtual void initialize(const gc::StringName &vertex, const gc::StringName &fragment);
         ~Shader();
     
-        static const Ref<Shader> &defaultShader();
-        static const Ref<Shader> &uiShader();
-        static const Ref<Shader> &modelShader();
+        static const gc::Ref<Shader> &defaultShader();
+        static const gc::Ref<Shader> &uiShader();
+        static const gc::Ref<Shader> &modelShader();
     
-        static const Ref<ShaderContext> &context();
+        static const gc::Ref<ShaderContext> &context();
     
         void compile(const variant_map &compile_argvs);
     

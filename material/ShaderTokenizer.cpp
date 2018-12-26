@@ -10,7 +10,7 @@
 #include <core/StringName.h>
 #include <cstring>
 
-using namespace gcore;
+using namespace gc;
 
 #define isLatin(ch) ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') || ch == '_')
 

@@ -7,11 +7,12 @@
 //
 
 #include "GL2ShaderCompilerIMP.h"
-#include <core/math/Type.h>
+#include <math/Type.h>
 #include <core/String.h>
 
-using namespace higraphics;
-using namespace gcore;
+using namespace gg;
+using namespace gc;
+using namespace gr;
 
 const StringName main_word("main");
 
@@ -65,14 +66,14 @@ void GL2ShaderCompilerIMP::processAttributeItem(ShaderParser::AttributeItem *ite
         if (compile_argvs != nullptr) {
             auto it = compile_argvs->find(item->name);
             if (it != compile_argvs->end()) {
-                const gcore::Variant &var = it->second;
+                const gc::Variant &var = it->second;
                 
                 switch (item->var_type) {
                     case ShaderParser::Vector2: {
                         shader += "vec2 ";
                         shader += item->name.str();
                         has_name = true;
-                        if (var.getType()->isTypeOf(Vector2f::getClass())) {
+                        if (var.getTypeClass()->isTypeOf(Vector2f::getClass())) {
                             shader += '=';
                             Vector2f v2 = var;
                             char str[44];
@@ -87,7 +88,7 @@ void GL2ShaderCompilerIMP::processAttributeItem(ShaderParser::AttributeItem *ite
                         shader += "vec3 ";
                         shader += item->name.str();
                         has_name = true;
-                        if (var.getType()->isTypeOf(Vector3f::getClass())) {
+                        if (var.getTypeClass()->isTypeOf(Vector3f::getClass())) {
                             shader += '=';
                             Vector3f v3 = var;
                             char str[64];
@@ -101,7 +102,7 @@ void GL2ShaderCompilerIMP::processAttributeItem(ShaderParser::AttributeItem *ite
                         shader += "vec4 ";
                         shader += item->name.str();
                         has_name = true;
-                        if (var.getType()->isTypeOf(Vector4f::getClass())) {
+                        if (var.getTypeClass()->isTypeOf(Vector4f::getClass())) {
                             shader += '=';
                             Vector4f v4 = var;
                             char str[64];
@@ -151,7 +152,7 @@ void GL2ShaderCompilerIMP::processAttributeItem(ShaderParser::AttributeItem *ite
                         shader += "mat2 ";
                         shader += item->name.str();
                         has_name = true;
-                        if (var.getType()->isTypeOf(Matrix2::getClass())) {
+                        if (var.getTypeClass()->isTypeOf(Matrix2::getClass())) {
                             Matrix2 mat2 = var;
                             shader += "=mat2(";
                             for (int i = 0; i < 4; ++i) {
@@ -171,7 +172,7 @@ void GL2ShaderCompilerIMP::processAttributeItem(ShaderParser::AttributeItem *ite
                         shader += "mat3 ";
                         shader += item->name.str();
                         has_name = true;
-                        if (var.getType()->isTypeOf(Matrix2::getClass())) {
+                        if (var.getTypeClass()->isTypeOf(Matrix2::getClass())) {
                             Matrix3 mat3 = var;
                             shader += "=mat3(";
                             for (int i = 0; i < 9; ++i) {
@@ -191,7 +192,7 @@ void GL2ShaderCompilerIMP::processAttributeItem(ShaderParser::AttributeItem *ite
                         shader += "mat4 ";
                         shader += item->name.str();
                         has_name = true;
-                        if (var.getType()->isTypeOf(Matrix2::getClass())) {
+                        if (var.getTypeClass()->isTypeOf(Matrix2::getClass())) {
                             Matrix4 mat4 = var;
                             shader += "=mat4(";
                             for (int i = 0; i < 16; ++i) {

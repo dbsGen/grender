@@ -13,12 +13,10 @@
 #include <core/Data.h>
 #include <vector>
 
-using namespace gcore;
-
 namespace gr {
     class ShaderCompiler;
     class ShaderContextItem;
-    CLASS_BEGIN_N(ShaderContext, RefObject)
+    CLASS_BEGIN_N(ShaderContext, gc::RefObject)
     
 public:
     struct Result {
@@ -32,13 +30,13 @@ public:
 private:
     
     pointer_map items;
-    vector<string> paths;
+    std::vector<std::string> paths;
     
-    ShaderContextItem *findItem(const StringName &name);
+    ShaderContextItem *findItem(const gc::StringName &name);
     void _compile(ShaderCompiler &compiler,
                   ShaderContextItem *item,
                   const variant_map &compile_argvs,
-                  string &shader,
+                  std::string &shader,
                   bool is_function);
     void _parse(ShaderContextItem *item,
                 Result &result);
@@ -47,11 +45,11 @@ public:
     ShaderContext() {}
     ~ShaderContext();
     
-    void addData(const StringName &name, const Ref<Data> &data, bool replase = false);
-    void addPath(const string &path);
+    void addData(const gc::StringName &name, const gc::Ref<gc::Data> &data, bool replase = false);
+    void addPath(const std::string &path);
     
-    void compile(const StringName &name, const variant_map &compile_argvs, string &shader);
-    void parse(const StringName &name, Result &result);
+    void compile(const gc::StringName &name, const variant_map &compile_argvs, std::string &shader);
+    void parse(const gc::StringName &name, Result &result);
     
     CLASS_END
 }

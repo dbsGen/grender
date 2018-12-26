@@ -10,6 +10,8 @@
 #include "FileSystem.h"
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 void FileSystem::processDefaultConfig(const Ref<Data> &data) {
     if (configs.empty()) {

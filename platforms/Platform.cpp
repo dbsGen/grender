@@ -9,6 +9,8 @@
 #include "Platform.h"
 
 using namespace gr;
+using namespace gc;
+using namespace std;
 
 Platform *Platform::shared_platform(NULL);
 
@@ -26,7 +28,7 @@ void Platform::reg(Platform *platform) {
     shared_platform = platform;
 }
 
-void Platform::startInput(const string &text, const string &placeholder, const Ref<Callback> &callback) {
+void Platform::startInput(const string &text, const string &placeholder, const RCallback &callback) {
     Variant vs[3];
     vs[0] = text;
     vs[1] = placeholder;
